@@ -16,11 +16,7 @@ type UserHandler struct {
 	userUseCase services.UserUseCase
 }
 
-// type Response struct {
-// 	ID      uint   `copier:"must"`
-// 	Name    string `copier:"must"`
-// 	Surname string `copier:"must"`
-// }
+
 
 func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 	return &UserHandler{
@@ -36,7 +32,7 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 // @Param			login  body  models.UserLogin  true	"login"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/login [post]
+// @Router			/users/login [post]
 func (u *UserHandler) Login(c *gin.Context) {
 	fmt.Println("=====login handler=====")
 	var user models.UserLogin
@@ -69,7 +65,7 @@ func (u *UserHandler) Login(c *gin.Context) {
 // @Param			signup  body  models.UserDetails  true	"signup"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/signup [post]
+// @Router			/users/signup [post]
 func (u *UserHandler) SignUp(c *gin.Context) {
 
 	var user models.UserDetails

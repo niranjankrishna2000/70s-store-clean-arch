@@ -87,7 +87,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /login:
+  /users/login:
     post:
       consumes:
       - application/json
@@ -113,7 +113,7 @@ paths:
       summary: User Login
       tags:
       - User
-  /otplogin:
+  /users/otplogin:
     post:
       consumes:
       - application/json
@@ -137,32 +137,6 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Send OTP
-      tags:
-      - User
-  /signup:
-    post:
-      consumes:
-      - application/json
-      description: user can signup by giving their details
-      parameters:
-      - description: signup
-        in: body
-        name: signup
-        required: true
-        schema:
-          $ref: '#/definitions/models.UserDetails'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: User Signup
       tags:
       - User
   /users/profile/address:
@@ -378,7 +352,33 @@ paths:
       summary: Change Password
       tags:
       - User
-  /verifyotp:
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      description: user can signup by giving their details
+      parameters:
+      - description: signup
+        in: body
+        name: signup
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User Signup
+      tags:
+      - User
+  /users/verifyotp:
     post:
       consumes:
       - application/json

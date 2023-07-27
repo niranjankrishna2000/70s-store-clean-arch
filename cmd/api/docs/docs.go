@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/login": {
+        "/users/login": {
             "post": {
                 "description": "user can log in by giving their details",
                 "consumes": [
@@ -56,7 +56,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/otplogin": {
+        "/users/otplogin": {
             "post": {
                 "description": "OTP login send otp",
                 "consumes": [
@@ -77,46 +77,6 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.OTPData"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/signup": {
-            "post": {
-                "description": "user can signup by giving their details",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "User Signup",
-                "parameters": [
-                    {
-                        "description": "signup",
-                        "name": "signup",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UserDetails"
                         }
                     }
                 ],
@@ -473,7 +433,47 @@ const docTemplate = `{
                 }
             }
         },
-        "/verifyotp": {
+        "/users/signup": {
+            "post": {
+                "description": "user can signup by giving their details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "User Signup",
+                "parameters": [
+                    {
+                        "description": "signup",
+                        "name": "signup",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/verifyotp": {
             "post": {
                 "description": "OTP login verify otp",
                 "consumes": [

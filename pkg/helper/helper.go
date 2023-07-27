@@ -3,14 +3,15 @@ package helper
 import (
 	"errors"
 	"fmt"
+	"main/pkg/domain"
 	"main/pkg/utils/models"
 
 	"os"
 
 	"github.com/golang-jwt/jwt/v4"
-	"golang.org/x/crypto/bcrypt"
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var client *twilio.RestClient
@@ -80,4 +81,17 @@ func  TwilioVerifyOTP(serviceID string, code string, phone string) error {
 
 	return errors.New("failed to validate otp")
 
+}
+
+func GenerateTokenAdmin(admin domain.Admin) ( string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"admin": admin.Username,
+		"role": "admin",
+	})
+	tokenString, err := token.SignedString([]byte(os.Getenv("KEY")))
+
+	if err == nil {
+		fmt.Println("token created")
+	}
+	return tokenString, nil
 }
