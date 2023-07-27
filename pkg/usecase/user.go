@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"fmt"
+	"main/pkg/domain"
 	"main/pkg/helper"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
@@ -48,7 +49,7 @@ func (u *userUseCase) Login(user models.UserLogin) (models.TokenUser, error) {
 	if err != nil {
 		return models.TokenUser{}, errors.New("password incorrect")
 	}
-	
+
 	tokenString, err := helper.GenerateTokenUser(user_details)
 	if err != nil {
 		return models.TokenUser{}, errors.New("could not create token")
@@ -92,9 +93,108 @@ func (u *userUseCase) SignUp(user models.UserDetails) (models.TokenUser, error) 
 		return models.TokenUser{}, errors.New("could not create token due to some internal error")
 	}
 
-	
 	return models.TokenUser{
 		Username: user.Username,
-		Token: tokenString,
+		Token:    tokenString,
 	}, nil
+}
+
+func (i *userUseCase) AddAddress(id int, address models.AddAddress) error {
+
+	rslt := i.userRepo.CheckIfFirstAddress(id)
+	var result bool
+
+	if !rslt {
+		result = true
+	} else {
+		result = false
+	}
+
+	err := i.userRepo.AddAddress(id, address, result)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (i *userUseCase) GetAddresses(id int) ([]domain.Address, error) {
+
+	addresses, err := i.userRepo.GetAddresses(id)
+	if err != nil {
+		return []domain.Address{}, err
+	}
+
+	return addresses, nil
+
+}
+
+func (i *userUseCase) GetUserDetails(id int) (models.UserResponse, error) {
+
+	details, err := i.userRepo.GetUserDetails(id)
+	if err != nil {
+		return models.UserResponse{}, err
+	}
+
+	return details, nil
+
+}
+
+func (i *userUseCase) ChangePassword(id int, old string, password string, repassword string) error {
+
+	userPassword, err := i.userRepo.GetPassword(id)
+	if err != nil {
+		return err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(old))
+	if err != nil {
+		return errors.New("password incorrect")
+	}
+
+	if password != repassword {
+		return errors.New("passwords does not match")
+	}
+
+	newpassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return errors.New("internal server error")
+	}
+
+	return i.userRepo.ChangePassword(id, string(newpassword))
+
+}
+
+func (i *userUseCase) EditName(id int, name string) error {
+
+	err := i.userRepo.EditName(id, name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (i *userUseCase) EditEmail(id int, email string) error {
+
+	err := i.userRepo.EditName(id, email)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (i *userUseCase) EditPhone(id int, phone string) error {
+
+	err := i.userRepo.EditPhone(id, phone)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

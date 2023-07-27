@@ -29,3 +29,32 @@ type UserDetails struct {
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirmpassword"`
 }
+
+type AddAddress struct {
+	Name      string `json:"name" validate:"required"`
+	HouseName string `json:"house_name" validate:"required"`
+	Street    string `json:"street" validate:"required"`
+	City      string `json:"city" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	Pin       string `json:"pin" validate:"required"`
+}
+
+
+type ChangePassword struct {
+	Oldpassword string `json:"old_password"`
+	Password    string `json:"password"`
+	Repassword  string `json:"re_password"`
+}
+
+
+type EditName struct {
+	Name string `json:"name"`
+}
+
+type EditEmail struct {
+	Email string `json:"email"`
+}
+
+type EditPhone struct {
+	Phone string `json:"phone"`
+}

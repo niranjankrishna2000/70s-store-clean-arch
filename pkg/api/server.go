@@ -9,7 +9,7 @@ import (
 
 	_ "main/cmd/api/docs"
 	handler "main/pkg/api/handler"
-	//middleware "main/pkg/api/middleware"
+	middleware "main/pkg/api/middleware"
 )
 
 type ServerHTTP struct {
@@ -28,7 +28,27 @@ func NewServerHTTP(userHandler *handler.UserHandler, otpHandler *handler.OtpHand
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
 	// Auth middleware
-	//users := engine.Group("/users", middleware.AuthorizationMiddleware)
+	engine.Use(middleware.UserAuthMiddleware)
+	{
+		profile := engine.Group("/user/profile")
+		{
+			profile.GET("/details", userHandler.GetUserDetails)
+			profile.GET("/address", userHandler.GetAddresses)
+			profile.POST("/address/add", userHandler.AddAddress)
+
+			edit := profile.Group("/edit")
+			{
+				edit.PUT("/name", userHandler.EditName)
+				edit.PUT("/email", userHandler.EditEmail)
+				edit.PUT("/phone", userHandler.EditPhone)
+			}
+
+			security := profile.Group("/security")
+			{
+				security.PUT("/change-password", userHandler.ChangePassword)
+			}
+		}
+	}
 
 	return &ServerHTTP{engine: engine}
 }
