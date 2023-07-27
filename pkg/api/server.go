@@ -1,42 +1,40 @@
 package http
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "github.com/thnkrn/go-gin-clean-arch/cmd/api/docs"
-	handler "github.com/thnkrn/go-gin-clean-arch/pkg/api/handler"
-	middleware "github.com/thnkrn/go-gin-clean-arch/pkg/api/middleware"
+	_ "main/cmd/api/docs"
+	handler "main/pkg/api/handler"
+	//middleware "main/pkg/api/middleware"
 )
 
 type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler,otpHandler *handler.OtpHandler) *ServerHTTP {
+	fmt.Println("=====server started=====")
 	engine := gin.New()
-
-	// Use logger from Gin
 	engine.Use(gin.Logger())
-
-	// Swagger docs
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	// Request JWT
-	engine.POST("/login", middleware.LoginHandler)
-
+	engine.POST("/login", userHandler.Login)
+	engine.POST("/signup", userHandler.SignUp)
+	engine.POST("/otplogin", otpHandler.SendOTP)
+	engine.POST("/verifyotp", otpHandler.VerifyOTP)
 	// Auth middleware
-	api := engine.Group("/api", middleware.AuthorizationMiddleware)
+	//users := engine.Group("/users", middleware.AuthorizationMiddleware)
 
-	api.GET("users", userHandler.FindAll)
-	api.GET("users/:id", userHandler.FindByID)
-	api.POST("users", userHandler.Save)
-	api.DELETE("users/:id", userHandler.Delete)
+	
 
 	return &ServerHTTP{engine: engine}
 }
 
 func (sh *ServerHTTP) Start() {
-	sh.engine.Run(":3000")
+	sh.engine.Run(":1243")
 }

@@ -1,14 +1,10 @@
 package interfaces
 
-import (
-	"context"
-
-	"github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-)
+import "main/pkg/utils/models"
 
 type UserRepository interface {
-	FindAll(ctx context.Context) ([]domain.Users, error)
-	FindByID(ctx context.Context, id uint) (domain.Users, error)
-	Save(ctx context.Context, user domain.Users) (domain.Users, error)
-	Delete(ctx context.Context, user domain.Users) error
+	CheckUserAvailability(email string) bool
+	UserBlockStatus(email string) (bool, error)
+	FindUserByEmail(user models.UserLogin) (models.UserResponse, error)
+	SignUp(user models.UserDetails) (models.UserResponse, error)
 }

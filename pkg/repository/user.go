@@ -1,10 +1,13 @@
 package repository
 
 import (
-	"context"
+	"errors"
+	"fmt"
 
-	domain "github.com/thnkrn/go-gin-clean-arch/pkg/domain"
-	interfaces "github.com/thnkrn/go-gin-clean-arch/pkg/repository/interface"
+	//domain "main/pkg/domain"
+	interfaces "main/pkg/repository/interface"
+	"main/pkg/utils/models"
+
 	"gorm.io/gorm"
 )
 
@@ -16,28 +19,51 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 	return &userDatabase{DB}
 }
 
-func (c *userDatabase) FindAll(ctx context.Context) ([]domain.Users, error) {
-	var users []domain.Users
-	err := c.DB.Find(&users).Error
+func (c *userDatabase) CheckUserAvailability(email string) bool {
 
-	return users, err
+	var count int
+	query := fmt.Sprintf("select count(*) from users where email='%s'", email)
+	if err := c.DB.Raw(query).Scan(&count).Error; err != nil {
+		return false
+	}
+	// if count is greater than 0 that means the user already exist
+	return count > 0
+
 }
 
-func (c *userDatabase) FindByID(ctx context.Context, id uint) (domain.Users, error) {
-	var user domain.Users
-	err := c.DB.First(&user, id).Error
-
-	return user, err
+func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
+	var isBlocked bool
+	err := cr.DB.Raw("select blocked from users where email = ?", email).Scan(&isBlocked).Error
+	if err != nil {
+		return false, err
+	}
+	return isBlocked, nil
 }
 
-func (c *userDatabase) Save(ctx context.Context, user domain.Users) (domain.Users, error) {
-	err := c.DB.Save(&user).Error
+func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserResponse, error) {
 
-	return user, err
+	var user_details models.UserResponse
+
+	err := c.DB.Raw(`
+		SELECT *
+		FROM users where email = ? and blocked = false
+		`, user.Email).Scan(&user_details).Error
+
+	if err != nil {
+		return models.UserResponse{}, errors.New("error checking user details")
+	}
+
+	return user_details, nil
 }
 
-func (c *userDatabase) Delete(ctx context.Context, user domain.Users) error {
-	err := c.DB.Delete(&user).Error
+func (c *userDatabase) SignUp(user models.UserDetails) (models.UserResponse, error) {
 
-	return err
+	var userDetails models.UserResponse
+	err := c.DB.Raw("INSERT INTO users (name, email, password, phone, username) VALUES (?, ?, ?, ?,?) RETURNING id, name, email, phone", user.Name, user.Email, user.Password, user.Phone, user.Username).Scan(&userDetails).Error
+
+	if err != nil {
+		return models.UserResponse{}, err
+	}
+
+	return userDetails, nil
 }
