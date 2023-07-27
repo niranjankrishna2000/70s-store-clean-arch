@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
 )
 
@@ -17,7 +16,7 @@ type Config struct {
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD","DB_ACCOUNTSID","DB_SERVICESID","DB_AUTHTOKEN",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "DB_ACCOUNTSID", "DB_SERVICESID", "DB_AUTHTOKEN",
 }
 
 func LoadConfig() (Config, error) {
@@ -34,10 +33,6 @@ func LoadConfig() (Config, error) {
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {
-		return config, err
-	}
-
-	if err := validator.New().Struct(&config); err != nil {
 		return config, err
 	}
 

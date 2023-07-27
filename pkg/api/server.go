@@ -16,7 +16,7 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler,otpHandler *handler.OtpHandler) *ServerHTTP {
+func NewServerHTTP(userHandler *handler.UserHandler, otpHandler *handler.OtpHandler) *ServerHTTP {
 	fmt.Println("=====server started=====")
 	engine := gin.New()
 	engine.Use(gin.Logger())
@@ -29,8 +29,6 @@ func NewServerHTTP(userHandler *handler.UserHandler,otpHandler *handler.OtpHandl
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
 	// Auth middleware
 	//users := engine.Group("/users", middleware.AuthorizationMiddleware)
-
-	
 
 	return &ServerHTTP{engine: engine}
 }

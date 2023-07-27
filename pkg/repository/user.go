@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	//domain "main/pkg/domain"
+
 	interfaces "main/pkg/repository/interface"
 	"main/pkg/utils/models"
 
@@ -28,7 +28,6 @@ func (c *userDatabase) CheckUserAvailability(email string) bool {
 	}
 	// if count is greater than 0 that means the user already exist
 	return count > 0
-
 }
 
 func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {

@@ -76,6 +76,32 @@ paths:
       summary: User Login
       tags:
       - User
+  /otplogin:
+    post:
+      consumes:
+      - application/json
+      description: OTP login send otp
+      parameters:
+      - description: otp-data
+        in: body
+        name: otp
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send OTP
+      tags:
+      - User
   /signup:
     post:
       consumes:
@@ -102,33 +128,7 @@ paths:
       summary: User Signup
       tags:
       - User
-  /users/otplogin:
-    post:
-      consumes:
-      - application/json
-      description: OTP login send otp
-      parameters:
-      - description: otp-data
-        in: body
-        name: otp
-        required: true
-        schema:
-          $ref: '#/definitions/models.OTPData'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Send OTP
-      tags:
-      - User
-  /users/verifyotp:
+  /verifyotp:
     post:
       consumes:
       - application/json

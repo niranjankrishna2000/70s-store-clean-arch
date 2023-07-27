@@ -56,6 +56,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/otplogin": {
+            "post": {
+                "description": "OTP login send otp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Send OTP",
+                "parameters": [
+                    {
+                        "description": "otp-data",
+                        "name": "otp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OTPData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/signup": {
             "post": {
                 "description": "user can signup by giving their details",
@@ -96,47 +136,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/otplogin": {
-            "post": {
-                "description": "OTP login send otp",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Send OTP",
-                "parameters": [
-                    {
-                        "description": "otp-data",
-                        "name": "otp",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.OTPData"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/verifyotp": {
+        "/verifyotp": {
             "post": {
                 "description": "OTP login verify otp",
                 "consumes": [
