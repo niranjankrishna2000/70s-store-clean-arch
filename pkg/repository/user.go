@@ -31,12 +31,12 @@ func (c *userDatabase) CheckUserAvailability(email string) bool {
 }
 
 func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
-	var isBlocked bool
-	err := cr.DB.Raw("select blocked from users where email = ?", email).Scan(&isBlocked).Error
+	var permission bool
+	err := cr.DB.Raw("select permission from users where email = ?", email).Scan(&permission).Error
 	if err != nil {
 		return false, err
 	}
-	return isBlocked, nil
+	return permission, nil
 }
 
 func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserResponse, error) {
@@ -45,7 +45,7 @@ func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserRespon
 
 	err := c.DB.Raw(`
 		SELECT *
-		FROM users where email = ? and blocked = false
+		FROM users where email = ? and permission = true
 		`, user.Email).Scan(&user_details).Error
 
 	if err != nil {
@@ -108,7 +108,7 @@ func (ad *userDatabase) GetUserDetails(id int) (models.UserResponse, error) {
 
 	var details models.UserResponse
 
-	if err := ad.DB.Raw("select id,name,email,phone from users where id=?", id).Scan(&details).Error; err != nil {
+	if err := ad.DB.Raw("select id,name,username,email,phone from users where id=?", id).Scan(&details).Error; err != nil {
 		return models.UserResponse{}, err
 	}
 
@@ -175,4 +175,130 @@ func (i *userDatabase) EditPhone(id int, phone string) error {
 	}
 
 	return nil
+}
+
+
+func (ad *userDatabase) RemoveFromCart(id int) error {
+
+	if err := ad.DB.Exec(`delete from line_items where id=$1`, id).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (ad *userDatabase) UpdateQuantityAdd(id, inv_id int) error {
+fmt.Println("UpdateQuantity Repo",id,inv_id)
+	query := `
+		UPDATE line_items
+		SET quantity = quantity + 1
+		WHERE cart_id=$1 AND inventory_id=$2
+	`
+
+	result := ad.DB.Exec(query, id, inv_id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (ad *userDatabase) UpdateQuantityLess(id, inv_id int) error {
+	fmt.Println("UpdateQuantity Repo",id,inv_id)
+	query := `
+		UPDATE line_items
+		SET quantity = quantity - 1
+		WHERE cart_id=$1 AND inventory_id=$2
+	`
+
+	result := ad.DB.Exec(query, id, inv_id)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+
+}
+
+func (cr *userDatabase) FindUserByOrderID(orderId string) (domain.User, error) {
+
+	var userDetails domain.User
+	err := cr.DB.Raw("select users.name,users.email,users.phone from users inner join orders on orders.user_id = users.id where order_id = ?", orderId).Scan(&userDetails).Error
+	if err != nil {
+		return domain.User{}, err
+	}
+
+	return userDetails, nil
+}
+
+func (ad *userDatabase) GetCartID(id int) (int, error) {
+
+	var cart_id int
+
+	if err := ad.DB.Raw("select id from carts where user_id=?", id).Scan(&cart_id).Error; err != nil {
+		return 0, err
+	}
+
+	return cart_id, nil
+
+}
+
+func (ad *userDatabase) GetProductsInCart(cart_id int) ([]int, error) {
+
+	var cart_products []int
+
+	if err := ad.DB.Raw("select inventory_id from line_items where cart_id=?", cart_id).Scan(&cart_products).Error; err != nil {
+		return []int{}, err
+	}
+
+	return cart_products, nil
+
+}
+
+func (ad *userDatabase) FindProductNames(inventory_id int) (string, error) {
+
+	var product_name string
+
+	if err := ad.DB.Raw("select product_name from inventories where id=?", inventory_id).Scan(&product_name).Error; err != nil {
+		return "", err
+	}
+
+	return product_name, nil
+
+}
+
+func (ad *userDatabase) FindCartQuantity(cart_id, inventory_id int) (int, error) {
+
+	var quantity int
+
+	if err := ad.DB.Raw("select quantity from line_items where cart_id=$1 and inventory_id=$2", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
+		return 0, err
+	}
+
+	return quantity, nil
+
+}
+
+func (ad *userDatabase) FindPrice(inventory_id int) (float64, error) {
+
+	var price float64
+
+	if err := ad.DB.Raw("select price from inventories where id=?", inventory_id).Scan(&price).Error; err != nil {
+		return 0, err
+	}
+
+	return price, nil
+
+}
+
+func (ad *userDatabase) FindCategory(inventory_id int) (int, error) {
+
+	var category int
+
+	if err := ad.DB.Raw("select category_id from inventories where id=?", inventory_id).Scan(&category).Error; err != nil {
+		return 0, err
+	}
+
+	return category, nil
 }

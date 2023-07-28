@@ -54,10 +54,10 @@ func (ad *adminUseCase) BlockUser(id string) error {
 		return err
 	}
 
-	if user.Permission {
+	if !user.Permission {
 		return errors.New("already blocked")
 	} else {
-		user.Permission = true
+		user.Permission = false
 	}
 
 	err = ad.adminRepository.UpdateBlockUserByID(user)
@@ -77,8 +77,8 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 		return err
 	}
 
-	if user.Permission {
-		user.Permission = false
+	if !user.Permission {
+		user.Permission = true
 	} else {
 		return errors.New("already unblocked")
 	}

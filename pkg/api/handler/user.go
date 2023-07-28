@@ -16,8 +16,6 @@ type UserHandler struct {
 	userUseCase services.UserUseCase
 }
 
-
-
 func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 	return &UserHandler{
 		userUseCase: usecase,
@@ -193,6 +191,7 @@ func (i *UserHandler) GetUserDetails(c *gin.Context) {
 // @Accept			json
 // @Produce		    json
 // @Param			id	query	string	true	"id"
+// @Param			changepassword  body  models.ChangePassword  true	"changepassword"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -223,8 +222,6 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
-
-
 
 // @Summary		Edit Name
 // @Description	user can change their name
@@ -291,7 +288,7 @@ func (i *UserHandler) EditEmail(c *gin.Context) {
 		return
 	}
 
-	if err := i.userUseCase.EditName(id, model.Email); err != nil {
+	if err := i.userUseCase.EditEmail(id, model.Email); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not change the Email", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -338,4 +335,131 @@ func (i *UserHandler) EditPhone(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully changed the Phone", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
+}
+
+// @Summary		Get Cart
+// @Description	user can view their cart details
+// @Tags			User
+// @Produce		    json
+// @Param			id	query	string	true	"id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart [get]
+func (i *UserHandler) GetCart(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	products, err := i.userUseCase.GetCart(id)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve cart", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all products in cart", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Remove from Cart
+// @Description	user can remove products from their cart
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			id	query	string	true	"id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart/remove [delete]
+func (i *UserHandler) RemoveFromCart(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.userUseCase.RemoveFromCart(id); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve cart", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully Removed product from cart", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Add quantity in cart by one
+// @Description	user can add 1 quantity of product to their cart
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			id	query	string	true	"id"
+// @Param			inventory	query	string	true	"inv_id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart/updateQuantity/plus [put]
+func (i *UserHandler) UpdateQuantityAdd(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	inv, err := strconv.Atoi(c.Query("inventory"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.userUseCase.UpdateQuantityAdd(id, inv); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not Add the quantity", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully added quantity", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Subtract quantity in cart by one
+// @Description	user can subtract 1 quantity of product from their cart
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			id	query	string	true	"id"
+// @Param			inventory	query	string	true	"inv_id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/cart/updateQuantity/minus [put]
+func (i *UserHandler) UpdateQuantityLess(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	inv, err := strconv.Atoi(c.Query("inventory"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.userUseCase.UpdateQuantityLess(id, inv); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not  subtract quantity", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully subtracted quantity", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 }

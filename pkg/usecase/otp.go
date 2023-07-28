@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 
 	config "main/pkg/config"
 	interfaces "main/pkg/repository/interface"
@@ -31,7 +30,6 @@ func (ot *otpUseCase) SendOTP(phone string) error {
 		return errors.New("the user does not exist")
 	}
 
-	fmt.Println(ot.cfg, phone)
 	helper.TwilioSetup(ot.cfg.ACCOUNTSID, ot.cfg.AUTHTOKEN)
 	_, err := helper.TwilioSendOTP(phone, ot.cfg.SERVICESID)
 	if err != nil {

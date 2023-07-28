@@ -20,4 +20,16 @@ type UserRepository interface {
 	EditName(id int, name string) error
 	EditEmail(id int, email string) error
 	EditPhone(id int, phone string) error
+
+	//GetCart(id int) ([]models.GetCart, error)
+	RemoveFromCart(id int) error
+	UpdateQuantityAdd(id, inv_id int) error
+	UpdateQuantityLess(id, inv_id int) error
+
+	GetCartID(id int) (int, error)
+	GetProductsInCart(cart_id int) ([]int, error)
+	FindProductNames(inventory_id int) (string, error)
+	FindCartQuantity(cart_id, inventory_id int) (int, error)
+	FindPrice(inventory_id int) (float64, error)
+	FindCategory(inventory_id int) (int, error)
 }

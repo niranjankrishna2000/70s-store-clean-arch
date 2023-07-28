@@ -59,7 +59,7 @@ func (ad *adminRepository) GetUserByID(id string) (domain.User, error) {
 // function which will both block and unblock a user
 func (ad *adminRepository) UpdateBlockUserByID(user domain.User) error {
 
-	err := ad.DB.Exec("update users set blocked = ? where id = ?", user.Permission, user.Id).Error
+	err := ad.DB.Exec("update users set permission = ? where id = ?", user.Permission, user.Id).Error
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (ad *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, erro
 	offset := (page - 1) * 5
 	var userDetails []models.UserDetailsAtAdmin
 
-	if err := ad.DB.Raw("select id,name,email,phone,blocked from users limit ? offset ?", 5, offset).Scan(&userDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,name,email,phone,permission from users limit ? offset ?", 5, offset).Scan(&userDetails).Error; err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}
 

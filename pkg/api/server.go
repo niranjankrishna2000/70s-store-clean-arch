@@ -16,15 +16,15 @@ type ServerHTTP struct {
 	engine *gin.Engine
 }
 
-func NewServerHTTP(userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler) *ServerHTTP {
+func NewServerHTTP(categoryHandler *handler.CategoryHandler,inventoryHandler *handler.InventoryHandler ,userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler,cartHandler *handler.CartHandler , orderHandler *handler.OrderHandler) *ServerHTTP {
 	fmt.Println("=====server started=====")
 	engine := gin.New()
 	engine.Use(gin.Logger())
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 
-	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler)
-	routes.AdminRoutes(engine.Group("/admin"), adminHandler,  userHandler)
+	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler,inventoryHandler,cartHandler,orderHandler)
+	routes.AdminRoutes(engine.Group("/admin"), adminHandler,  userHandler, categoryHandler,inventoryHandler,orderHandler)
 
 	return &ServerHTTP{engine: engine}
 }

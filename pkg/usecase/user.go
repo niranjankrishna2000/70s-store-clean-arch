@@ -30,12 +30,12 @@ func (u *userUseCase) Login(user models.UserLogin) (models.TokenUser, error) {
 		return models.TokenUser{}, errors.New("the user does not exist")
 	}
 
-	isBlocked, err := u.userRepo.UserBlockStatus(user.Email)
+	permission, err := u.userRepo.UserBlockStatus(user.Email)
 	if err != nil {
 		return models.TokenUser{}, err
 	}
 
-	if isBlocked {
+	if !permission {
 		return models.TokenUser{}, errors.New("user is blocked by admin")
 	}
 
@@ -179,7 +179,7 @@ func (i *userUseCase) EditName(id int, name string) error {
 
 func (i *userUseCase) EditEmail(id int, email string) error {
 
-	err := i.userRepo.EditName(id, email)
+	err := i.userRepo.EditEmail(id, email)
 	if err != nil {
 		return err
 	}
@@ -191,6 +191,108 @@ func (i *userUseCase) EditEmail(id int, email string) error {
 func (i *userUseCase) EditPhone(id int, phone string) error {
 
 	err := i.userRepo.EditPhone(id, phone)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (u *userUseCase) GetCart(id int) ([]models.GetCart, error) {
+
+	//find cart id
+	cart_id, err := u.userRepo.GetCartID(id)
+	if err != nil {
+		return []models.GetCart{}, err
+	}
+	fmt.Println("cart id",cart_id)
+	//find products inside cart
+	products, err := u.userRepo.GetProductsInCart(cart_id)
+	if err != nil {
+		return []models.GetCart{}, err
+	}
+	fmt.Println("Products",products)
+	//find product names
+	var product_names []string
+	for i := range products {
+		product_name, err := u.userRepo.FindProductNames(products[i])
+		if err != nil {
+			return []models.GetCart{}, err
+		}
+		product_names = append(product_names, product_name)
+	}
+
+	//find quantity
+	var quantity []int
+	for i := range products {
+		q, err := u.userRepo.FindCartQuantity(cart_id, products[i])
+		if err != nil {
+			return []models.GetCart{}, err
+		}
+		quantity = append(quantity, q)
+	}
+
+	var price []float64
+	for i := range products {
+		q, err := u.userRepo.FindPrice(products[i])
+		if err != nil {
+			return []models.GetCart{}, err
+		}
+		price = append(price, q)
+	}
+
+	var categories []int
+	for i := range products {
+		c, err := u.userRepo.FindCategory(products[i])
+		if err != nil {
+			return []models.GetCart{}, err
+		}
+		categories = append(categories, c)
+	}
+
+	var getcart []models.GetCart
+	for i := range product_names {
+		var get models.GetCart
+		get.ProductName = product_names[i]
+		get.Category_id = categories[i]
+		get.Quantity = quantity[i]
+		get.Total = price[i]
+
+
+		getcart = append(getcart, get)
+	}
+
+
+	return getcart, nil
+
+}
+
+func (i *userUseCase) RemoveFromCart(id int) error {
+
+	err := i.userRepo.RemoveFromCart(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (i *userUseCase) UpdateQuantityAdd(id, inv_id int) error {
+
+	err := i.userRepo.UpdateQuantityAdd(id, inv_id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (i *userUseCase) UpdateQuantityLess(id, inv_id int) error {
+
+	err := i.userRepo.UpdateQuantityLess(id, inv_id)
 	if err != nil {
 		return err
 	}

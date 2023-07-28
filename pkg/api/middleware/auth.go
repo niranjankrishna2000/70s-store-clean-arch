@@ -9,7 +9,44 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func AuthorizationMiddleware(c *gin.Context) {
+// func AdminAuthMiddleware(c *gin.Context) {
+
+// 	accessToken := c.Request.Header.Get("Authorization")
+
+// 	_, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
+// 		return []byte("accesssecret"), nil
+// 	})
+
+// 	if err == nil {
+// 		c.Next()
+// 	}
+
+// 	refreshToken := c.Request.Header.Get("RefreshToken")
+
+// 	// Check if the refresh token is valid.
+// 	_, err = jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
+// 		return []byte("refreshsecret"), nil
+// 	})
+// 	if err != nil {
+// 		// The refresh token is invalid.
+// 		c.AbortWithStatus(401)
+// 		return
+// 	}
+// 	// The access token is invalid. Check the refresh token.
+
+// 	// The refresh token is valid. Generate a new access token.
+// 	newAccessToken, err := CreateNewAccessTokenAdmin()
+// 	if err != nil {
+// 		// An error occurred while generating the new access token.
+// 		c.AbortWithStatus(500)
+// 		return
+// 	}
+
+//		// Set the new access token in the response header.
+//		c.Header("Authorization", "jwt "+newAccessToken)
+//		c.Next()
+//	}
+func AdminAuthMiddleware(c *gin.Context) {
 	fmt.Println("Middleware working......")
 	token, _ := c.Cookie("Authorization")
 	fmt.Println("Token::", token)
@@ -18,6 +55,7 @@ func AuthorizationMiddleware(c *gin.Context) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
+	c.Next()
 }
 
 func validateToken(token string) error {
