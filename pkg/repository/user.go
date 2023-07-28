@@ -84,7 +84,7 @@ func (c *userDatabase) CheckIfFirstAddress(id int) bool {
 
 	var count int
 	// query := fmt.Sprintf("select count(*) from addresses where user_id='%s'", id)
-	if err := c.DB.Raw("select count(*) from addresses where user_id=$1", id).Scan(&count).Error; err != nil {
+	if err := c.DB.Raw("select count(*) from addresses where user_id=?", id).Scan(&count).Error; err != nil {
 		return false
 	}
 	// if count is greater than 0 that means the user already exist
@@ -118,7 +118,7 @@ func (ad *userDatabase) GetUserDetails(id int) (models.UserResponse, error) {
 
 func (i *userDatabase) ChangePassword(id int, password string) error {
 
-	err := i.DB.Exec("UPDATE users SET password=$1 WHERE id=$2", password, id).Error
+	err := i.DB.Exec("UPDATE users SET password=? WHERE id=?", password, id).Error
 	if err != nil {
 		return err
 	}
@@ -151,7 +151,7 @@ func (ad *userDatabase) FindIdFromPhone(phone string) (int, error) {
 }
 
 func (i *userDatabase) EditName(id int, name string) error {
-	err := i.DB.Exec(`update users set name=$1 where id=$2`, name, id).Error
+	err := i.DB.Exec(`update users set name=? where id=?`, name, id).Error
 	if err != nil {
 		return err
 	}
@@ -160,7 +160,7 @@ func (i *userDatabase) EditName(id int, name string) error {
 }
 
 func (i *userDatabase) EditEmail(id int, email string) error {
-	err := i.DB.Exec(`update users set email=$1 where id=$2`, email, id).Error
+	err := i.DB.Exec(`update users set email=? where id=?`, email, id).Error
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (i *userDatabase) EditEmail(id int, email string) error {
 }
 
 func (i *userDatabase) EditPhone(id int, phone string) error {
-	err := i.DB.Exec(`update users set phone=$1 where id=$2`, phone, id).Error
+	err := i.DB.Exec(`update users set phone=? where id=?`, phone, id).Error
 	if err != nil {
 		return err
 	}
@@ -180,7 +180,7 @@ func (i *userDatabase) EditPhone(id int, phone string) error {
 
 func (ad *userDatabase) RemoveFromCart(id int) error {
 
-	if err := ad.DB.Exec(`delete from line_items where id=$1`, id).Error; err != nil {
+	if err := ad.DB.Exec(`delete from line_items where cart_id=?`, id).Error; err != nil {
 		return err
 	}
 
@@ -189,11 +189,10 @@ func (ad *userDatabase) RemoveFromCart(id int) error {
 }
 
 func (ad *userDatabase) UpdateQuantityAdd(id, inv_id int) error {
-fmt.Println("UpdateQuantity Repo",id,inv_id)
 	query := `
 		UPDATE line_items
 		SET quantity = quantity + 1
-		WHERE cart_id=$1 AND inventory_id=$2
+		WHERE cart_id=? AND inventory_id=?
 	`
 
 	result := ad.DB.Exec(query, id, inv_id)
@@ -205,11 +204,10 @@ fmt.Println("UpdateQuantity Repo",id,inv_id)
 }
 
 func (ad *userDatabase) UpdateQuantityLess(id, inv_id int) error {
-	fmt.Println("UpdateQuantity Repo",id,inv_id)
 	query := `
 		UPDATE line_items
 		SET quantity = quantity - 1
-		WHERE cart_id=$1 AND inventory_id=$2
+		WHERE cart_id=? AND inventory_id=?
 	`
 
 	result := ad.DB.Exec(query, id, inv_id)
@@ -272,7 +270,7 @@ func (ad *userDatabase) FindCartQuantity(cart_id, inventory_id int) (int, error)
 
 	var quantity int
 
-	if err := ad.DB.Raw("select quantity from line_items where cart_id=$1 and inventory_id=$2", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
+	if err := ad.DB.Raw("select quantity from line_items where cart_id=? and inventory_id=?", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
 		return 0, err
 	}
 

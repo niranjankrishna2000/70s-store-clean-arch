@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"fmt"
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
@@ -27,7 +26,6 @@ func (ad *adminRepository) LoginHandler(adminDetails models.AdminLogin) (domain.
 	if err := ad.DB.Raw("select * from admins where email = ? ", adminDetails.Email).Scan(&adminCompareDetails).Error; err != nil {
 		return domain.Admin{}, err
 	}
-
 	return adminCompareDetails, nil
 }
 
@@ -37,15 +35,13 @@ func (ad *adminRepository) GetUserByID(id string) (domain.User, error) {
 	if err != nil {
 		return domain.User{}, err
 	}
-
-	var count int
-	if err := ad.DB.Raw("select count(*) from users where id = ?", user_id).Scan(&count).Error; err != nil {
-		return domain.User{}, err
-	}
-	if count < 1 {
-		return domain.User{}, errors.New("user for the given id does not exist")
-	}
-
+	// var count int
+	// if err := ad.DB.Raw("select count(*) from users where id = ?", user_id).Scan(&count).Error; err != nil {
+	// 	return domain.User{}, err
+	// }
+	// if count < 1 {
+	// 	return domain.User{}, errors.New("user for the given id does not exist")
+	// }
 	query := fmt.Sprintf("select * from users where id = '%d'", user_id)
 	var userDetails domain.User
 

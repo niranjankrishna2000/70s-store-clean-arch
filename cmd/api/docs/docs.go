@@ -606,9 +606,6 @@ const docTemplate = `{
                     }
                 ],
                 "description": "user can remove products from their cart",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -619,8 +616,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "id",
-                        "name": "id",
+                        "description": "cart_id",
+                        "name": "cart_id",
                         "in": "query",
                         "required": true
                     }
@@ -662,8 +659,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "id",
-                        "name": "id",
+                        "description": "cart_id",
+                        "name": "cart_id",
                         "in": "query",
                         "required": true
                     },
@@ -712,8 +709,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "id",
-                        "name": "id",
+                        "description": "cart_id",
+                        "name": "cart_id",
                         "in": "query",
                         "required": true
                     },

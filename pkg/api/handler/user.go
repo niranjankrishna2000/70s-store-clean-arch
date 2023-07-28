@@ -51,7 +51,7 @@ func (u *UserHandler) Login(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "User successfully logged in", user_details, nil)
 	c.SetCookie("Authorization", user_details.Token, 3600, "", "", true, true)
-
+	
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -367,15 +367,14 @@ func (i *UserHandler) GetCart(c *gin.Context) {
 // @Summary		Remove from Cart
 // @Description	user can remove products from their cart
 // @Tags			User
-// @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
+// @Param			cart_id	query	string	true	"cart_id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/remove [delete]
 func (i *UserHandler) RemoveFromCart(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+	id, err := strconv.Atoi(c.Query("cart_id"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -397,14 +396,14 @@ func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
+// @Param			cart_id	query	string	true	"cart_id"
 // @Param			inventory	query	string	true	"inv_id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/updateQuantity/plus [put]
 func (i *UserHandler) UpdateQuantityAdd(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+	id, err := strconv.Atoi(c.Query("cart_id"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -433,14 +432,14 @@ func (i *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
+// @Param			cart_id	query	string	true	"cart_id"
 // @Param			inventory	query	string	true	"inv_id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/updateQuantity/minus [put]
 func (i *UserHandler) UpdateQuantityLess(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+	id, err := strconv.Atoi(c.Query("cart_id"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

@@ -21,7 +21,7 @@ func (ad *cartRepository) GetAddresses(id int) ([]domain.Address, error) {
 
 	var addresses []domain.Address
 
-	if err := ad.DB.Raw("SELECT * FROM addresses WHERE user_id=$1", id).Scan(&addresses).Error; err != nil {
+	if err := ad.DB.Raw("SELECT * FROM addresses WHERE user_id=?", id).Scan(&addresses).Error; err != nil {
 		return []domain.Address{}, err
 	}
 
@@ -29,17 +29,7 @@ func (ad *cartRepository) GetAddresses(id int) ([]domain.Address, error) {
 
 }
 
-// func (ad *cartRepository) GetCart(id int) ([]models.GetCart, error) {
 
-// 	var cart []models.GetCart
-
-// 	if err := ad.DB.Raw("SELECT inventories.product_name,cart_products.quantity,cart_products.total_price AS Total FROM cart_products JOIN inventories ON cart_products.inventory_id=inventories.id WHERE user_id=$1", id).Scan(&cart).Error; err != nil {
-// 		return []models.GetCart{}, err
-// 	}
-
-// 	return cart, nil
-
-// }
 
 func (ad *cartRepository) GetCartId(user_id int) (int, error) {
 
@@ -57,7 +47,7 @@ func (i *cartRepository) CreateNewCart(user_id int) (int, error) {
 	var id int
 	err := i.DB.Exec(`
 		INSERT INTO carts (user_id)
-		VALUES ($1)`, user_id).Error
+		VALUES (?)`, user_id).Error
 	if err != nil {
 		return 0, err
 	}
@@ -73,7 +63,7 @@ func (i *cartRepository) AddLineItems(cart_id, inventory_id int) error {
 
 	err := i.DB.Exec(`
 		INSERT INTO line_items (cart_id,inventory_id)
-		VALUES ($1,$2)`, cart_id, inventory_id).Error
+		VALUES (?,?)`, cart_id, inventory_id).Error
 	if err != nil {
 		return err
 	}

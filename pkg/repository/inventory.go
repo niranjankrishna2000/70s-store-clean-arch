@@ -55,7 +55,7 @@ func (i *inventoryRepository) UpdateInventory(pid int, stock int) (models.Invent
 	}
 
 	// Update the
-	if err := i.DB.Exec("UPDATE inventories SET stock = stock + $1 WHERE id= $2", stock, pid).Error; err != nil {
+	if err := i.DB.Exec("UPDATE inventories SET stock = stock + ? WHERE id= ?", stock, pid).Error; err != nil {
 		return models.InventoryResponse{}, err
 	}
 
@@ -86,7 +86,6 @@ func (i *inventoryRepository) DeleteInventory(inventoryID string) error {
 	return nil
 }
 
-// detailed product details
 func (i *inventoryRepository) ShowIndividualProducts(id string) (models.Inventory, error) {
 	pid, error := strconv.Atoi(id)
 	if error != nil {
@@ -118,7 +117,7 @@ func (ad *inventoryRepository) ListProducts(page int) ([]models.Inventory, error
 	offset := (page - 1) * 5
 	var productDetails []models.Inventory
 
-	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit $1 offset $2", 5, offset).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit ? offset ?", 5, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 
@@ -128,7 +127,7 @@ func (ad *inventoryRepository) ListProducts(page int) ([]models.Inventory, error
 
 func (i *inventoryRepository) CheckStock(pid int) (int, error) {
 	var k int
-	if err := i.DB.Raw("SELECT stock FROM inventories WHERE id=$1", pid).Scan(&k).Error; err != nil {
+	if err := i.DB.Raw("SELECT stock FROM inventories WHERE id=?", pid).Scan(&k).Error; err != nil {
 		return 0, err
 	}
 	return k, nil

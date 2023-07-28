@@ -66,7 +66,7 @@ func (p *categoryRepository) UpdateCategory(current, new string) (domain.Categor
 	}
 
 	// Update the category
-	if err := p.DB.Exec("UPDATE categories SET category = $1 WHERE category = $2", new, current).Error; err != nil {
+	if err := p.DB.Exec("UPDATE categories SET category = ? WHERE category = ?", new, current).Error; err != nil {
 		return domain.Category{}, err
 	}
 

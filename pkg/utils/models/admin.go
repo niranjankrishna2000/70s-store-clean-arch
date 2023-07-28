@@ -11,15 +11,15 @@ type AdminDetailsResponse struct {
 	Email string `json:"email" `
 }
 
-type TokenAdmin struct{
-	Username 	string
-	Token		string
+type TokenAdmin struct {
+	Username string
+	Token    string
 }
 
 type UserDetailsAtAdmin struct {
-    Id          int    `json:"id"`
-    Name        string `json:"name"`
-    Email       string `json:"email"`
-    Phone       string `json:"phone"`
-    BlockStatus bool   `json:"block_status"`
+	Id         int    `json:"id"`
+	Name       string `json:"name"`
+	Email      string `json:"email"`
+	Phone      string `json:"phone"`
+	Permission bool   `json:"permission"`
 }
