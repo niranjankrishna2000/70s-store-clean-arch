@@ -6,9 +6,8 @@ import (
 	"main/pkg/domain"
 	"main/pkg/utils/models"
 
-	"os"
-
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/spf13/viper"
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -22,7 +21,7 @@ func GenerateTokenUser(user models.UserResponse) (string, error) {
 		"user": user.Username,
 		"role": "user",
 	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("KEY")))
+	tokenString, err := token.SignedString([]byte(viper.GetString("KEY")))
 
 	if err == nil {
 		fmt.Println("token created")
@@ -64,7 +63,7 @@ func TwilioSendOTP(phone string, serviceID string) (string, error) {
 
 }
 
-func  TwilioVerifyOTP(serviceID string, code string, phone string) error {
+func TwilioVerifyOTP(serviceID string, code string, phone string) error {
 
 	params := &twilioApi.CreateVerificationCheckParams{}
 	params.SetTo("+91" + phone)
@@ -83,12 +82,12 @@ func  TwilioVerifyOTP(serviceID string, code string, phone string) error {
 
 }
 
-func GenerateTokenAdmin(admin domain.Admin) ( string, error) {
+func GenerateTokenAdmin(admin domain.Admin) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"admin": admin.Username,
-		"role": "admin",
+		"role":  "admin",
 	})
-	tokenString, err := token.SignedString([]byte(os.Getenv("KEY")))
+	tokenString, err := token.SignedString([]byte(viper.GetString("KEY")))
 
 	if err == nil {
 		fmt.Println("token created")

@@ -114,10 +114,10 @@ func (ad *inventoryRepository) ListProducts(page int) ([]models.Inventory, error
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1) * 5
+	offset := (page - 1) * 10
 	var productDetails []models.Inventory
 
-	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit ? offset ?", 5, offset).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit ? offset ?", 10, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 

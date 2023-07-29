@@ -3,10 +3,10 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 )
 
 // func AdminAuthMiddleware(c *gin.Context) {
@@ -64,7 +64,8 @@ func validateToken(token string) error {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
-		secret := os.Getenv("KEY")
+		secret := viper.GetString("KEY")
+		//secret := os.Getenv("KEY")
 		return []byte(secret), nil
 	})
 

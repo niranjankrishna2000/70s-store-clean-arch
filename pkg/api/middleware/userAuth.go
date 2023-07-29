@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 )
 
 func UserAuthMiddleware(c *gin.Context) {
@@ -17,7 +17,7 @@ func UserAuthMiddleware(c *gin.Context) {
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		secret := os.Getenv("KEY")
+		secret := viper.GetString("KEY")
 		return []byte(secret), nil
 	})
 

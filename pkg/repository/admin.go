@@ -69,10 +69,10 @@ func (ad *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, erro
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1) * 5
+	offset := (page - 1) * 10
 	var userDetails []models.UserDetailsAtAdmin
 
-	if err := ad.DB.Raw("select id,name,email,phone,permission from users limit ? offset ?", 5, offset).Scan(&userDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,name,email,phone,permission from users limit ? offset ?", 10, offset).Scan(&userDetails).Error; err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}
 
