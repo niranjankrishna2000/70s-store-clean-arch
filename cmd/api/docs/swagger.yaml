@@ -531,11 +531,6 @@ paths:
       - application/json
       description: user can subtract 1 quantity of product from their cart
       parameters:
-      - description: cart_id
-        in: query
-        name: cart_id
-        required: true
-        type: string
       - description: inv_id
         in: query
         name: inventory
@@ -563,11 +558,6 @@ paths:
       - application/json
       description: user can add 1 quantity of product to their cart
       parameters:
-      - description: cart_id
-        in: query
-        name: cart_id
-        required: true
-        type: string
       - description: inv_id
         in: query
         name: inventory

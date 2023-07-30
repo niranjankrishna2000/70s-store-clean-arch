@@ -1,8 +1,8 @@
 package handler
 
 import (
+	"main/pkg/helper"
 	services "main/pkg/usecase/interface"
-	"main/pkg/utils/models"
 	"main/pkg/utils/response"
 	"net/http"
 	"strconv"
@@ -25,20 +25,28 @@ func NewCartHandler(usecase services.CartUseCase) *CartHandler {
 // @Tags			User
 // @Accept			json
 // @Produce		json
-// @Param			cart	body	models.AddToCart	true	"Add To Cart"
+// @Param			inventory	query	string	true	"inventory ID"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/home/add-to-cart [post]
 func (i *CartHandler) AddToCart(c *gin.Context) {
 
-	var model models.AddToCart
-	if err := c.BindJSON(&model); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+	userID, err := helper.GetUserID(c)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	if err := i.usecase.AddToCart(model.UserID, model.InventoryID); err != nil {
+
+	inventoryID, err := strconv.Atoi(c.Query("inventory"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.usecase.AddToCart(userID, inventoryID); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not add the Cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -53,20 +61,19 @@ func (i *CartHandler) AddToCart(c *gin.Context) {
 // @Description	Add products to carts  for the purchase
 // @Tags			User
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/check-out [get]
 func (i *CartHandler) CheckOut(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+	userID, err := helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "user_id not in right format", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	products, err := i.usecase.CheckOut(id)
+	products, err := i.usecase.CheckOut(userID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not open checkout", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

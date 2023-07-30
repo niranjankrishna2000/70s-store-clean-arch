@@ -641,13 +641,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "cart_id",
-                        "name": "cart_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "inv_id",
                         "name": "inventory",
                         "in": "query",
@@ -689,13 +682,6 @@ const docTemplate = `{
                 ],
                 "summary": "Add quantity in cart by one",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "cart_id",
-                        "name": "cart_id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "inv_id",
