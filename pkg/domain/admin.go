@@ -1,5 +1,6 @@
 package domain
 
+// Admin represents an administrative user in the system.
 type Admin struct {
 	ID       uint   `json:"id" gorm:"unique;not null"`
 	Username string `json:"name" gorm:"validate:required"`

@@ -199,6 +199,14 @@ func (i *userUseCase) EditPhone(id int, phone string) error {
 
 }
 
+func (u *userUseCase) GetCartID(userID int) (int,error){
+	cartID, err := u.userRepo.GetCartID(userID)
+	if err != nil {
+		return 0, err
+	}
+	return cartID,nil
+}
+
 func (u *userUseCase) GetCart(id int) ([]models.GetCart, error) {
 
 	//find cart id

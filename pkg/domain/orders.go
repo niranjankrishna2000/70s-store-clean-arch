@@ -2,6 +2,7 @@ package domain
 
 import "gorm.io/gorm"
 
+//Order represents the order of user
 type Order struct {
 	gorm.Model	`json:"-"`
 	UserID        int     `json:"user_id" gorm:"not null"`
@@ -13,6 +14,7 @@ type Order struct {
 	OrderStatus   string  `json:"order_status" gorm:"order_status:4;default:'PENDING';check:order_status IN ('PENDING', 'SHIPPED','DELIVERED','CANCELED')"`
 }
 
+//OrderItem represents the product details of the order
 type OrderItem struct {
 	ID          int       `json:"id" gorm:"primaryKey;autoIncrement"`
 	OrderID     int       `json:"order_id"`
@@ -23,6 +25,7 @@ type OrderItem struct {
 	TotalPrice  float64   `json:"total_price"`
 }
 
+//AdminOrdersResponse represents the order details with order status
 type AdminOrdersResponse struct {
 	Pending   []OrderDetails
 	Shipped   []OrderDetails
@@ -30,8 +33,9 @@ type AdminOrdersResponse struct {
 	Canceled  []OrderDetails
 }
 
+//OrderDetails represents the details of order
 type OrderDetails struct {
-	Id            int     `json:"order_id" gorm:"column:order_id"`
+	ID            int     `json:"order_id" gorm:"column:order_id"`
 	Username      string  `json:"name"`
 	Address       string  `json:"address"`
 	Paymentmethod string  `json:"payment_method" gorm:"column:payment_method"`

@@ -17,6 +17,7 @@ type UserUseCase interface {
 	EditEmail(id int, email string) error
 	EditPhone(id int, phone string) error
 
+	GetCartID(userID int) (int,error)
 	GetCart(id int) ([]models.GetCart, error)
 	RemoveFromCart(id int) error
 	UpdateQuantityAdd(id, inv_id int) error

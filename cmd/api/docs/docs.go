@@ -573,15 +573,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get Cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -613,15 +604,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Remove from Cart",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "cart_id",
-                        "name": "cart_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1052,15 +1034,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get Addresses",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1096,13 +1069,6 @@ const docTemplate = `{
                 ],
                 "summary": "Add Address",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "description": "address",
                         "name": "address",
@@ -1147,15 +1113,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get User Details",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1191,13 +1148,6 @@ const docTemplate = `{
                 ],
                 "summary": "Edit Email",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "description": "edit-email",
                         "name": "model",
@@ -1244,13 +1194,6 @@ const docTemplate = `{
                 "summary": "Edit Name",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
                         "description": "edit-name",
                         "name": "model",
                         "in": "body",
@@ -1295,13 +1238,6 @@ const docTemplate = `{
                 ],
                 "summary": "Edit Phone",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "description": "edit-phone",
                         "name": "model",
@@ -1431,13 +1367,6 @@ const docTemplate = `{
                 ],
                 "summary": "Change Password",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "description": "changepassword",
                         "name": "changepassword",

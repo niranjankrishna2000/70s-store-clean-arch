@@ -1,7 +1,8 @@
 package domain
 
+// User represents a user in the system.
 type User struct {
-	Id         int    `gorm:"primaryKey"`
+	ID         int    `gorm:"primaryKey"`
 	Name       string `json:"name"`
 	Email      string `gorm:"unique" json:"email"`
 	Username   string `json:"username"`
@@ -10,10 +11,11 @@ type User struct {
 	Permission bool   `gorm:"default:true" json:"permission"`
 }
 
+// Address represents the address of a user
 type Address struct {
-	Id        uint   `json:"id" gorm:"unique;not null"`
+	ID        uint   `json:"id" gorm:"unique;not null"`
 	UserID    uint   `json:"user_id"`
-	user	  User  `json:"-" gorm:"foreignkey:UserID"`
+	User      User   `json:"-" gorm:"foreignkey:UserID"`
 	Name      string `json:"name" validate:"required"`
 	HouseName string `json:"house_name" validate:"required"`
 	Street    string `json:"street" validate:"required"`

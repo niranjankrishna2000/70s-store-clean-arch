@@ -490,12 +490,6 @@ paths:
   /users/cart:
     get:
       description: user can view their cart details
-      parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -515,12 +509,6 @@ paths:
   /users/cart/remove:
     delete:
       description: user can remove products from their cart
-      parameters:
-      - description: cart_id
-        in: query
-        name: cart_id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -793,12 +781,6 @@ paths:
       consumes:
       - application/json
       description: user can get all their addresses
-      parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -821,11 +803,6 @@ paths:
       - application/json
       description: user can add their addresses
       parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       - description: address
         in: body
         name: address
@@ -853,12 +830,6 @@ paths:
       consumes:
       - application/json
       description: user can get all their details
-      parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -881,11 +852,6 @@ paths:
       - application/json
       description: user can change their Email
       parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       - description: edit-email
         in: body
         name: model
@@ -914,11 +880,6 @@ paths:
       - application/json
       description: user can change their name
       parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       - description: edit-name
         in: body
         name: model
@@ -947,11 +908,6 @@ paths:
       - application/json
       description: user can change their Phone
       parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       - description: edit-phone
         in: body
         name: model
@@ -1033,11 +989,6 @@ paths:
       - application/json
       description: user can change their password
       parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       - description: changepassword
         in: body
         name: changepassword

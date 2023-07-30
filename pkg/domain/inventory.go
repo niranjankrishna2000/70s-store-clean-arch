@@ -1,5 +1,6 @@
 package domain
 
+//Inventory represents the Products in the website
 type Inventory struct {
 	ID          uint     `json:"id" gorm:"unique;not null"`
 	CategoryID  int      `json:"category_id"`
@@ -10,6 +11,7 @@ type Inventory struct {
 	Price       float64  `json:"price"`
 }
 
+//Category represents the category of product
 type Category struct {
 	ID       uint   `json:"id" gorm:"unique;not null"`
 	Category string `json:"category"`

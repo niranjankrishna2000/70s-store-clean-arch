@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"main/pkg/helper"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
 	"main/pkg/utils/response"
@@ -51,7 +52,7 @@ func (u *UserHandler) Login(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "User successfully logged in", user_details, nil)
 	c.SetCookie("Authorization", user_details.Token, 3600, "", "", true, true)
-	
+
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -92,7 +93,6 @@ func (u *UserHandler) SignUp(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Param			address  body  models.AddAddress  true	"address"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -100,9 +100,17 @@ func (u *UserHandler) SignUp(c *gin.Context) {
 // @Router			/users/profile/address/add [post]
 func (i *UserHandler) AddAddress(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Query("id"))
+	// var key models.UserKey="userID"
+	// var val models.UserKey = c.Request.Context().Value(key).(models.UserKey)
+	// //userID,_=strconv.Atoi(ID)
+	// fmt.Println("==============@", val)
+	
+	// ID := val.String()
+	// userID,_:=strconv.Atoi(ID)
+	// fmt.Println("==============", userID)
+	userID,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -114,7 +122,7 @@ func (i *UserHandler) AddAddress(c *gin.Context) {
 		return
 	}
 
-	if err := i.userUseCase.AddAddress(id, address); err != nil {
+	if err := i.userUseCase.AddAddress(int(userID), address); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not add the address", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -130,17 +138,14 @@ func (i *UserHandler) AddAddress(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/address [get]
 func (i *UserHandler) GetAddresses(c *gin.Context) {
-	idString := c.Query("id")
-	id, err := strconv.Atoi(idString)
-
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check your id again", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -160,17 +165,14 @@ func (i *UserHandler) GetAddresses(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/details [get]
 func (i *UserHandler) GetUserDetails(c *gin.Context) {
-	idString := c.Query("id")
-	id, err := strconv.Atoi(idString)
-
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check your id again", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -190,7 +192,6 @@ func (i *UserHandler) GetUserDetails(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Param			changepassword  body  models.ChangePassword  true	"changepassword"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -198,9 +199,9 @@ func (i *UserHandler) GetUserDetails(c *gin.Context) {
 // @Router			/users/profile/security/change-password [put]
 func (i *UserHandler) ChangePassword(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Query("id"))
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -228,7 +229,6 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Param			model  body  models.EditName  true	"edit-name"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -236,9 +236,9 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 // @Router			/users/profile/edit/name [put]
 func (i *UserHandler) EditName(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Query("id"))
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -266,7 +266,6 @@ func (i *UserHandler) EditName(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Param			model  body  models.EditEmail true	"edit-email"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -274,9 +273,9 @@ func (i *UserHandler) EditName(c *gin.Context) {
 // @Router			/users/profile/edit/email [put]
 func (i *UserHandler) EditEmail(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Query("id"))
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -304,7 +303,6 @@ func (i *UserHandler) EditEmail(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Param			model  body  models.EditPhone true	"edit-phone"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -312,9 +310,9 @@ func (i *UserHandler) EditEmail(c *gin.Context) {
 // @Router			/users/profile/edit/phone [put]
 func (i *UserHandler) EditPhone(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Query("id"))
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -341,15 +339,14 @@ func (i *UserHandler) EditPhone(c *gin.Context) {
 // @Description	user can view their cart details
 // @Tags			User
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart [get]
 func (i *UserHandler) GetCart(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+	id,err:=helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -368,20 +365,26 @@ func (i *UserHandler) GetCart(c *gin.Context) {
 // @Description	user can remove products from their cart
 // @Tags			User
 // @Produce		    json
-// @Param			cart_id	query	string	true	"cart_id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart/remove [delete]
 func (i *UserHandler) RemoveFromCart(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("cart_id"))
+	id,err:=helper.GetUserID(c)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	
+	cartID, err := i.userUseCase.GetCartID(id)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	if err := i.userUseCase.RemoveFromCart(id); err != nil {
+	if err := i.userUseCase.RemoveFromCart(cartID); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

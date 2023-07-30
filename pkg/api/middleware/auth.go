@@ -9,43 +9,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-// func AdminAuthMiddleware(c *gin.Context) {
+/*
+AdminAuthMiddleware is a middleware for admin authentication
 
-// 	accessToken := c.Request.Header.Get("Authorization")
-
-// 	_, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
-// 		return []byte("accesssecret"), nil
-// 	})
-
-// 	if err == nil {
-// 		c.Next()
-// 	}
-
-// 	refreshToken := c.Request.Header.Get("RefreshToken")
-
-// 	// Check if the refresh token is valid.
-// 	_, err = jwt.Parse(refreshToken, func(token *jwt.Token) (interface{}, error) {
-// 		return []byte("refreshsecret"), nil
-// 	})
-// 	if err != nil {
-// 		// The refresh token is invalid.
-// 		c.AbortWithStatus(401)
-// 		return
-// 	}
-// 	// The access token is invalid. Check the refresh token.
-
-// 	// The refresh token is valid. Generate a new access token.
-// 	newAccessToken, err := CreateNewAccessTokenAdmin()
-// 	if err != nil {
-// 		// An error occurred while generating the new access token.
-// 		c.AbortWithStatus(500)
-// 		return
-// 	}
-
-//		// Set the new access token in the response header.
-//		c.Header("Authorization", "jwt "+newAccessToken)
-//		c.Next()
-//	}
+Parameters:
+- c: Gin Context.
+*/
 func AdminAuthMiddleware(c *gin.Context) {
 	fmt.Println("Middleware working......")
 	token, _ := c.Cookie("Authorization")
@@ -58,6 +27,12 @@ func AdminAuthMiddleware(c *gin.Context) {
 	c.Next()
 }
 
+/*
+validateToken is for decrypting a jwt token using HMAC256 algorithm
+
+Parameters:
+- c: Gin Context.
+*/
 func validateToken(token string) error {
 	fmt.Println("Token validating.........")
 	_, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {

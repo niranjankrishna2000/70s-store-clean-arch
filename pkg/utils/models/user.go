@@ -58,3 +58,10 @@ type EditEmail struct {
 type EditPhone struct {
 	Phone string `json:"phone"`
 }
+
+type UserKey string
+
+func (k UserKey) String() string {
+	return string(k)
+}
+	
