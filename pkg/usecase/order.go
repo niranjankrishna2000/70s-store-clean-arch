@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	domain "main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
@@ -48,6 +47,11 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, addressid int) error {
 	}
 
 	if err := i.orderRepository.AddOrderProducts(order_id, cart); err != nil {
+		return err
+	}
+
+	cartID, _ := i.userUseCase.GetCartID(userid)
+	if err := i.userUseCase.ClearCart(cartID); err != nil {
 		return err
 	}
 
@@ -103,7 +107,6 @@ func (i *orderUseCase) AdminOrders() (domain.AdminOrdersResponse, error) {
 	response.Pending = pending
 	response.Shipped = shipped
 	response.Delivered = delivered
-	fmt.Println("response in usecase adminorders", response)
 	return response, nil
 
 }

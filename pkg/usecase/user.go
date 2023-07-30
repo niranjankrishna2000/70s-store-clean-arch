@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	"main/pkg/domain"
 	"main/pkg/helper"
 	interfaces "main/pkg/repository/interface"
@@ -23,7 +22,6 @@ func NewUserUseCase(repo interfaces.UserRepository) services.UserUseCase {
 }
 
 func (u *userUseCase) Login(user models.UserLogin) (models.TokenUser, error) {
-	fmt.Println("=====login usecase=====")
 	// checking if a username exist with this email address
 	ok := u.userRepo.CheckUserAvailability(user.Email)
 	if !ok {
@@ -44,7 +42,6 @@ func (u *userUseCase) Login(user models.UserLogin) (models.TokenUser, error) {
 	if err != nil {
 		return models.TokenUser{}, err
 	}
-	fmt.Println(user_details)
 	err = bcrypt.CompareHashAndPassword([]byte(user_details.Password), []byte(user.Password))
 	if err != nil {
 		return models.TokenUser{}, errors.New("password incorrect")
@@ -54,7 +51,6 @@ func (u *userUseCase) Login(user models.UserLogin) (models.TokenUser, error) {
 	if err != nil {
 		return models.TokenUser{}, errors.New("could not create token")
 	}
-	fmt.Println(tokenString)
 	return models.TokenUser{
 		Username: user_details.Username,
 		Token:    tokenString,
@@ -199,12 +195,12 @@ func (i *userUseCase) EditPhone(id int, phone string) error {
 
 }
 
-func (u *userUseCase) GetCartID(userID int) (int,error){
+func (u *userUseCase) GetCartID(userID int) (int, error) {
 	cartID, err := u.userRepo.GetCartID(userID)
 	if err != nil {
 		return 0, err
 	}
-	return cartID,nil
+	return cartID, nil
 }
 
 func (u *userUseCase) GetCart(id int) ([]models.GetCart, error) {
@@ -214,13 +210,11 @@ func (u *userUseCase) GetCart(id int) ([]models.GetCart, error) {
 	if err != nil {
 		return []models.GetCart{}, err
 	}
-	fmt.Println("cart id",cart_id)
 	//find products inside cart
 	products, err := u.userRepo.GetProductsInCart(cart_id)
 	if err != nil {
 		return []models.GetCart{}, err
 	}
-	fmt.Println("Products",products)
 	//find product names
 	var product_names []string
 	for i := range products {
@@ -267,18 +261,26 @@ func (u *userUseCase) GetCart(id int) ([]models.GetCart, error) {
 		get.Quantity = quantity[i]
 		get.Total = price[i]
 
-
 		getcart = append(getcart, get)
 	}
-
 
 	return getcart, nil
 
 }
 
-func (i *userUseCase) RemoveFromCart(id int) error {
+func (i *userUseCase) RemoveFromCart(cartID int, inventoryID int) error {
 
-	err := i.userRepo.RemoveFromCart(id)
+	err := i.userRepo.RemoveFromCart(cartID, inventoryID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+func (i *userUseCase) ClearCart(cartID int) error {
+
+	err := i.userRepo.ClearCart(cartID)
 	if err != nil {
 		return err
 	}

@@ -28,13 +28,6 @@ definitions:
     - state
     - street
     type: object
-  models.AddToCart:
-    properties:
-      inventory_id:
-        type: integer
-      user_id:
-        type: integer
-    type: object
   models.AdminLogin:
     properties:
       email:
@@ -90,8 +83,6 @@ definitions:
         type: integer
       payment:
         type: string
-      user_id:
-        type: integer
     type: object
   models.SetNewName:
     properties:
@@ -509,6 +500,12 @@ paths:
   /users/cart/remove:
     delete:
       description: user can remove products from their cart
+      parameters:
+      - description: inventory id
+        in: query
+        name: inventory
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -531,7 +528,7 @@ paths:
       - application/json
       description: user can subtract 1 quantity of product from their cart
       parameters:
-      - description: inv_id
+      - description: inventory id
         in: query
         name: inventory
         required: true
@@ -558,7 +555,7 @@ paths:
       - application/json
       description: user can add 1 quantity of product to their cart
       parameters:
-      - description: inv_id
+      - description: inventory id
         in: query
         name: inventory
         required: true
@@ -582,12 +579,6 @@ paths:
   /users/check-out:
     get:
       description: Add products to carts  for the purchase
-      parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -638,12 +629,11 @@ paths:
       - application/json
       description: Add products to carts  for the purchase
       parameters:
-      - description: Add To Cart
-        in: body
-        name: cart
+      - description: inventory ID
+        in: query
+        name: inventory
         required: true
-        schema:
-          $ref: '#/definitions/models.AddToCart'
+        type: string
       produces:
       - application/json
       responses:
@@ -693,9 +683,9 @@ paths:
       - application/json
       description: user can view the details of the product
       parameters:
-      - description: id
+      - description: Inventory ID
         in: query
-        name: id
+        name: inventoryID
         required: true
         type: string
       produces:
@@ -925,12 +915,6 @@ paths:
       consumes:
       - application/json
       description: user can cancel the orders
-      parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -951,12 +935,6 @@ paths:
       consumes:
       - application/json
       description: user can view the details of the orders
-      parameters:
-      - description: id
-        in: query
-        name: id
-        required: true
-        type: string
       produces:
       - application/json
       responses:

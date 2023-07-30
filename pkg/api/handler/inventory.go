@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
 	"main/pkg/utils/response"
@@ -145,14 +144,14 @@ func (i *InventoryHandler) DeleteInventory(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
+// @Param			inventoryID	query	string	true	"Inventory ID"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/home/products/details [get]
 func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 
-	id := c.Query("id")
+	id := c.Query("inventoryID")
 	product, err := i.InventoryUseCase.ShowIndividualProducts(id)
 
 	if err != nil {
@@ -192,7 +191,6 @@ func (i *InventoryHandler) ListProducts(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	fmt.Println("inventory handler List Products",products)
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
@@ -209,8 +207,6 @@ func (i *InventoryHandler) ListProducts(c *gin.Context) {
 func (i *InventoryHandler) SearchProducts(c *gin.Context) {
 
 	searchkey := c.Query("searchkey")
-	fmt.Println(searchkey)
-	
 	results, err := i.InventoryUseCase.SearchProducts(searchkey)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve the records", nil, err.Error())

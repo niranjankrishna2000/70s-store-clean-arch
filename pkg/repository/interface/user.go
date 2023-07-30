@@ -22,7 +22,8 @@ type UserRepository interface {
 	EditPhone(id int, phone string) error
 
 	//GetCart(id int) ([]models.GetCart, error)
-	RemoveFromCart(id int) error
+	RemoveFromCart(id int,inventoryID int) error
+	ClearCart(cartID int) error 
 	UpdateQuantityAdd(id, inv_id int) error
 	UpdateQuantityLess(id, inv_id int) error
 

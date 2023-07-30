@@ -604,6 +604,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Remove from Cart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "inventory id",
+                        "name": "inventory",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -641,7 +650,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "inv_id",
+                        "description": "inventory id",
                         "name": "inventory",
                         "in": "query",
                         "required": true
@@ -684,7 +693,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "inv_id",
+                        "description": "inventory id",
                         "name": "inventory",
                         "in": "query",
                         "required": true
@@ -721,15 +730,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Checkout section",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -811,13 +811,11 @@ const docTemplate = `{
                 "summary": "Add To Cart",
                 "parameters": [
                     {
-                        "description": "Add To Cart",
-                        "name": "cart",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.AddToCart"
-                        }
+                        "type": "string",
+                        "description": "inventory ID",
+                        "name": "inventory",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -900,8 +898,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "id",
-                        "name": "id",
+                        "description": "Inventory ID",
+                        "name": "inventoryID",
                         "in": "query",
                         "required": true
                     }
@@ -1268,15 +1266,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Get Orders",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1309,15 +1298,6 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Order Cancel",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "id",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1541,17 +1521,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.AddToCart": {
-            "type": "object",
-            "properties": {
-                "inventory_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "models.AdminLogin": {
             "type": "object",
             "required": [
@@ -1636,9 +1605,6 @@ const docTemplate = `{
                 },
                 "payment": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },

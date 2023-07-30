@@ -1,8 +1,6 @@
 package http
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -33,7 +31,6 @@ Returns:
 - *ServerHTTP: A pointer to the newly created ServerHTTP instance.
 */
 func NewServerHTTP(categoryHandler *handler.CategoryHandler, inventoryHandler *handler.InventoryHandler, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler) *ServerHTTP {
-	fmt.Println("=====server started=====")
 	engine := gin.New()
 	engine.Use(gin.Logger())
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

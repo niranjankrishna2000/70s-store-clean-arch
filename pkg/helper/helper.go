@@ -28,7 +28,6 @@ Returns:
 - error: error is returned
 */
 func GenerateTokenUser(user models.UserResponse) (string, error) {
-	fmt.Println("---CreateToken Function Called", user)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user":   user.Username,
 		"role":   "user",

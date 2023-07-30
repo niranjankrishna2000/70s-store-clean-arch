@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 	"main/pkg/utils/models"
@@ -105,8 +104,7 @@ func (or *orderRepository) AdminOrders(status string) ([]domain.OrderDetails, er
 	if err := or.DB.Raw("SELECT orders.id AS order_id, users.name AS username, CONCAT(addresses.house_name, ' ', addresses.street, ' ', addresses.city) AS address, orders.payment_method AS payment_method, orders.price As total FROM orders JOIN users ON users.id = orders.user_id JOIN addresses ON orders.address_id = addresses.id WHERE order_status = ?", status).Scan(&orders).Error; err != nil {
 		return []domain.OrderDetails{}, err
 	}
-	
-	fmt.Println("admin Repo orders", orders)
+
 	return orders, nil
 
 }

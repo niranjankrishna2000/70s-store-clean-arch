@@ -178,9 +178,18 @@ func (i *userDatabase) EditPhone(id int, phone string) error {
 }
 
 
-func (ad *userDatabase) RemoveFromCart(id int) error {
+func (ad *userDatabase) RemoveFromCart(cartID int,inventoryID int) error {
 
-	if err := ad.DB.Exec(`delete from line_items where cart_id=?`, id).Error; err != nil {
+	if err := ad.DB.Exec(`delete from line_items where cart_id=? and inventory_id=?`, cartID,inventoryID).Error; err != nil {
+		return err
+	}
+
+	return nil
+
+}
+func (ad *userDatabase) ClearCart(cartID int) error {
+
+	if err := ad.DB.Exec(`delete from line_items where cart_id=?`, cartID).Error; err != nil {
 		return err
 	}
 

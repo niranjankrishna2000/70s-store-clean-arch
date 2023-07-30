@@ -16,7 +16,6 @@ Parameters:
 - c: Gin Context.
 */
 func AdminAuthMiddleware(c *gin.Context) {
-	fmt.Println("Middleware working......")
 	token, _ := c.Cookie("Authorization")
 	fmt.Println("Token::", token)
 	fmt.Println(token)

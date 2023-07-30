@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"fmt"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
@@ -77,7 +76,6 @@ func (i *inventoryUseCase) ListProducts(page int) ([]models.Inventory, error) {
 	if err != nil {
 		return []models.Inventory{}, err
 	}
-	fmt.Println("List Products in usescase",productDetails)
 	return productDetails, nil
 
 }

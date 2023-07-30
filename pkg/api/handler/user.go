@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -299,7 +298,6 @@ func (i *UserHandler) GetUserDetails(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/login [post]
 func (i *UserHandler) Login(c *gin.Context) {
-	fmt.Println("=====login handler=====")
 	var user models.UserLogin
 
 	if err := c.BindJSON(&user); err != nil {
@@ -307,14 +305,12 @@ func (i *UserHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	fmt.Println(user)
 	userDetails, err := i.userUseCase.Login(user)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "User could not be logged in", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	fmt.Println(userDetails)
 
 	successRes := response.ClientResponse(http.StatusOK, "User successfully logged in", userDetails, nil)
 	c.SetCookie("Authorization", userDetails.Token, 3600, "", "", true, true)
@@ -326,6 +322,7 @@ func (i *UserHandler) Login(c *gin.Context) {
 // @Description	user can remove products from their cart
 // @Tags			User
 // @Produce		    json
+// @Param			inventory	query	string	true	"inventory id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -345,7 +342,14 @@ func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 		return
 	}
 
-	if err := i.userUseCase.RemoveFromCart(cartID); err != nil {
+	inv, err := strconv.Atoi(c.Query("inventory"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.userUseCase.RemoveFromCart(cartID, inv); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

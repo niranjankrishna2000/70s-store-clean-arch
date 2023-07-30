@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"fmt"
+	"main/pkg/helper"
 	services "main/pkg/usecase/interface"
 	models "main/pkg/utils/models"
 	"main/pkg/utils/response"
@@ -26,15 +26,17 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id	query	string	true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/orders [get]
 func (i *OrderHandler) GetOrders(c *gin.Context) {
-	idString := c.Query("id")
-	id, err := strconv.Atoi(idString)
-
+	id, err := helper.GetUserID(c)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check your id again", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -63,13 +65,19 @@ func (i *OrderHandler) GetOrders(c *gin.Context) {
 // @Router			/users/check-out/order [post]
 func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 
+	userID, err := helper.GetUserID(c)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
 	var order models.Order
 	if err := c.BindJSON(&order); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	if err := i.orderUseCase.OrderItemsFromCart(order.UserID, order.AddressID); err != nil {
+	if err := i.orderUseCase.OrderItemsFromCart(userID, order.AddressID); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -83,19 +91,19 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			id  query  string  true	"id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/orders [delete]
 func (i *OrderHandler) CancelOrder(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Query("id"))
+	id, err := helper.GetUserID(c)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "coonversion to integer not possible", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+
 	if err := i.orderUseCase.CancelOrder(id); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -154,7 +162,6 @@ func (i *OrderHandler) AdminOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	fmt.Println("orders in AdminOrders",orders)
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
 	c.JSON(http.StatusOK, successRes)
 }
