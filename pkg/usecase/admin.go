@@ -92,9 +92,9 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 
 }
 
-func (ad *adminUseCase) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
+func (ad *adminUseCase) GetUsers(page int,limit int) ([]models.UserDetailsAtAdmin, error) {
 
-	userDetails, err := ad.adminRepository.GetUsers(page)
+	userDetails, err := ad.adminRepository.GetUsers(page,limit)
 	if err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}

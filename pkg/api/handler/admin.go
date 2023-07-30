@@ -109,6 +109,7 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 // @Accept			json
 // @Produce		json
 // @Security		Bearer
+// @Param			limit	query		string	true	"limit"
 // @Param			page	query		string	true	"Page number"
 // @Success		200		{object}	response.Response{}
 // @Failure		500		{object}	response.Response{}
@@ -117,14 +118,19 @@ func (ad *AdminHandler) GetUsers(c *gin.Context) {
 
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
-
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-
-	users, err := ad.adminUseCase.GetUsers(page)
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	users, err := ad.adminUseCase.GetUsers(page,limit)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

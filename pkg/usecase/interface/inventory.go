@@ -11,6 +11,6 @@ type InventoryUseCase interface {
 	DeleteInventory(id string) error
 
 	ShowIndividualProducts(sku string) (models.Inventory, error)
-	ListProducts(page int) ([]models.Inventory, error)
-	SearchProducts(key string) ([]models.Inventory, error)
+	ListProducts(page int,limit int) ([]models.Inventory, error)
+	SearchProducts(key string,page,limit int) ([]models.Inventory, error)
 }

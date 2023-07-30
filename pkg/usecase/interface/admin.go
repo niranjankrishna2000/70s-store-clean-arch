@@ -8,5 +8,5 @@ type AdminUseCase interface {
 	LoginHandler(adminDetails models.AdminLogin) (models.TokenAdmin, error)
 	BlockUser(id string) error
 	UnBlockUser(id string) error
-	GetUsers(page int) ([]models.UserDetailsAtAdmin, error)
+	GetUsers(page int,limit int) ([]models.UserDetailsAtAdmin, error)
 }

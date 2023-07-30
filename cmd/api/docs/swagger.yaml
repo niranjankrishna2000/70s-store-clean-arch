@@ -661,6 +661,11 @@ paths:
         name: page
         required: true
         type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -986,6 +991,16 @@ paths:
       description: user can search with a key and get the list of  products similar
         to that key
       parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
       - description: searchkey
         in: query
         name: searchkey

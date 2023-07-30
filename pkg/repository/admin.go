@@ -35,13 +35,7 @@ func (ad *adminRepository) GetUserByID(id string) (domain.User, error) {
 	if err != nil {
 		return domain.User{}, err
 	}
-	// var count int
-	// if err := ad.DB.Raw("select count(*) from users where id = ?", user_id).Scan(&count).Error; err != nil {
-	// 	return domain.User{}, err
-	// }
-	// if count < 1 {
-	// 	return domain.User{}, errors.New("user for the given id does not exist")
-	// }
+
 	query := fmt.Sprintf("select * from users where id = '%d'", user_id)
 	var userDetails domain.User
 
@@ -64,15 +58,18 @@ func (ad *adminRepository) UpdateBlockUserByID(user domain.User) error {
 
 }
 
-func (ad *adminRepository) GetUsers(page int) ([]models.UserDetailsAtAdmin, error) {
+func (ad *adminRepository) GetUsers(page int,limit int) ([]models.UserDetailsAtAdmin, error) {
 	// pagination purpose -
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1) * 10
+	if limit == 0 {
+		limit=10
+	}
+	offset := (page - 1) * limit
 	var userDetails []models.UserDetailsAtAdmin
 
-	if err := ad.DB.Raw("select id,name,email,phone,permission from users limit ? offset ?", 10, offset).Scan(&userDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,name,email,phone,permission from users limit ? offset ?", limit, offset).Scan(&userDetails).Error; err != nil {
 		return []models.UserDetailsAtAdmin{}, err
 	}
 

@@ -9,5 +9,5 @@ type AdminRepository interface {
 	LoginHandler(adminDetails models.AdminLogin) (domain.Admin, error)
 	GetUserByID(id string) (domain.User, error)
 	UpdateBlockUserByID(user domain.User) error
-	GetUsers(page int) ([]models.UserDetailsAtAdmin, error)
+	GetUsers(page int,limit int) ([]models.UserDetailsAtAdmin, error)
 }

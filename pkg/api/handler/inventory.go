@@ -171,6 +171,7 @@ func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 // @Accept			json
 // @Produce		    json
 // @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -178,14 +179,19 @@ func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 func (i *InventoryHandler) ListProducts(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
-
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-
-	products, err := i.InventoryUseCase.ListProducts(page)
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	products, err := i.InventoryUseCase.ListProducts(page, limit)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -200,14 +206,29 @@ func (i *InventoryHandler) ListProducts(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
 // @Param			searchkey 	query  string 	true	"searchkey"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/search [post]
 func (i *InventoryHandler) SearchProducts(c *gin.Context) {
-
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
 	searchkey := c.Query("searchkey")
-	results, err := i.InventoryUseCase.SearchProducts(searchkey)
+	results, err := i.InventoryUseCase.SearchProducts(searchkey, page, limit)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve the records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

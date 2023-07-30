@@ -70,9 +70,9 @@ func (i *inventoryUseCase) ShowIndividualProducts(id string) (models.Inventory, 
 
 }
 
-func (i *inventoryUseCase) ListProducts(page int) ([]models.Inventory, error) {
+func (i *inventoryUseCase) ListProducts(page int,limit int) ([]models.Inventory, error) {
 
-	productDetails, err := i.repository.ListProducts(page)
+	productDetails, err := i.repository.ListProducts(page,limit)
 	if err != nil {
 		return []models.Inventory{}, err
 	}
@@ -80,9 +80,9 @@ func (i *inventoryUseCase) ListProducts(page int) ([]models.Inventory, error) {
 
 }
 
-func (i *inventoryUseCase) SearchProducts(key string) ([]models.Inventory, error) {
+func (i *inventoryUseCase) SearchProducts(key string,page,limit int) ([]models.Inventory, error) {
 
-	productDetails, err := i.repository.SearchProducts(key)
+	productDetails, err := i.repository.SearchProducts(key,page,limit)
 	if err != nil {
 		return []models.Inventory{}, err
 	}

@@ -2,8 +2,8 @@ package repository
 
 import (
 	"errors"
-	"main/pkg/utils/models"
 	interfaces "main/pkg/repository/interface"
+	"main/pkg/utils/models"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -25,7 +25,7 @@ func (i *inventoryRepository) AddInventory(inventory models.Inventory, url strin
     INSERT INTO inventories (category_id, product_name, stock, price, image)
     VALUES (?, ?, ?, ?, ?);
     `
-	i.DB.Exec(query, inventory.CategoryID, inventory.ProductName,  inventory.Stock, inventory.Price, url)
+	i.DB.Exec(query, inventory.CategoryID, inventory.ProductName, inventory.Stock, inventory.Price, url)
 
 	var inventoryResponse models.InventoryResponse
 
@@ -109,15 +109,18 @@ func (i *inventoryRepository) ShowIndividualProducts(id string) (models.Inventor
 
 }
 
-func (ad *inventoryRepository) ListProducts(page int) ([]models.Inventory, error) {
+func (ad *inventoryRepository) ListProducts(page int, limit int) ([]models.Inventory, error) {
 	// pagination purpose -
 	if page == 0 {
 		page = 1
 	}
-	offset := (page - 1) * 10
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
 	var productDetails []models.Inventory
 
-	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit ? offset ?", 10, offset).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit ? offset ?", limit, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 
@@ -143,16 +146,24 @@ func (i *inventoryRepository) CheckPrice(pid int) (float64, error) {
 	return k, nil
 }
 
-func (ad *inventoryRepository) SearchProducts(key string) ([]models.Inventory, error) {
+func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]models.Inventory, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
 	var productDetails []models.Inventory
 
 	query := `
 		SELECT *
-		FROM inventories
+		FROM inventories inventories 
 		WHERE product_name LIKE '%' || ? || '%'
+		limit ? offset ?
 	`
 
-	if err := ad.DB.Raw(query, key).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw(query, key, limit, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 
