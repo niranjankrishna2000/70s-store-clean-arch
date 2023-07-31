@@ -397,6 +397,69 @@ paths:
       summary: Update Order Status
       tags:
       - Admin
+  /admin/paymentmethods:
+    get:
+      description: admin can get all  payment methods
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Get payment methods
+      tags:
+      - Admin
+  /admin/paymentmethods/add:
+    post:
+      description: admin can add a new payment method
+      parameters:
+      - description: Payment Method
+        in: query
+        name: paymentMethod
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Add new payment method
+      tags:
+      - Admin
+  /admin/paymentmethods/remove:
+    delete:
+      description: admin can remove a  payment method
+      parameters:
+      - description: Payment Method ID
+        in: query
+        name: paymentMethodID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Remove payment method
+      tags:
+      - Admin
   /admin/users/block:
     post:
       consumes:
@@ -430,6 +493,11 @@ paths:
       - application/json
       description: Retrieve users with pagination
       parameters:
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
       - description: Page number
         in: query
         name: page
