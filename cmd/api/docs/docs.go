@@ -429,6 +429,102 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/paymentmethods": {
+            "get": {
+                "description": "admin can get all  payment methods",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get payment methods",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/paymentmethods/add": {
+            "post": {
+                "description": "admin can add a new payment method",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Add new payment method",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Payment Method",
+                        "name": "paymentMethod",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/paymentmethods/remove": {
+            "delete": {
+                "description": "admin can remove a  payment method",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Remove payment method",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Payment Method ID",
+                        "name": "paymentMethodID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/users/block": {
             "post": {
                 "security": [
@@ -491,6 +587,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get Users",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Page number",
