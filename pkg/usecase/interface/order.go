@@ -2,12 +2,18 @@ package interfaces
 
 import (
 	"main/pkg/domain"
+	"main/pkg/utils/models"
 )
 
 type OrderUseCase interface {
 	GetOrders(id int) ([]domain.Order, error)
-	OrderItemsFromCart(userid int, addressid int) error
+	OrderItemsFromCart(userid int, order models.Order) (string,error)
 	CancelOrder(id int) error
 	EditOrderStatus(status string, id int) error
 	AdminOrders() (domain.AdminOrdersResponse, error)
+	DailyOrders()(domain.SalesReport,error)
+	WeeklyOrders()(domain.SalesReport,error)
+	MonthlyOrders()(domain.SalesReport,error)
+	AnnualOrders()(domain.SalesReport,error)
+
 }

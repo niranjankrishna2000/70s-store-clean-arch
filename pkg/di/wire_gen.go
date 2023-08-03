@@ -31,7 +31,9 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	inventoryUseCase:=usecase.NewInventoryUseCase(inventoryRepository)
 	inventoryHandler:=handler.NewInventoryHandler(inventoryUseCase)
 
-	
+	wishlistRepository:=repository.NewWishlistRepository(gormDB)
+	wishlistUseCase :=usecase.NewWishlistUseCase(wishlistRepository)
+	wishlistHandler:=handler.NewWishlistHandler(wishlistUseCase)	
 
 	otpRepository:=repository.NewOtpRepository(gormDB)
 	otpUseCase:=usecase.NewOtpUseCase(cfg,otpRepository)
@@ -41,23 +43,23 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	userUseCase := usecase.NewUserUseCase(userRepository)
 	userHandler := handler.NewUserHandler(userUseCase)
 
+	paymentRepository:=repository.NewPaymentRepository(gormDB)
+	paymentUseCase:=usecase.NewPaymentUseCase(paymentRepository,userRepository)
+	paymentHandler:=handler.NewPaymentHandler(paymentUseCase)
+
 	cartRepository:=repository.NewCartRepository(gormDB)
-	cartUseCase:=usecase.NewCartUseCase(cartRepository,inventoryRepository,userUseCase)
+	cartUseCase:=usecase.NewCartUseCase(cartRepository,inventoryRepository,userUseCase,paymentUseCase)
 	cartHandler:=handler.NewCartHandler(cartUseCase)
 
 	orderRepository:=repository.NewOrderRepository(gormDB)
 	orderUseCase:=usecase.NewOrderUseCase(orderRepository,userUseCase)
 	orderHandler:=handler.NewOrderHandler(orderUseCase)
 
-	paymentRepository:=repository.NewPaymentRepository(gormDB)
-	paymentUseCase:=usecase.NewPaymentUseCase(paymentRepository)
-	paymentHandler:=handler.NewPaymentHandler(paymentUseCase)
-
 	adminRepository:=repository.NewAdminRepository(gormDB)
 	adminUseCase:=usecase.NewAdminUseCase(adminRepository)
 	adminHandler:=handler.NewAdminHandler(adminUseCase)
 
-	serverHTTP := http.NewServerHTTP(categoryHandler,inventoryHandler,userHandler,otpHandler,adminHandler,cartHandler,orderHandler,paymentHandler)
+	serverHTTP := http.NewServerHTTP(categoryHandler,inventoryHandler,userHandler,otpHandler,adminHandler,cartHandler,orderHandler,paymentHandler,wishlistHandler)
 
 	return serverHTTP, nil
 }

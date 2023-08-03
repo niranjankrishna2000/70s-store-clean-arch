@@ -30,12 +30,13 @@ Parameters:
 Returns:
 - *ServerHTTP: A pointer to the newly created ServerHTTP instance.
 */
-func NewServerHTTP(categoryHandler *handler.CategoryHandler, inventoryHandler *handler.InventoryHandler, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler,paymentHandler *handler.PaymentHandler) *ServerHTTP {
+func NewServerHTTP(categoryHandler *handler.CategoryHandler, inventoryHandler *handler.InventoryHandler, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, adminHandler *handler.AdminHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler,paymentHandler *handler.PaymentHandler, wishlistHandler *handler.WishlistHandler) *ServerHTTP {
 	engine := gin.New()
 	engine.Use(gin.Logger())
+	engine.LoadHTMLGlob("pkg/templates/*.html")
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
-	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler, inventoryHandler, cartHandler, orderHandler)
+	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler, inventoryHandler, cartHandler, orderHandler,paymentHandler,wishlistHandler)
 	routes.AdminRoutes(engine.Group("/admin"), adminHandler, userHandler, categoryHandler, inventoryHandler, orderHandler,paymentHandler)
 
 	return &ServerHTTP{engine: engine}

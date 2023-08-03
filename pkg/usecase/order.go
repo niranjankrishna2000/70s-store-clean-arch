@@ -1,9 +1,13 @@
 package usecase
 
 import (
+	"fmt"
 	domain "main/pkg/domain"
+	"main/pkg/helper"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
+	"main/pkg/utils/models"
+	"time"
 )
 
 type orderUseCase struct {
@@ -29,11 +33,11 @@ func (i *orderUseCase) GetOrders(id int) ([]domain.Order, error) {
 
 }
 
-func (i *orderUseCase) OrderItemsFromCart(userid int, addressid int) error {
+func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (string, error) {
 
 	cart, err := i.userUseCase.GetCart(userid)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	var total float64
@@ -41,21 +45,37 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, addressid int) error {
 		total = total + v.Total
 	}
 
-	order_id, err := i.orderRepository.OrderItems(userid, addressid, total)
-	if err != nil {
-		return err
+	//COD
+	if order.PaymentID == 1 {
+		order_id, err := i.orderRepository.OrderItems(userid, order, total)
+		if err != nil {
+			return "", err
+		}
+
+		if err := i.orderRepository.AddOrderProducts(order_id, cart); err != nil {
+			return "", err
+		}
+		cartID, _ := i.userUseCase.GetCartID(userid)
+		if err := i.userUseCase.ClearCart(cartID); err != nil {
+			return "", err
+		}
+	} else if order.PaymentID == 2 {
+		// razorpay
+		order_id, err := i.orderRepository.OrderItems(userid, order, total)
+		if err != nil {
+			return "", err
+		}
+
+		if err := i.orderRepository.AddOrderProducts(order_id, cart); err != nil {
+			return "", err
+		}
+		link := fmt.Sprintf("http://localhost:1243/users/payment/razorpay?id=%d", order_id)
+		return link, err
 	}
 
-	if err := i.orderRepository.AddOrderProducts(order_id, cart); err != nil {
-		return err
-	}
+	//wallet
 
-	cartID, _ := i.userUseCase.GetCartID(userid)
-	if err := i.userUseCase.ClearCart(cartID); err != nil {
-		return err
-	}
-
-	return nil
+	return "", nil
 
 }
 
@@ -109,4 +129,126 @@ func (i *orderUseCase) AdminOrders() (domain.AdminOrdersResponse, error) {
 	response.Delivered = delivered
 	return response, nil
 
+}
+
+func (i *orderUseCase) DailyOrders() (domain.SalesReport, error) {
+	var SalesReport domain.SalesReport
+	endDate := time.Now()
+	startDate := time.Date(endDate.Year(), endDate.Month(), endDate.Day(), 0, 0, 0, 0, time.UTC)
+	SalesReport.Orders, _ = i.orderRepository.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+	for _, v := range SalesReport.Orders {
+		total += v.Price
+	}
+	SalesReport.TotalRevenue = total
+
+
+	products,err:=i.orderRepository.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	var bestSellers []string
+	for _,v:=range bestSellerIDs{
+		product,err:=i.orderRepository.GetProductNameFromID(v)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers=append(bestSellers, product)
+	}
+	SalesReport.BestSellers=bestSellers
+
+	return SalesReport, nil
+}
+
+func (i *orderUseCase) WeeklyOrders() (domain.SalesReport, error) {
+	var SalesReport domain.SalesReport
+	endDate := time.Now()
+	startDate := endDate.Add(-time.Duration(endDate.Weekday()) * 24 * time.Hour)
+	SalesReport.Orders, _ = i.orderRepository.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+	for _, v := range SalesReport.Orders {
+		total += v.Price
+	}
+	SalesReport.TotalRevenue = total
+
+
+	products,err:=i.orderRepository.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	var bestSellers []string
+	for _,v:=range bestSellerIDs{
+		product,err:=i.orderRepository.GetProductNameFromID(v)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers=append(bestSellers, product)
+	}
+	SalesReport.BestSellers=bestSellers
+
+	return SalesReport, nil
+}
+
+func (i *orderUseCase) MonthlyOrders() (domain.SalesReport, error) {
+	var SalesReport domain.SalesReport
+	endDate := time.Now()
+	startDate := time.Date(endDate.Year(), endDate.Month(), 1, 0, 0, 0, 0, time.UTC)
+	SalesReport.Orders, _ = i.orderRepository.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+	for _, v := range SalesReport.Orders {
+		total += v.Price
+	}
+	SalesReport.TotalRevenue = total
+
+	products,err:=i.orderRepository.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	var bestSellers []string
+	for _,v:=range bestSellerIDs{
+		product,err:=i.orderRepository.GetProductNameFromID(v)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers=append(bestSellers, product)
+	}
+	SalesReport.BestSellers=bestSellers
+	return SalesReport, nil
+}
+
+func (i *orderUseCase) AnnualOrders() (domain.SalesReport, error) {
+	var SalesReport domain.SalesReport
+	endDate := time.Now()
+	startDate := time.Date(endDate.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
+	SalesReport.Orders, _ = i.orderRepository.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+	for _, v := range SalesReport.Orders {
+		total += v.Price
+	}
+	SalesReport.TotalRevenue = total
+
+
+	products,err:=i.orderRepository.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	var bestSellers []string
+	for _,v:=range bestSellerIDs{
+		product,err:=i.orderRepository.GetProductNameFromID(v)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers=append(bestSellers, product)
+	}
+	SalesReport.BestSellers=bestSellers
+
+	return SalesReport, nil
 }

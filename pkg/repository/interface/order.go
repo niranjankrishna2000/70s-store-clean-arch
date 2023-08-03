@@ -3,12 +3,16 @@ package interfaces
 import (
 	"main/pkg/domain"
 	"main/pkg/utils/models"
+	"time"
 )
 
 type OrderRepository interface {
 	GetOrders(id int) ([]domain.Order, error)
+	GetProductsQuantity() ([]domain.ProductReport, error)
+	GetOrdersInRange(startDate, endDate time.Time) ([]domain.Order, error)
+	GetProductNameFromID(id int)(string,error)
 	GetCart(userid int) ([]models.GetCart, error)
-	OrderItems(userid int , addressid int, total float64) (int, error)
+	OrderItems(userid int, order models.Order, total float64) (int, error)
 	AddOrderProducts(order_id int, cart []models.GetCart) error
 	CancelOrder(id int) error
 	EditOrderStatus(status string, id int) error

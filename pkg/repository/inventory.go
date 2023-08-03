@@ -159,7 +159,7 @@ func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]mo
 	query := `
 		SELECT *
 		FROM inventories inventories 
-		WHERE product_name LIKE '%' || ? || '%'
+		WHERE product_name ILIKE '%' || ? || '%'
 		limit ? offset ?
 	`
 

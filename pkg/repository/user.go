@@ -55,6 +55,23 @@ func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserRespon
 	return user_details, nil
 }
 
+func (c *userDatabase) FindUserIDByOrderID(orderID int) (int, error) {
+
+	var userID int
+
+	err := c.DB.Raw(`
+		SELECT user_id
+		FROM orders where id = ? 
+		`, orderID).Scan(&userID).Error
+
+	if err != nil {
+		return 0, errors.New("error checking user details")
+	}
+
+	return userID, nil
+}
+
+
 func (c *userDatabase) SignUp(user models.UserDetails) (models.UserResponse, error) {
 
 	var userDetails models.UserResponse
@@ -187,6 +204,7 @@ func (ad *userDatabase) RemoveFromCart(cartID int,inventoryID int) error {
 	return nil
 
 }
+
 func (ad *userDatabase) ClearCart(cartID int) error {
 
 	if err := ad.DB.Exec(`delete from line_items where cart_id=?`, cartID).Error; err != nil {

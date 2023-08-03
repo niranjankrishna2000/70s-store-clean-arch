@@ -77,12 +77,15 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	if err := i.orderUseCase.OrderItemsFromCart(userID, order.AddressID); err != nil {
+
+	//move
+	retString, err := i.orderUseCase.OrderItemsFromCart(userID, order)
+	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	successRes := response.ClientResponse(http.StatusOK, "Successfully made the order", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully made the order", retString, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
@@ -157,6 +160,104 @@ func (i *OrderHandler) EditOrderStatus(c *gin.Context) {
 func (i *OrderHandler) AdminOrders(c *gin.Context) {
 
 	orders, err := i.orderUseCase.AdminOrders()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Admin Sales Report
+// @Description	Admin can view the daily sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/daily [get]
+func (i *OrderHandler) AdminSalesDailyReport(c *gin.Context) {
+
+	orders, err := i.orderUseCase.DailyOrders()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/weekly [get]
+func (i *OrderHandler) AdminSalesWeeklyReport(c *gin.Context) {
+
+	orders, err := i.orderUseCase.WeeklyOrders()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/monthly [get]
+func (i *OrderHandler) AdminSalesMonthlyReport(c *gin.Context) {
+
+	orders, err := i.orderUseCase.MonthlyOrders()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/annual [get]
+func (i *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
+
+	orders, err := i.orderUseCase.AnnualOrders()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+// @Summary		Admin Sales Report
+// @Description	Admin can view the weekly sales Report
+// @Tags			Admin
+// @Produce		    json
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/sales/custom [get]
+func (i *OrderHandler) AdminSalesCustomReport(c *gin.Context) {
+
+	orders, err := i.orderUseCase.WeeklyOrders()
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

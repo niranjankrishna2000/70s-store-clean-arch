@@ -29,8 +29,6 @@ func (ad *cartRepository) GetAddresses(id int) ([]domain.Address, error) {
 
 }
 
-
-
 func (ad *cartRepository) GetCartId(user_id int) (int, error) {
 
 	var id int

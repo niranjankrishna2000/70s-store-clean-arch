@@ -42,5 +42,13 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, us
 			paymentmethods.POST("/add",paymentHandler.AddNewPaymentMethod)
 			paymentmethods.DELETE("/remove",paymentHandler.RemovePaymentMethod)
 		}
+		sales:=engine.Group("/sales")
+		{
+			sales.GET("/daily",orderHandler.AdminSalesDailyReport)
+			sales.GET("/weekly",orderHandler.AdminSalesWeeklyReport)
+			sales.GET("/monthly",orderHandler.AdminSalesMonthlyReport)
+			sales.GET("/annual",orderHandler.AdminSalesAnnualReport)
+			sales.GET("/custom",orderHandler.AdminSalesCustomReport)
+		}
 	}
 }

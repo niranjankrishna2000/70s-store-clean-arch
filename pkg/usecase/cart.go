@@ -11,14 +11,16 @@ import (
 type cartUseCase struct {
 	repo                interfaces.CartRepository
 	inventoryRepository interfaces.InventoryRepository
-	userUseCase			services.UserUseCase
+	userUseCase         services.UserUseCase
+	paymentUseCase      services.PaymentUseCase
 }
 
-func NewCartUseCase(repo interfaces.CartRepository, inventoryRepo interfaces.InventoryRepository,userUseCase services.UserUseCase) *cartUseCase {
+func NewCartUseCase(repo interfaces.CartRepository, inventoryRepo interfaces.InventoryRepository, userUseCase services.UserUseCase, paymentUseCase services.PaymentUseCase) *cartUseCase {
 	return &cartUseCase{
 		repo:                repo,
 		inventoryRepository: inventoryRepo,
-		userUseCase: userUseCase,
+		userUseCase:         userUseCase,
+		paymentUseCase:      paymentUseCase,
 	}
 }
 
@@ -66,6 +68,11 @@ func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
 		return models.CheckOut{}, err
 	}
 
+	paymentmethods, err := i.paymentUseCase.GetPaymentMethods()
+	if err != nil {
+		return models.CheckOut{}, err
+	}
+
 	var price float64
 	for _, v := range products {
 		price = price + v.Total
@@ -75,6 +82,7 @@ func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
 
 	checkout.Addresses = address
 	checkout.Products = products
+	checkout.PaymentMethods = paymentmethods
 	checkout.TotalPrice = price
 
 	return checkout, err
