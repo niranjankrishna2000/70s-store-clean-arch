@@ -15,12 +15,13 @@ type GetCart struct {
 }
 
 type CheckOut struct {
-	Addresses  []domain.Address
-	Products   []GetCart
-	TotalPrice float64
+	Addresses      []domain.Address
+	Products       []GetCart
+	PaymentMethods []domain.PaymentMethod
+	TotalPrice     float64
 }
 
 type Order struct {
-    AddressID       int `json:"address_id"`
-    PaymentMethod	string `json:"payment"`
+	AddressID int `json:"address_id"`
+	PaymentID int `json:"paymentID"`
 }

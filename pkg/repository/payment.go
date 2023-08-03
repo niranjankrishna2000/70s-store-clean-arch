@@ -44,3 +44,30 @@ func (p *paymentRepository)GetPaymentMethods()([]domain.PaymentMethod,error){
 	return paymentMethods,nil
 
 }
+
+
+func (p *paymentRepository) FindUsername(user_id int) (string, error) {
+	var name string
+	if err := p.DB.Raw("SELECT name FROM users WHERE id=?", user_id).Scan(&name).Error; err != nil {
+		return "", err
+	}
+
+	return name, nil
+}
+
+func (p *paymentRepository) FindPrice(order_id int) (float64, error) {
+	var price float64
+	if err := p.DB.Raw("SELECT price FROM orders WHERE id=?", order_id).Scan(&price).Error; err != nil {
+		return 0, err
+	}
+
+	return price, nil
+}
+
+func (p *paymentRepository) UpdatePaymentDetails(orderID, paymentID, razorID string) error {
+	status := "PAID"
+	if err := p.DB.Exec(`UPDATE orders SET payment_status = $1 , payment_id=$3 WHERE id = $2`, status, orderID,paymentID).Error; err != nil {
+		return err
+	}
+	return nil
+}

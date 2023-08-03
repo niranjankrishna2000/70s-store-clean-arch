@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, inventoryHandler *handler.InventoryHandler, cartHandler *handler.CartHandler,orderHandler *handler.OrderHandler) {
+func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHandler *handler.OtpHandler, inventoryHandler *handler.InventoryHandler, cartHandler *handler.CartHandler, orderHandler *handler.OrderHandler, paymentHandler *handler.PaymentHandler,wishlistHandler *handler.WishlistHandler) {
 	engine.POST("/login", userHandler.Login)
 	engine.POST("/signup", userHandler.SignUp)
 	engine.POST("/otplogin", otpHandler.SendOTP)
@@ -15,6 +15,12 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 	// Auth middleware
 	engine.Use(middleware.UserAuthMiddleware)
 	{
+
+		payment := engine.Group("/payment")
+		{
+			payment.GET("/razorpay", paymentHandler.MakePaymentRazorPay)
+			payment.GET("/update_status", paymentHandler.VerifyPayment)
+		}
 
 		search := engine.Group("/search")
 		{
@@ -26,6 +32,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			home.GET("/products", inventoryHandler.ListProducts)
 			home.GET("/products/details", inventoryHandler.ShowIndividualProducts)
 			home.POST("/add-to-cart", cartHandler.AddToCart)
+			home.POST("/add-to-wishlist", wishlistHandler.AddToWishlist)
 
 		}
 		profile := engine.Group("/profile")
@@ -49,10 +56,10 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			{
 				orders.GET("", orderHandler.GetOrders)
 				orders.DELETE("", orderHandler.CancelOrder)
-				
+
 			}
 		}
-		
+
 		cart := engine.Group("/cart")
 		{
 			cart.GET("/", userHandler.GetCart)
@@ -61,7 +68,13 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			cart.PUT("/updateQuantity/minus", userHandler.UpdateQuantityLess)
 
 		}
-		
+		wishlist := engine.Group("/wishlist")
+		{
+			wishlist.GET("/", wishlistHandler.GetWishlist)
+			wishlist.DELETE("/remove", wishlistHandler.RemoveFromWishlist)
+
+		}
+
 		checkout := engine.Group("/check-out")
 		{
 			checkout.GET("", cartHandler.CheckOut)

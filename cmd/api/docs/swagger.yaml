@@ -81,8 +81,8 @@ definitions:
     properties:
       address_id:
         type: integer
-      payment:
-        type: string
+      paymentID:
+        type: integer
     type: object
   models.SetNewName:
     properties:
@@ -460,6 +460,101 @@ paths:
       summary: Remove payment method
       tags:
       - Admin
+  /admin/sales/annual:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/custom:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/daily:
+    get:
+      description: Admin can view the daily sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/monthly:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
+  /admin/sales/weekly:
+    get:
+      description: Admin can view the weekly sales Report
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Admin Sales Report
+      tags:
+      - Admin
   /admin/users/block:
     post:
       consumes:
@@ -716,6 +811,33 @@ paths:
       security:
       - Bearer: []
       summary: Add To Cart
+      tags:
+      - User
+  /users/home/add-to-wishlist:
+    post:
+      consumes:
+      - application/json
+      description: Add products to Wishlsit  for the purchase
+      parameters:
+      - description: inventory ID
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add To Wishlist
       tags:
       - User
   /users/home/products:
@@ -1138,6 +1260,50 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Verify OTP
+      tags:
+      - User
+  /users/wishlist:
+    get:
+      description: user can view their wishlist details
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Get Wishlist
+      tags:
+      - User
+  /users/wishlist/remove:
+    delete:
+      description: user can remove products from their wishlist
+      parameters:
+      - description: inventory id
+        in: query
+        name: inventory
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Remove from Wishlist
       tags:
       - User
 swagger: "2.0"

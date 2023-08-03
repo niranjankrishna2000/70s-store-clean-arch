@@ -23,3 +23,7 @@ type UserDetailsAtAdmin struct {
 	Phone      string `json:"phone"`
 	Permission bool   `json:"permission"`
 }
+
+// type AdminSalesReport struct{
+// 	Orders	models.Order
+// }

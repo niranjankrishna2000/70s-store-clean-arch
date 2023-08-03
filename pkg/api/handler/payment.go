@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+	"main/pkg/helper"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/response"
 	"net/http"
@@ -49,7 +51,7 @@ func (p *PaymentHandler) AddNewPaymentMethod(c *gin.Context) {
 // @Router			/admin/paymentmethods/remove [delete]
 func (p *PaymentHandler) RemovePaymentMethod(c *gin.Context) {
 	methodstr := c.Query("paymentMethodID")
-	method,err:=strconv.Atoi(methodstr)
+	method, err := strconv.Atoi(methodstr)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not convert paymentid strign to int", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -73,7 +75,7 @@ func (p *PaymentHandler) RemovePaymentMethod(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/paymentmethods [get]
 func (p *PaymentHandler) GetPaymentMethods(c *gin.Context) {
-	paymentMethods,err := p.paymentUseCase.GetPaymentMethods()
+	paymentMethods, err := p.paymentUseCase.GetPaymentMethods()
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get payment methods", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -82,4 +84,44 @@ func (p *PaymentHandler) GetPaymentMethods(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "Successfully collected payment methods", paymentMethods, nil)
 	c.JSON(http.StatusOK, successRes)
+}
+
+func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
+
+	orderID := c.Query("id")
+	userID, err := helper.GetUserID(c)
+	fmt.Println("====", userID, orderID)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	orderDetail, err := p.paymentUseCase.MakePaymentRazorPay(orderID, userID)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not generate order details", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+
+	c.HTML(http.StatusOK, "razorpay.html", orderDetail)
+}
+
+func (p *PaymentHandler) VerifyPayment(c *gin.Context) {
+
+	orderID := c.Query("order_id")
+	paymentID := c.Query("payment_id")
+	razorID := c.Query("razor_id")
+
+	err := p.paymentUseCase.VerifyPayment(paymentID, razorID, orderID)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusInternalServerError, "could not update payment details", nil, err.Error())
+		c.JSON(http.StatusInternalServerError, errorRes)
+		return
+	}
+
+	//clear cart
+	successRes := response.ClientResponse(http.StatusOK, "Successfully updated payment details", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+
 }

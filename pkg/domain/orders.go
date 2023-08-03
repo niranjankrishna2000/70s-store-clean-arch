@@ -1,20 +1,24 @@
 package domain
 
-import "gorm.io/gorm"
+import "time"
 
-//Order represents the order of user
+// Order represents the order of user
 type Order struct {
-	gorm.Model	`json:"-"`
-	UserID        int     `json:"user_id" gorm:"not null"`
-	User          User    `json:"-" gorm:"foreignkey:UserID"`
-	AddressID     int     `json:"address_id" gorm:"not null"`
-	Address       Address `json:"-" gorm:"foreignkey:AddressID"`
-	PaymentMethod string  `json:"paymentmethod" gorm:"default:COD"`
-	Price         float64 `json:"price"`
-	OrderStatus   string  `json:"order_status" gorm:"order_status:4;default:'PENDING';check:order_status IN ('PENDING', 'SHIPPED','DELIVERED','CANCELED')"`
+	//gorm.Model      `json:"-"`
+	UserID          int           `json:"user_id" gorm:"not null"`
+	User            User          `json:"-" gorm:"foreignkey:UserID"`
+	AddressID       int           `json:"address_id" gorm:"not null"`
+	Address         Address       `json:"-" gorm:"foreignkey:AddressID"`
+	PaymentMethodID int           `json:"paymentmethodID" gorm:"default:1"`
+	PaymentMethod   PaymentMethod `json:"-" gorm:"foreignkey:PaymentMethodID"`
+	PaymentID       string        `json:"paymentID"`
+	Price           float64       `json:"price"`
+	OrderedAt       time.Time     `json:"orderedAt"`
+	OrderStatus     string        `json:"order_status" gorm:"order_status:4;default:'PENDING';check:order_status IN ('PENDING', 'SHIPPED','DELIVERED','CANCELED')"`
+	PaymentStatus   string        `json:"paymentStatus" gorm:"default:'Pending'"`
 }
 
-//OrderItem represents the product details of the order
+// OrderItem represents the product details of the order
 type OrderItem struct {
 	ID          int       `json:"id" gorm:"primaryKey;autoIncrement"`
 	OrderID     int       `json:"order_id"`
@@ -25,7 +29,7 @@ type OrderItem struct {
 	TotalPrice  float64   `json:"total_price"`
 }
 
-//AdminOrdersResponse represents the order details with order status
+// AdminOrdersResponse represents the order details with order status
 type AdminOrdersResponse struct {
 	Pending   []OrderDetails
 	Shipped   []OrderDetails
@@ -33,11 +37,29 @@ type AdminOrdersResponse struct {
 	Canceled  []OrderDetails
 }
 
-//OrderDetails represents the details of order
+// OrderDetails represents the details of order
 type OrderDetails struct {
-	ID            int     `json:"order_id" gorm:"column:order_id"`
-	Username      string  `json:"name"`
-	Address       string  `json:"address"`
-	Paymentmethod string  `json:"payment_method" gorm:"column:payment_method"`
-	Total         float64 `json:"total"`
+	ID            int    `json:"order_id" gorm:"column:order_id"`
+	Username      string `json:"name"`
+	Address       string `json:"address"`
+	PaymentMethod string `json:"paymentmethod"`
+	//PaymentMethod   PaymentMethod `json:"-" gorm:"foreignkey:PaymentMethodID"`
+	Total float64 `json:"total"`
+}
+
+type PaymentMethod struct {
+	ID            int    `gorm:"primaryKey"`
+	PaymentMethod string `json:"PaymentMethod" validate:"required" gorm:"unique"`
+}
+
+type SalesReport struct {
+	Orders       []Order
+	TotalRevenue float64
+	TotalOrders  int
+	BestSellers  []string
+}
+
+type ProductReport struct {
+	InventoryID int
+	Quantity    int
 }
