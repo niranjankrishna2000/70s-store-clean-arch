@@ -48,6 +48,13 @@ definitions:
       re_password:
         type: string
     type: object
+  models.CustomDates:
+    properties:
+      endDate:
+        type: string
+      startingDate:
+        type: string
+    type: object
   models.EditEmail:
     properties:
       email:
@@ -480,8 +487,15 @@ paths:
       tags:
       - Admin
   /admin/sales/custom:
-    get:
+    post:
       description: Admin can view the weekly sales Report
+      parameters:
+      - description: custom dates
+        in: body
+        name: customDates
+        required: true
+        schema:
+          $ref: '#/definitions/models.CustomDates'
       produces:
       - application/json
       responses:

@@ -251,13 +251,21 @@ func (i *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
 // @Description	Admin can view the weekly sales Report
 // @Tags			Admin
 // @Produce		    json
+// @Param			customDates  body  models.CustomDates  true	"custom dates"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/admin/sales/custom [get]
+// @Router			/admin/sales/custom [post]
 func (i *OrderHandler) AdminSalesCustomReport(c *gin.Context) {
 
-	orders, err := i.orderUseCase.WeeklyOrders()
+	var dates models.CustomDates
+	if err := c.BindJSON(&dates); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	orders, err := i.orderUseCase.CustomDateOrders(dates)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

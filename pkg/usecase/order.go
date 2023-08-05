@@ -252,3 +252,34 @@ func (i *orderUseCase) AnnualOrders() (domain.SalesReport, error) {
 
 	return SalesReport, nil
 }
+
+func (i *orderUseCase) CustomDateOrders(dates models.CustomDates) (domain.SalesReport, error) {
+	var SalesReport domain.SalesReport
+	endDate := dates.EndDate
+	startDate := dates.StartingDate
+	SalesReport.Orders, _ = i.orderRepository.GetOrdersInRange(startDate, endDate)
+	SalesReport.TotalOrders = len(SalesReport.Orders)
+	total := 0.0
+	for _, v := range SalesReport.Orders {
+		total += v.Price
+	}
+	SalesReport.TotalRevenue = total
+
+
+	products,err:=i.orderRepository.GetProductsQuantity()
+	if err != nil {
+		return domain.SalesReport{}, err
+	}
+	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	var bestSellers []string
+	for _,v:=range bestSellerIDs{
+		product,err:=i.orderRepository.GetProductNameFromID(v)
+		if err != nil {
+			return domain.SalesReport{}, err
+		}
+		bestSellers=append(bestSellers, product)
+	}
+	SalesReport.BestSellers=bestSellers
+
+	return SalesReport, nil
+}

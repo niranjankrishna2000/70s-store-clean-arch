@@ -15,5 +15,6 @@ type OrderUseCase interface {
 	WeeklyOrders()(domain.SalesReport,error)
 	MonthlyOrders()(domain.SalesReport,error)
 	AnnualOrders()(domain.SalesReport,error)
+	CustomDateOrders(dates models.CustomDates) (domain.SalesReport, error)
 
 }

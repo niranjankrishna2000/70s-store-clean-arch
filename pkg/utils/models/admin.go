@@ -1,5 +1,9 @@
 package models
 
+import (
+	"time"
+)
+
 type AdminLogin struct {
 	Email    string `json:"email,omitempty" validate:"required"`
 	Password string `json:"password" validate:"min=8,max=20"`
@@ -27,3 +31,8 @@ type UserDetailsAtAdmin struct {
 // type AdminSalesReport struct{
 // 	Orders	models.Order
 // }
+
+type CustomDates struct {
+	StartingDate time.Time `json:"startingDate"`
+	EndDate      time.Time `json:"endDate"`
+}

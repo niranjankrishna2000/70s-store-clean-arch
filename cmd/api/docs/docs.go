@@ -557,7 +557,7 @@ const docTemplate = `{
             }
         },
         "/admin/sales/custom": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -571,6 +571,17 @@ const docTemplate = `{
                     "Admin"
                 ],
                 "summary": "Admin Sales Report",
+                "parameters": [
+                    {
+                        "description": "custom dates",
+                        "name": "customDates",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomDates"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1940,6 +1951,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "re_password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CustomDates": {
+            "type": "object",
+            "properties": {
+                "endDate": {
+                    "type": "string"
+                },
+                "startingDate": {
                     "type": "string"
                 }
             }

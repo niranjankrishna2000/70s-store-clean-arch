@@ -48,7 +48,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, us
 			sales.GET("/weekly",orderHandler.AdminSalesWeeklyReport)
 			sales.GET("/monthly",orderHandler.AdminSalesMonthlyReport)
 			sales.GET("/annual",orderHandler.AdminSalesAnnualReport)
-			sales.GET("/custom",orderHandler.AdminSalesCustomReport)
+			sales.POST("/custom",orderHandler.AdminSalesCustomReport)
 		}
 	}
 }
