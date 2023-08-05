@@ -4,6 +4,7 @@ import (
 	"fmt"
 	domain "main/pkg/domain"
 	"main/pkg/helper"
+	internal "main/pkg/helper/pdf"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
@@ -44,6 +45,18 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 	for _, v := range cart {
 		total = total + v.Total
 	}
+	var invoiceItems []*internal.InvoiceData
+	for _, v := range cart {
+		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), v.Total)
+		if err != nil {
+			panic(err)
+		}
+		invoiceItems = append(invoiceItems, inventory)
+	}
+	// Create single invoice
+	invoice := internal.CreateInvoice("70's Store", "www.70sstore.store", invoiceItems)
+	internal.GenerateInvoicePdf(*invoice)
+	fmt.Printf("The Total Invoice Amount is: %f", invoice.CalculateInvoiceTotalAmount())
 
 	//COD
 	if order.PaymentID == 1 {
@@ -59,6 +72,7 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 		if err := i.userUseCase.ClearCart(cartID); err != nil {
 			return "", err
 		}
+
 	} else if order.PaymentID == 2 {
 		// razorpay
 		order_id, err := i.orderRepository.OrderItems(userid, order, total)
@@ -143,21 +157,20 @@ func (i *orderUseCase) DailyOrders() (domain.SalesReport, error) {
 	}
 	SalesReport.TotalRevenue = total
 
-
-	products,err:=i.orderRepository.GetProductsQuantity()
+	products, err := i.orderRepository.GetProductsQuantity()
 	if err != nil {
 		return domain.SalesReport{}, err
 	}
-	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	bestSellerIDs := helper.FindMostBoughtProduct(products)
 	var bestSellers []string
-	for _,v:=range bestSellerIDs{
-		product,err:=i.orderRepository.GetProductNameFromID(v)
+	for _, v := range bestSellerIDs {
+		product, err := i.orderRepository.GetProductNameFromID(v)
 		if err != nil {
 			return domain.SalesReport{}, err
 		}
-		bestSellers=append(bestSellers, product)
+		bestSellers = append(bestSellers, product)
 	}
-	SalesReport.BestSellers=bestSellers
+	SalesReport.BestSellers = bestSellers
 
 	return SalesReport, nil
 }
@@ -174,21 +187,20 @@ func (i *orderUseCase) WeeklyOrders() (domain.SalesReport, error) {
 	}
 	SalesReport.TotalRevenue = total
 
-
-	products,err:=i.orderRepository.GetProductsQuantity()
+	products, err := i.orderRepository.GetProductsQuantity()
 	if err != nil {
 		return domain.SalesReport{}, err
 	}
-	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	bestSellerIDs := helper.FindMostBoughtProduct(products)
 	var bestSellers []string
-	for _,v:=range bestSellerIDs{
-		product,err:=i.orderRepository.GetProductNameFromID(v)
+	for _, v := range bestSellerIDs {
+		product, err := i.orderRepository.GetProductNameFromID(v)
 		if err != nil {
 			return domain.SalesReport{}, err
 		}
-		bestSellers=append(bestSellers, product)
+		bestSellers = append(bestSellers, product)
 	}
-	SalesReport.BestSellers=bestSellers
+	SalesReport.BestSellers = bestSellers
 
 	return SalesReport, nil
 }
@@ -205,20 +217,20 @@ func (i *orderUseCase) MonthlyOrders() (domain.SalesReport, error) {
 	}
 	SalesReport.TotalRevenue = total
 
-	products,err:=i.orderRepository.GetProductsQuantity()
+	products, err := i.orderRepository.GetProductsQuantity()
 	if err != nil {
 		return domain.SalesReport{}, err
 	}
-	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	bestSellerIDs := helper.FindMostBoughtProduct(products)
 	var bestSellers []string
-	for _,v:=range bestSellerIDs{
-		product,err:=i.orderRepository.GetProductNameFromID(v)
+	for _, v := range bestSellerIDs {
+		product, err := i.orderRepository.GetProductNameFromID(v)
 		if err != nil {
 			return domain.SalesReport{}, err
 		}
-		bestSellers=append(bestSellers, product)
+		bestSellers = append(bestSellers, product)
 	}
-	SalesReport.BestSellers=bestSellers
+	SalesReport.BestSellers = bestSellers
 	return SalesReport, nil
 }
 
@@ -234,21 +246,20 @@ func (i *orderUseCase) AnnualOrders() (domain.SalesReport, error) {
 	}
 	SalesReport.TotalRevenue = total
 
-
-	products,err:=i.orderRepository.GetProductsQuantity()
+	products, err := i.orderRepository.GetProductsQuantity()
 	if err != nil {
 		return domain.SalesReport{}, err
 	}
-	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	bestSellerIDs := helper.FindMostBoughtProduct(products)
 	var bestSellers []string
-	for _,v:=range bestSellerIDs{
-		product,err:=i.orderRepository.GetProductNameFromID(v)
+	for _, v := range bestSellerIDs {
+		product, err := i.orderRepository.GetProductNameFromID(v)
 		if err != nil {
 			return domain.SalesReport{}, err
 		}
-		bestSellers=append(bestSellers, product)
+		bestSellers = append(bestSellers, product)
 	}
-	SalesReport.BestSellers=bestSellers
+	SalesReport.BestSellers = bestSellers
 
 	return SalesReport, nil
 }
@@ -265,21 +276,20 @@ func (i *orderUseCase) CustomDateOrders(dates models.CustomDates) (domain.SalesR
 	}
 	SalesReport.TotalRevenue = total
 
-
-	products,err:=i.orderRepository.GetProductsQuantity()
+	products, err := i.orderRepository.GetProductsQuantity()
 	if err != nil {
 		return domain.SalesReport{}, err
 	}
-	bestSellerIDs:=helper.FindMostBoughtProduct(products)
+	bestSellerIDs := helper.FindMostBoughtProduct(products)
 	var bestSellers []string
-	for _,v:=range bestSellerIDs{
-		product,err:=i.orderRepository.GetProductNameFromID(v)
+	for _, v := range bestSellerIDs {
+		product, err := i.orderRepository.GetProductNameFromID(v)
 		if err != nil {
 			return domain.SalesReport{}, err
 		}
-		bestSellers=append(bestSellers, product)
+		bestSellers = append(bestSellers, product)
 	}
-	SalesReport.BestSellers=bestSellers
+	SalesReport.BestSellers = bestSellers
 
 	return SalesReport, nil
 }

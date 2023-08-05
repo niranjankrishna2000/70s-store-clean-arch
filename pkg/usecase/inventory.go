@@ -90,3 +90,4 @@ func (i *inventoryUseCase) SearchProducts(key string,page,limit int) ([]models.I
 	return productDetails, nil
 
 }
+
