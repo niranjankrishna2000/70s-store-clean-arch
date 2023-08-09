@@ -48,6 +48,13 @@ definitions:
       re_password:
         type: string
     type: object
+  models.CreateOffer:
+    properties:
+      categoryID:
+        type: integer
+      discount:
+        type: integer
+    type: object
   models.CustomDates:
     properties:
       endDate:
@@ -351,6 +358,61 @@ paths:
       security:
       - Bearer: []
       summary: Update Stock
+      tags:
+      - Admin
+  /admin/offers/add:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add new  offers
+      parameters:
+      - description: Offer
+        in: body
+        name: offer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateOffer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Offer
+      tags:
+      - Admin
+  /admin/offers/expire:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add Expire  offers
+      parameters:
+      - description: Category ID
+        in: query
+        name: catID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Expire Offer
       tags:
       - Admin
   /admin/orders:
