@@ -6,6 +6,15 @@ definitions:
       id:
         type: integer
     type: object
+  domain.Coupon:
+    properties:
+      discount_rate:
+        type: integer
+      name:
+        type: integer
+      valid:
+        type: boolean
+    type: object
   models.AddAddress:
     properties:
       city:
@@ -256,6 +265,62 @@ paths:
       security:
       - Bearer: []
       summary: Update Category
+      tags:
+      - Admin
+  /admin/coupons/create:
+    post:
+      consumes:
+      - application/json
+      description: Admin can add new coupons
+      parameters:
+      - description: coupon
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Coupon'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add Coupon
+      tags:
+      - Admin
+  /admin/coupons/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can make the coupons as invalid so that users cannot use
+        that particular coupon
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Make Coupon invalid
       tags:
       - Admin
   /admin/inventories/add:

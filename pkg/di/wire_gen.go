@@ -31,6 +31,8 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	offerUseCase:=usecase.NewOfferUseCase(offerRepository)
 	OfferHandler:=handler.NewOfferHandler(offerUseCase)
 
+	
+
 	inventoryRepository:=repository.NewInventoryRepository(gormDB)
 	inventoryUseCase:=usecase.NewInventoryUseCase(inventoryRepository)
 	inventoryHandler:=handler.NewInventoryHandler(inventoryUseCase)

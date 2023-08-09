@@ -29,8 +29,8 @@ func NewOfferHandler(offerUsecase services.OfferUseCase) *OfferHandler {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/admin/offers/add [post]
-func (o *OfferHandler) AddInventory(c *gin.Context) {
+// @Router			/admin/offers/create [post]
+func (o *OfferHandler) AddOffer(c *gin.Context) {
 
 	var offer models.CreateOffer
 
