@@ -39,6 +39,9 @@ func (c *couponRepository) FindCouponDiscount(couponID int) int {
 	if err != nil {
 		return 0
 	}
+	if !coupon.Valid{
+		return 1
+	}
 
 	return coupon.DiscountRate
 }

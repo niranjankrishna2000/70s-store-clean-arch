@@ -13,11 +13,13 @@ import (
 
 type userUseCase struct {
 	userRepo interfaces.UserRepository
+	offerRepo interfaces.OfferRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository,offer interfaces.OfferRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo: repo,
+		offerRepo: offer,
 	}
 }
 
@@ -262,6 +264,21 @@ func (u *userUseCase) GetCart(id int) ([]models.GetCart, error) {
 		get.Total = price[i]
 
 		getcart = append(getcart, get)
+	}
+
+	//find offers
+	var offers []int
+	for i := range categories {
+		c, err := u.offerRepo.FindDiscountPercentage(categories[i])
+		if err != nil {
+			return []models.GetCart{}, err
+		}
+		offers = append(offers, c)
+	}
+
+	//find discounted price
+	for i := range getcart {
+		getcart[i].DiscountedPrice = (getcart[i].Total) - (getcart[i].Total * float64(offers[i]) / 100)
 	}
 
 	return getcart, nil

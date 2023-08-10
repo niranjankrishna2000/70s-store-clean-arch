@@ -158,12 +158,36 @@ func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]mo
 
 	query := `
 		SELECT *
-		FROM inventories inventories 
+		FROM inventories 
 		WHERE product_name ILIKE '%' || ? || '%'
 		limit ? offset ?
 	`
 
 	if err := ad.DB.Raw(query, key, limit, offset).Scan(&productDetails).Error; err != nil {
+		return []models.Inventory{}, err
+	}
+
+	return productDetails, nil
+}
+
+func (ad *inventoryRepository) GetCategoryProducts(catID int, page, limit int) ([]models.Inventory, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	var productDetails []models.Inventory
+
+	query := `
+		SELECT *
+		FROM inventories 
+		WHERE category_id=?
+		limit ? offset ?
+	`
+
+	if err := ad.DB.Raw(query, catID, limit, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 

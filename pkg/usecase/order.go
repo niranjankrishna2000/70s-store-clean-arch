@@ -17,6 +17,7 @@ type orderUseCase struct {
 	userUseCase     services.UserUseCase
 	walletRepo      interfaces.WalletRepository
 	couponRepo interfaces.CouponRepository
+
 }
 
 func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository,couponRepository interfaces.CouponRepository) *orderUseCase {
@@ -53,11 +54,14 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 
 	//finding discount if any
 	DiscountRate := i.couponRepo.FindCouponDiscount(order.CouponID)
-
+	if DiscountRate>0{
 	totalDiscount := (total * float64(DiscountRate)) / 100
-
 	total = total - totalDiscount
-
+	}else{
+		totalDiscount:=0.0
+		total = total - totalDiscount
+	}
+	
 	var invoiceItems []*internal.InvoiceData
 	for _, v := range cart {
 		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), v.Total)
