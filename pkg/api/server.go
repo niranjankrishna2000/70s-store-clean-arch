@@ -37,7 +37,7 @@ func NewServerHTTP(categoryHandler *handler.CategoryHandler, inventoryHandler *h
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler, inventoryHandler, cartHandler, orderHandler,paymentHandler,wishlistHandler)
-	routes.AdminRoutes(engine.Group("/admin"), adminHandler, userHandler, categoryHandler, inventoryHandler, orderHandler,paymentHandler,offerHandler,couponHandler)
+	routes.AdminRoutes(engine.Group("/admin"), adminHandler, /*userHandler,*/ categoryHandler, inventoryHandler, orderHandler,paymentHandler,offerHandler,couponHandler)
 
 	return &ServerHTTP{engine: engine}
 }

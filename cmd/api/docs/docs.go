@@ -234,8 +234,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/coupons/delete": {
-            "delete": {
+        "/admin/coupons/expire": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -436,7 +436,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/admin/offers/add": {
+        "/admin/offers/create": {
             "post": {
                 "security": [
                     {
@@ -1809,6 +1809,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/profile/orders/return": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "user can return the ordered products which is already delivered and then get the amount fot that particular purchase back in their wallet",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Return Order",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users/profile/security/change-password": {
             "put": {
                 "security": [
@@ -2077,7 +2120,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "valid": {
                     "type": "boolean"
@@ -2217,6 +2260,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address_id": {
+                    "type": "integer"
+                },
+                "couponID": {
                     "type": "integer"
                 },
                 "paymentID": {

@@ -11,7 +11,7 @@ definitions:
       discount_rate:
         type: integer
       name:
-        type: integer
+        type: string
       valid:
         type: boolean
     type: object
@@ -103,6 +103,8 @@ definitions:
   models.Order:
     properties:
       address_id:
+        type: integer
+      couponID:
         type: integer
       paymentID:
         type: integer
@@ -295,8 +297,8 @@ paths:
       summary: Add Coupon
       tags:
       - Admin
-  /admin/coupons/delete:
-    delete:
+  /admin/coupons/expire:
+    post:
       consumes:
       - application/json
       description: Admin can make the coupons as invalid so that users cannot use
@@ -425,7 +427,7 @@ paths:
       summary: Update Stock
       tags:
       - Admin
-  /admin/offers/add:
+  /admin/offers/create:
     post:
       consumes:
       - application/json
@@ -1285,6 +1287,34 @@ paths:
       security:
       - Bearer: []
       summary: Get Orders
+      tags:
+      - User
+  /users/profile/orders/return:
+    put:
+      consumes:
+      - application/json
+      description: user can return the ordered products which is already delivered
+        and then get the amount fot that particular purchase back in their wallet
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Return Order
       tags:
       - User
   /users/profile/security/change-password:

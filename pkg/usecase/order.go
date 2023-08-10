@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	domain "main/pkg/domain"
 	"main/pkg/helper"
@@ -14,12 +15,16 @@ import (
 type orderUseCase struct {
 	orderRepository interfaces.OrderRepository
 	userUseCase     services.UserUseCase
+	walletRepo      interfaces.WalletRepository
+	couponRepo interfaces.CouponRepository
 }
 
-func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase) *orderUseCase {
+func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository,couponRepository interfaces.CouponRepository) *orderUseCase {
 	return &orderUseCase{
 		orderRepository: repo,
 		userUseCase:     userUseCase,
+		walletRepo:      walletRepository,
+		couponRepo: couponRepository,
 	}
 }
 
@@ -45,6 +50,14 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 	for _, v := range cart {
 		total = total + v.Total
 	}
+
+	//finding discount if any
+	DiscountRate := i.couponRepo.FindCouponDiscount(order.CouponID)
+
+	totalDiscount := (total * float64(DiscountRate)) / 100
+
+	total = total - totalDiscount
+
 	var invoiceItems []*internal.InvoiceData
 	for _, v := range cart {
 		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), v.Total)
@@ -137,10 +150,16 @@ func (i *orderUseCase) AdminOrders() (domain.AdminOrdersResponse, error) {
 		return domain.AdminOrdersResponse{}, err
 	}
 
+	returned, err := i.orderRepository.AdminOrders("RETURNED")
+	if err != nil {
+		return domain.AdminOrdersResponse{}, err
+	}
+
 	response.Canceled = canceled
 	response.Pending = pending
 	response.Shipped = shipped
 	response.Delivered = delivered
+	response.Returned = returned
 	return response, nil
 
 }
@@ -292,4 +311,64 @@ func (i *orderUseCase) CustomDateOrders(dates models.CustomDates) (domain.SalesR
 	SalesReport.BestSellers = bestSellers
 
 	return SalesReport, nil
+}
+
+func (i *orderUseCase) ReturnOrder(id int) error {
+
+	//should check if the order is already returned peoples will misuse this security breach
+	// and will get  unlimited money into their wallet
+	status, err := i.orderRepository.CheckIfTheOrderIsAlreadyReturned(id)
+	if err != nil {
+		return err
+	}
+
+	if status == "RETURNED" {
+		return errors.New("order already returned")
+	}
+
+	//should also check if the order is already returned
+	//or users will also earn money by returning pending orders by opting COD
+
+	if status != "DELIVERED" {
+		return errors.New("user is trying to return an order which is still not delivered")
+	}
+
+	//make order as returned order
+	if err := i.orderRepository.ReturnOrder(id); err != nil {
+		return err
+	}
+
+	//find amount to be credited to user
+	amount, err := i.orderRepository.FindAmountFromOrderID(id)
+	fmt.Println(amount)
+	if err != nil {
+		return err
+	}
+
+	//find the user
+	userID, err := i.orderRepository.FindUserIdFromOrderID(id)
+	fmt.Println(userID)
+	if err != nil {
+		return err
+	}
+	//find if the user having a wallet
+	walletID, err := i.walletRepo.FindWalletIdFromUserID(userID)
+	fmt.Println(walletID)
+	if err != nil {
+		return err
+	}
+	//if no wallet create new one
+	if walletID == 0 {
+		walletID, err = i.walletRepo.CreateNewWallet(userID)
+		if err != nil {
+			return err
+		}
+	}
+	//credit the amount into users wallet
+	if err := i.walletRepo.CreditToUserWallet(amount, walletID); err != nil {
+		return err
+	}
+
+	return nil
+
 }

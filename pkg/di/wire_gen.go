@@ -31,7 +31,9 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	offerUseCase:=usecase.NewOfferUseCase(offerRepository)
 	OfferHandler:=handler.NewOfferHandler(offerUseCase)
 
-	
+	couponRepository:=repository.NewCouponRepository(gormDB)
+	couponUseCase:=usecase.NewCouponUseCase(couponRepository)
+	couponHandler:=handler.NewCouponHandler(couponUseCase)
 
 	inventoryRepository:=repository.NewInventoryRepository(gormDB)
 	inventoryUseCase:=usecase.NewInventoryUseCase(inventoryRepository)
@@ -57,15 +59,17 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	cartUseCase:=usecase.NewCartUseCase(cartRepository,inventoryRepository,userUseCase,paymentUseCase)
 	cartHandler:=handler.NewCartHandler(cartUseCase)
 
+	walletRepository:=repository.NewWalletRepositoy(gormDB)
+
 	orderRepository:=repository.NewOrderRepository(gormDB)
-	orderUseCase:=usecase.NewOrderUseCase(orderRepository,userUseCase)
+	orderUseCase:=usecase.NewOrderUseCase(orderRepository,userUseCase,walletRepository,couponRepository)
 	orderHandler:=handler.NewOrderHandler(orderUseCase)
 
 	adminRepository:=repository.NewAdminRepository(gormDB)
 	adminUseCase:=usecase.NewAdminUseCase(adminRepository)
 	adminHandler:=handler.NewAdminHandler(adminUseCase)
 
-	serverHTTP := http.NewServerHTTP(categoryHandler,inventoryHandler,userHandler,otpHandler,adminHandler,cartHandler,orderHandler,paymentHandler,wishlistHandler,OfferHandler)
+	serverHTTP := http.NewServerHTTP(categoryHandler,inventoryHandler,userHandler,otpHandler,adminHandler,cartHandler,orderHandler,paymentHandler,wishlistHandler,OfferHandler,couponHandler)
 
 	return serverHTTP, nil
 }

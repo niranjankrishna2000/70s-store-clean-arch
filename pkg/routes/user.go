@@ -56,6 +56,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			{
 				orders.GET("", orderHandler.GetOrders)
 				orders.DELETE("", orderHandler.CancelOrder)
+				orders.PUT("/return", orderHandler.ReturnOrder)
 
 			}
 		}

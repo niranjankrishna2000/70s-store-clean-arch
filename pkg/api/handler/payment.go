@@ -103,7 +103,7 @@ func (p *PaymentHandler) MakePaymentRazorPay(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, errorRes)
 		return
 	}
-
+	
 	c.HTML(http.StatusOK, "razorpay.html", orderDetail)
 }
 
