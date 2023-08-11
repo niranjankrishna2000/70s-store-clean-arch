@@ -142,7 +142,7 @@ func (i *inventoryRepository) CheckPrice(pid int) (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-
+	//comment
 	return k, nil
 }
 
