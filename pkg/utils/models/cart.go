@@ -12,6 +12,7 @@ type GetCart struct {
 	Category_id int     `json:"category_id"`
 	Quantity    int     `json:"quantity"`
 	Total       float64 `json:"total_price"`
+	DiscountedPrice float64 `json:"discounted_price"`
 }
 
 type CheckOut struct {
@@ -24,4 +25,5 @@ type CheckOut struct {
 type Order struct {
 	AddressID int `json:"address_id"`
 	PaymentID int `json:"paymentID"`
+	CouponID  int `json:"couponID"`
 }

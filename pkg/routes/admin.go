@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, userHandler *handler.UserHandler,categoryHandler *handler.CategoryHandler, inventoryHandler *handler.InventoryHandler, orderHandler *handler.OrderHandler,paymentHandler *handler.PaymentHandler) {
+func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, /*userHandler *handler.UserHandler,*/categoryHandler *handler.CategoryHandler, inventoryHandler *handler.InventoryHandler, orderHandler *handler.OrderHandler,paymentHandler *handler.PaymentHandler,offerHandler *handler.OfferHandler, couponHandler *handler.CouponHandler) {
 	engine.POST("/adminlogin", adminHandler.LoginHandler )
 
 	engine.Use(middleware.AdminAuthMiddleware)
@@ -48,7 +48,19 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, us
 			sales.GET("/weekly",orderHandler.AdminSalesWeeklyReport)
 			sales.GET("/monthly",orderHandler.AdminSalesMonthlyReport)
 			sales.GET("/annual",orderHandler.AdminSalesAnnualReport)
-			sales.GET("/custom",orderHandler.AdminSalesCustomReport)
+			sales.POST("/custom",orderHandler.AdminSalesCustomReport)
+		}
+
+		offers:=engine.Group("/offers")
+		{
+			offers.POST("/create",offerHandler.AddOffer)
+			offers.POST("/expire",offerHandler.ExpireValidity)
+		}
+
+		coupons:=engine.Group("/coupons")
+		{
+			coupons.POST("/create",couponHandler.CreateNewCoupon)
+			coupons.POST("/expire",couponHandler.MakeCouponInvalid)
 		}
 	}
 }

@@ -238,3 +238,47 @@ func (i *InventoryHandler) SearchProducts(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", results, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+// @Summary		filter Products by category
+// @Description	user can filter with a category and get the list of  products in the category
+// @Tags			User
+// @Accept			json
+// @Produce		    json
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
+// @Param			catID 	query  string 	true	"category ID"
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/filter/category [get]
+func (i *InventoryHandler) GetCategoryProducts(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	limitStr := c.Query("limit")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "limit number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	catIDstr := c.Query("catID")
+	catID, err := strconv.Atoi(catIDstr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "category ID not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	results, err := i.InventoryUseCase.GetCategoryProducts(catID, page, limit)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve the records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", results, nil)
+	c.JSON(http.StatusOK, successRes)
+}

@@ -58,13 +58,13 @@ func (ad *adminRepository) UpdateBlockUserByID(user domain.User) error {
 
 }
 
-func (ad *adminRepository) GetUsers(page int,limit int) ([]models.UserDetailsAtAdmin, error) {
+func (ad *adminRepository) GetUsers(page int, limit int) ([]models.UserDetailsAtAdmin, error) {
 	// pagination purpose -
 	if page == 0 {
 		page = 1
 	}
 	if limit == 0 {
-		limit=10
+		limit = 10
 	}
 	offset := (page - 1) * limit
 	var userDetails []models.UserDetailsAtAdmin

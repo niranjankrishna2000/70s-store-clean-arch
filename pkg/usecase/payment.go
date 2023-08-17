@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
@@ -81,19 +82,22 @@ func (p *paymentUseCase) MakePaymentRazorPay(orderID string, userID int) (models
 	client := razorpay.NewClient("rzp_test_zzmWMLGS9uRsb7", "WzzMnKdMFWY91e2DGBiZMFN8")
 
 	data := map[string]interface{}{
-		"amount":   int(orderDetails.FinalPrice) * 100,
+		"amount":   int(orderDetails.FinalPrice)*100 ,
 		"currency": "INR",
 		"receipt":  "some_receipt_id",
 	}
+	fmt.Println("razorpay::91 ", orderDetails,data)
 
 	body, err := client.Order.Create(data, nil)
 	if err != nil {
-		return models.OrderPaymentDetails{}, nil
+		fmt.Println(err)
+		return models.OrderPaymentDetails{}, err
 	}
 
 	razorPayOrderID := body["id"].(string)
 
 	orderDetails.Razor_id = razorPayOrderID
+	fmt.Println("razorpay::100", orderDetails)
 
 	return orderDetails, nil
 }

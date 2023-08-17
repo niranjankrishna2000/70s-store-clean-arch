@@ -22,4 +22,6 @@ type OrderRepository interface {
 	GetOrderDetail(orderID string) (domain.Order, error)
 	FindUserIdFromOrderID(id int) (int, error)
 	FindAmountFromOrderID(id int) (float64, error)
+	ReturnOrder(id int) error
+	CheckIfTheOrderIsAlreadyReturned(id int) (string, error)
 }

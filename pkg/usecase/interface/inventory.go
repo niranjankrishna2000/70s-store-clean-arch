@@ -13,4 +13,5 @@ type InventoryUseCase interface {
 	ShowIndividualProducts(sku string) (models.Inventory, error)
 	ListProducts(page int,limit int) ([]models.Inventory, error)
 	SearchProducts(key string,page,limit int) ([]models.Inventory, error)
+	GetCategoryProducts(catID int,page,limit int) ([]models.Inventory, error)
 }

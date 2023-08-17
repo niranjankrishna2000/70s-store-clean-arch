@@ -75,7 +75,7 @@ func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
 
 	var price float64
 	for _, v := range products {
-		price = price + v.Total
+		price = price + v.DiscountedPrice
 	}
 
 	var checkout models.CheckOut

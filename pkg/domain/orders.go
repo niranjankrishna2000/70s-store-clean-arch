@@ -14,7 +14,7 @@ type Order struct {
 	PaymentID       string        `json:"paymentID"`
 	Price           float64       `json:"price"`
 	OrderedAt       time.Time     `json:"orderedAt"`
-	OrderStatus     string        `json:"order_status" gorm:"order_status:4;default:'PENDING';check:order_status IN ('PENDING', 'SHIPPED','DELIVERED','CANCELED')"`
+	OrderStatus     string        `json:"order_status" gorm:"order_status:4;default:'PENDING';check:order_status IN ('PENDING', 'SHIPPED','DELIVERED','CANCELED','RETURNED')"`
 	PaymentStatus   string        `json:"paymentStatus" gorm:"default:'Pending'"`
 }
 
@@ -35,6 +35,7 @@ type AdminOrdersResponse struct {
 	Shipped   []OrderDetails
 	Delivered []OrderDetails
 	Canceled  []OrderDetails
+	Returned  []OrderDetails
 }
 
 // OrderDetails represents the details of order

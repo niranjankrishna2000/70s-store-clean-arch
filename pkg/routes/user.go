@@ -27,6 +27,11 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			search.POST("/", inventoryHandler.SearchProducts)
 		}
 
+		filter := engine.Group("/filter")
+		{
+			filter.GET("/category", inventoryHandler.GetCategoryProducts)
+		}
+
 		home := engine.Group("/home")
 		{
 			home.GET("/products", inventoryHandler.ListProducts)
@@ -56,6 +61,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			{
 				orders.GET("", orderHandler.GetOrders)
 				orders.DELETE("", orderHandler.CancelOrder)
+				orders.PUT("/return", orderHandler.ReturnOrder)
 
 			}
 		}
