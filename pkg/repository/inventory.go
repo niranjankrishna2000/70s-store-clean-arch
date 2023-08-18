@@ -159,11 +159,12 @@ func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]mo
 	query := `
 		SELECT *
 		FROM inventories 
-		WHERE product_name ILIKE '%' || ? || '%'
+		WHERE product_name ILIKE '%' || ? || '%' 
+		OR description ILIKE '%' || ? || '%'
 		limit ? offset ?
 	`
 
-	if err := ad.DB.Raw(query, key, limit, offset).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw(query, key, key ,limit, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 

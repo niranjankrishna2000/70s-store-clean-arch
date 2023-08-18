@@ -27,6 +27,7 @@ func NewInventoryHandler(usecase services.InventoryUseCase) *InventoryHandler {
 // @Produce		    json
 // @Param			category_id		formData	string	true	"category_id"
 // @Param			product_name	formData	string	true	"product_name"
+// @Param			description	formData	string	true	"description"
 // @Param			price	formData	string	true	"price"
 // @Param			stock		formData	string	true	"stock"
 // @Param           image      formData     string   true   "image"
@@ -44,6 +45,7 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 		return
 	}
 	product_name := c.Request.FormValue("product_name")
+	description := c.Request.FormValue("description")
 	p, err := strconv.Atoi(c.Request.FormValue("price"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
@@ -66,6 +68,7 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 	}
 	inventory.CategoryID = categoryID
 	inventory.ProductName = product_name
+	inventory.Description = description
 	inventory.Price = price
 	inventory.Stock = stock
 	inventory.Image = image

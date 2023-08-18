@@ -15,6 +15,7 @@ type Inventory struct {
 	CategoryID  int     `json:"category_id"`
 	Image		string	`json:"image"`
 	ProductName string  `json:"product_name"`
+	Description string	`json:"description"`
 	Stock       int     `json:"stock"`
 	Price       float64 `json:"price"`
 }
