@@ -312,6 +312,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "price",
                         "name": "price",
                         "in": "formData",

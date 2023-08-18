@@ -341,6 +341,11 @@ paths:
         name: product_name
         required: true
         type: string
+      - description: description
+        in: formData
+        name: description
+        required: true
+        type: string
       - description: price
         in: formData
         name: price
