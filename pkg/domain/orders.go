@@ -5,6 +5,7 @@ import "time"
 // Order represents the order of user
 type Order struct {
 	//gorm.Model      `json:"-"`
+	ID          	int           `json:"id" gorm:"primaryKey;autoIncrement"`
 	UserID          int           `json:"user_id" gorm:"not null"`
 	User            User          `json:"-" gorm:"foreignkey:UserID"`
 	AddressID       int           `json:"address_id" gorm:"not null"`
@@ -22,7 +23,7 @@ type Order struct {
 type OrderItem struct {
 	ID          int       `json:"id" gorm:"primaryKey;autoIncrement"`
 	OrderID     int       `json:"order_id"`
-	Order       Order     `json:"-" gorm:"foreignkey:OrderID;constraint:OnDelete:CASCADE"`
+	Order       Order     `json:"-" gorm:"foreignkey:OrderID"`
 	InventoryID int       `json:"inventory_id"`
 	Inventory   Inventory `json:"-" gorm:"foreignkey:InventoryID"`
 	Quantity    int       `json:"quantity"`
