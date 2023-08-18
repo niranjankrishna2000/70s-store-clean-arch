@@ -307,6 +307,13 @@ func (i *OrderHandler) ReturnOrder(c *gin.Context) {
 
 }
 
+// @Summary Download Invoice PDF
+// @Description Download the invoice PDF file
+// @Tags			User
+// @Security		Bearer
+// @Produce octet-stream
+// @Success 200 {file} application/pdf
+// @Router /users/check-out/order/download-invoice  [get]
 func (i *OrderHandler) DownloadInvoice(c *gin.Context) {
 	// Set the appropriate headers for the file download
 	c.Header("Content-Disposition", "attachment; filename=70's store_invoice.pdf")

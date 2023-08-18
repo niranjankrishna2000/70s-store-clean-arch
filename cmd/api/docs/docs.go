@@ -1236,6 +1236,31 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/check-out/order/download-invoice": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Download the invoice PDF file",
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Download Invoice PDF",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
         "/users/filter/category": {
             "get": {
                 "description": "user can filter with a category and get the list of  products in the category",

@@ -929,6 +929,21 @@ paths:
       summary: Order Now
       tags:
       - User
+  /users/check-out/order/download-invoice:
+    get:
+      description: Download the invoice PDF file
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+      security:
+      - Bearer: []
+      summary: Download Invoice PDF
+      tags:
+      - User
   /users/filter/category:
     get:
       consumes:
