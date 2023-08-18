@@ -6,6 +6,7 @@ import (
 	models "main/pkg/utils/models"
 	"main/pkg/utils/response"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -77,7 +78,7 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	
+
 	//move
 	retString, err := i.orderUseCase.OrderItemsFromCart(userID, order)
 	if err != nil {
@@ -228,6 +229,7 @@ func (i *OrderHandler) AdminSalesMonthlyReport(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
 // @Summary		Admin Sales Report
 // @Description	Admin can view the weekly sales Report
 // @Tags			Admin
@@ -247,6 +249,7 @@ func (i *OrderHandler) AdminSalesAnnualReport(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", orders, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
 // @Summary		Admin Sales Report
 // @Description	Admin can view the weekly sales Report
 // @Tags			Admin
@@ -302,4 +305,18 @@ func (i *OrderHandler) ReturnOrder(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Return success.The amount will be Credited your wallet", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
+}
+
+func (i *OrderHandler) DownloadInvoice(c *gin.Context) {
+	// Set the appropriate headers for the file download
+	c.Header("Content-Disposition", "attachment; filename=70's store_invoice.pdf")
+	c.Header("Content-Type", "application/pdf")
+
+	// Read the PDF file and write it to the response
+	pdfData, err := os.ReadFile("70's store_invoice.pdf")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read PDF file"})
+		return
+	}
+	c.Data(http.StatusOK, "application/pdf", pdfData)
 }

@@ -85,6 +85,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		{
 			checkout.GET("", cartHandler.CheckOut)
 			checkout.POST("/order", orderHandler.OrderItemsFromCart)
+			checkout.GET("/order/download-invoice",orderHandler.DownloadInvoice)
 		}
 
 	}
