@@ -22,10 +22,10 @@ func NewInventoryRepository(DB *gorm.DB) interfaces.InventoryRepository {
 func (i *inventoryRepository) AddInventory(inventory models.Inventory, url string) (models.InventoryResponse, error) {
 
 	query := `
-    INSERT INTO inventories (category_id, product_name, stock, price, image)
-    VALUES (?, ?, ?, ?, ?);
+    INSERT INTO inventories (category_id, product_name,description, stock, price, image)
+    VALUES (?, ?, ?, ?, ?,?);
     `
-	i.DB.Exec(query, inventory.CategoryID, inventory.ProductName, inventory.Stock, inventory.Price, url)
+	i.DB.Exec(query, inventory.CategoryID, inventory.ProductName, inventory.Description, inventory.Stock, inventory.Price, url)
 
 	var inventoryResponse models.InventoryResponse
 
@@ -120,7 +120,7 @@ func (ad *inventoryRepository) ListProducts(page int, limit int) ([]models.Inven
 	offset := (page - 1) * limit
 	var productDetails []models.Inventory
 
-	if err := ad.DB.Raw("select id,category_id,product_name,stock,price,image from inventories limit ? offset ?", limit, offset).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw("select id,category_id,product_name,description,stock,price,image from inventories limit ? offset ?", limit, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 
@@ -164,7 +164,7 @@ func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]mo
 		limit ? offset ?
 	`
 
-	if err := ad.DB.Raw(query, key, key ,limit, offset).Scan(&productDetails).Error; err != nil {
+	if err := ad.DB.Raw(query, key, key, limit, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Inventory{}, err
 	}
 
