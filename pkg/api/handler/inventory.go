@@ -36,7 +36,7 @@ func NewInventoryHandler(usecase services.InventoryUseCase) *InventoryHandler {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/inventories/add [post]
 func (i *InventoryHandler) AddInventory(c *gin.Context) {
-
+	//change
 	var inventory models.Inventory
 	categoryID, err := strconv.Atoi(c.Request.FormValue("category_id"))
 	if err != nil {
@@ -96,7 +96,7 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/inventories/update [put]
 func (i *InventoryHandler) UpdateInventory(c *gin.Context) {
-
+//change
 	var p models.InventoryUpdate
 
 	if err := c.BindJSON(&p); err != nil {
@@ -143,15 +143,15 @@ func (i *InventoryHandler) DeleteInventory(c *gin.Context) {
 }
 
 // @Summary		Show Product Details
-// @Description	user can view the details of the product
-// @Tags			User
+// @Description	client can view the details of the product
+// @Tags			Products
 // @Accept			json
 // @Produce		    json
 // @Param			inventoryID	query	string	true	"Inventory ID"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/home/products/details [get]
+// @Router			/products/details [get]
 func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 
 	id := c.Query("inventoryID")
@@ -169,8 +169,8 @@ func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 }
 
 // @Summary		List Products
-// @Description	user can view the list of available products
-// @Tags			User
+// @Description	client can view the list of available products
+// @Tags			Products
 // @Accept			json
 // @Produce		    json
 // @Param			page	query  string 	true	"page"
@@ -178,7 +178,7 @@ func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/home/products [get]
+// @Router			/products [get]
 func (i *InventoryHandler) ListProducts(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
@@ -205,8 +205,8 @@ func (i *InventoryHandler) ListProducts(c *gin.Context) {
 }
 
 // @Summary		Search Products
-// @Description	user can search with a key and get the list of  products similar to that key
-// @Tags			User
+// @Description	client can search with a key and get the list of  products similar to that key
+// @Tags			Products
 // @Accept			json
 // @Produce		    json
 // @Param			page	query  string 	true	"page"
@@ -214,7 +214,7 @@ func (i *InventoryHandler) ListProducts(c *gin.Context) {
 // @Param			searchkey 	query  string 	true	"searchkey"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/search [post]
+// @Router			/products/search [get]
 func (i *InventoryHandler) SearchProducts(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
@@ -243,8 +243,8 @@ func (i *InventoryHandler) SearchProducts(c *gin.Context) {
 }
 
 // @Summary		filter Products by category
-// @Description	user can filter with a category and get the list of  products in the category
-// @Tags			User
+// @Description	client can filter with a category and get the list of  products in the category
+// @Tags			Products
 // @Accept			json
 // @Produce		    json
 // @Param			page	query  string 	true	"page"
@@ -252,7 +252,7 @@ func (i *InventoryHandler) SearchProducts(c *gin.Context) {
 // @Param			catID 	query  string 	true	"category ID"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/filter/category [get]
+// @Router			/products/category [get]
 func (i *InventoryHandler) GetCategoryProducts(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
@@ -285,3 +285,4 @@ func (i *InventoryHandler) GetCategoryProducts(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", results, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+ 

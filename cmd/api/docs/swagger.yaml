@@ -789,6 +789,137 @@ paths:
       summary: UnBlock an existing user
       tags:
       - Admin
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: client can view the list of available products
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Products
+      tags:
+      - Products
+  /products/category:
+    get:
+      consumes:
+      - application/json
+      description: client can filter with a category and get the list of  products
+        in the category
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: category ID
+        in: query
+        name: catID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: filter Products by category
+      tags:
+      - Products
+  /products/details:
+    get:
+      consumes:
+      - application/json
+      description: client can view the details of the product
+      parameters:
+      - description: Inventory ID
+        in: query
+        name: inventoryID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Show Product Details
+      tags:
+      - Products
+  /products/search:
+    get:
+      consumes:
+      - application/json
+      description: client can search with a key and get the list of  products similar
+        to that key
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      - description: searchkey
+        in: query
+        name: searchkey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Search Products
+      tags:
+      - Products
   /users/cart:
     get:
       description: user can view their cart details
@@ -949,42 +1080,6 @@ paths:
       summary: Download Invoice PDF
       tags:
       - User
-  /users/filter/category:
-    get:
-      consumes:
-      - application/json
-      description: user can filter with a category and get the list of  products in
-        the category
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        required: true
-        type: string
-      - description: category ID
-        in: query
-        name: catID
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: filter Products by category
-      tags:
-      - User
   /users/home/add-to-cart:
     post:
       consumes:
@@ -1037,65 +1132,6 @@ paths:
       security:
       - Bearer: []
       summary: Add To Wishlist
-      tags:
-      - User
-  /users/home/products:
-    get:
-      consumes:
-      - application/json
-      description: user can view the list of available products
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: List Products
-      tags:
-      - User
-  /users/home/products/details:
-    get:
-      consumes:
-      - application/json
-      description: user can view the details of the product
-      parameters:
-      - description: Inventory ID
-        in: query
-        name: inventoryID
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Show Product Details
       tags:
       - User
   /users/login:
@@ -1399,42 +1435,6 @@ paths:
       security:
       - Bearer: []
       summary: Change Password
-      tags:
-      - User
-  /users/search:
-    post:
-      consumes:
-      - application/json
-      description: user can search with a key and get the list of  products similar
-        to that key
-      parameters:
-      - description: page
-        in: query
-        name: page
-        required: true
-        type: string
-      - description: limit
-        in: query
-        name: limit
-        required: true
-        type: string
-      - description: searchkey
-        in: query
-        name: searchkey
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      summary: Search Products
       tags:
       - User
   /users/signup:

@@ -38,6 +38,7 @@ func NewServerHTTP(categoryHandler *handler.CategoryHandler, inventoryHandler *h
 
 	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler, inventoryHandler, cartHandler, orderHandler,paymentHandler,wishlistHandler)
 	routes.AdminRoutes(engine.Group("/admin"), adminHandler, /*userHandler,*/ categoryHandler, inventoryHandler, orderHandler,paymentHandler,offerHandler,couponHandler)
+	routes.InventoryRoutes(engine.Group("/products"),inventoryHandler)
 
 	return &ServerHTTP{engine: engine}
 }
