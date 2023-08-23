@@ -7,7 +7,7 @@ import (
 )
 
 type OrderRepository interface {
-	GetOrders(id int) ([]domain.Order, error)
+	GetOrders(id ,page, limit int) ([]domain.Order, error)
 	GetProductsQuantity() ([]domain.ProductReport, error)
 	GetOrdersInRange(startDate, endDate time.Time) ([]domain.Order, error)
 	GetProductNameFromID(id int)(string,error)

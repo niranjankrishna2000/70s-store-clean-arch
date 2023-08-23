@@ -20,11 +20,18 @@ func NewOrderRepository(db *gorm.DB) interfaces.OrderRepository {
 	}
 }
 
-func (o *orderRepository) GetOrders(id int) ([]domain.Order, error) {
+func (o *orderRepository) GetOrders(id, page, limit int) ([]domain.Order, error) {
 
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
 	var orders []domain.Order
 
-	if err := o.DB.Raw("select * from orders where user_id=?", id).Scan(&orders).Error; err != nil {
+	if err := o.DB.Raw("select * from orders where user_id=? limit ? offset ?", id, limit, offset).Scan(&orders).Error; err != nil {
 		return []domain.Order{}, err
 	}
 	return orders, nil
@@ -189,7 +196,7 @@ func (o *orderRepository) FindUserIdFromOrderID(id int) (int, error) {
 	return user_id, nil
 }
 
-func (i *orderRepository) ReturnOrder( orderID int) error {
+func (i *orderRepository) ReturnOrder(orderID int) error {
 
 	if err := i.DB.Exec("update orders set order_status='RETURNED' where id=$1", orderID).Error; err != nil {
 		return err

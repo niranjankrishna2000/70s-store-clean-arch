@@ -16,22 +16,21 @@ type orderUseCase struct {
 	orderRepository interfaces.OrderRepository
 	userUseCase     services.UserUseCase
 	walletRepo      interfaces.WalletRepository
-	couponRepo interfaces.CouponRepository
-
+	couponRepo      interfaces.CouponRepository
 }
 
-func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository,couponRepository interfaces.CouponRepository) *orderUseCase {
+func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository, couponRepository interfaces.CouponRepository) *orderUseCase {
 	return &orderUseCase{
 		orderRepository: repo,
 		userUseCase:     userUseCase,
 		walletRepo:      walletRepository,
-		couponRepo: couponRepository,
+		couponRepo:      couponRepository,
 	}
 }
 
-func (i *orderUseCase) GetOrders(id int) ([]domain.Order, error) {
+func (i *orderUseCase) GetOrders(id, page, limit int) ([]domain.Order, error) {
 
-	orders, err := i.orderRepository.GetOrders(id)
+	orders, err := i.orderRepository.GetOrders(id, page, limit)
 	if err != nil {
 		return []domain.Order{}, err
 	}
@@ -54,14 +53,14 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 
 	//finding discount if any
 	DiscountRate := i.couponRepo.FindCouponDiscount(order.CouponID)
-	if DiscountRate>0{
-	totalDiscount := (total * float64(DiscountRate)) / 100
-	total = total - totalDiscount
-	}else{
-		totalDiscount:=0.0
+	if DiscountRate > 0 {
+		totalDiscount := (total * float64(DiscountRate)) / 100
+		total = total - totalDiscount
+	} else {
+		totalDiscount := 0.0
 		total = total - totalDiscount
 	}
-	
+
 	var invoiceItems []*internal.InvoiceData
 	for _, v := range cart {
 		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), v.Total)
