@@ -232,7 +232,7 @@ func FindMostBoughtProduct(products []domain.ProductReport) []int {
 
 func AddImageToS3(file *multipart.FileHeader) (string, error) {
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-south-1"))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
 	if err != nil {
 		fmt.Println("configuration error:", err)
 		return "", err
@@ -250,7 +250,7 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 	defer f.Close()
 
 	result, uploadErr := uploader.Upload(context.TODO(), &s3.PutObjectInput{
-		Bucket: aws.String("70sstore"),
+		Bucket: aws.String("seventysstore"),
 		Key:    aws.String(file.Filename),
 		Body:   f,
 		ACL:    "public-read",

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"main/pkg/helper"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
@@ -25,10 +26,11 @@ func (i *inventoryUseCase) AddInventory(inventory models.Inventory, image *multi
 	if err != nil {
 		return models.InventoryResponse{}, err
 	}
-
+	inventory.Image=url
 	//send the url and save it in database
 	InventoryResponse, err := i.repository.AddInventory(inventory, url)
 	if err != nil {
+		fmt.Println(err)
 		return models.InventoryResponse{}, err
 	}
 
