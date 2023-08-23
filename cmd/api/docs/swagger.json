@@ -64,6 +64,13 @@
                 "summary": "Add Category",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "category",
+                        "name": "category",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "category",
                         "name": "category",
                         "in": "body",
@@ -320,7 +327,7 @@
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "file",
                         "description": "image",
                         "name": "image",
                         "in": "formData",

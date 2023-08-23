@@ -76,6 +76,13 @@ const docTemplate = `{
                 "summary": "Add Category",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "category",
+                        "name": "category",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "category",
                         "name": "category",
                         "in": "body",
@@ -332,7 +339,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "string",
+                        "type": "file",
                         "description": "image",
                         "name": "image",
                         "in": "formData",

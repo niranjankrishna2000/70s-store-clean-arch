@@ -2,9 +2,11 @@ package usecase
 
 import (
 	"errors"
+	"main/pkg/helper"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
+	"mime/multipart"
 )
 
 type inventoryUseCase struct {
@@ -17,10 +19,15 @@ func NewInventoryUseCase(repo interfaces.InventoryRepository) services.Inventory
 	}
 }
 
-func (i *inventoryUseCase) AddInventory(inventory models.Inventory, image string) (models.InventoryResponse, error) {
+func (i *inventoryUseCase) AddInventory(inventory models.Inventory, image *multipart.FileHeader) (models.InventoryResponse, error) {
+
+	url, err := helper.AddImageToS3(image)
+	if err != nil {
+		return models.InventoryResponse{}, err
+	}
 
 	//send the url and save it in database
-	InventoryResponse, err := i.repository.AddInventory(inventory, image)
+	InventoryResponse, err := i.repository.AddInventory(inventory, url)
 	if err != nil {
 		return models.InventoryResponse{}, err
 	}
@@ -70,9 +77,9 @@ func (i *inventoryUseCase) ShowIndividualProducts(id string) (models.Inventory, 
 
 }
 
-func (i *inventoryUseCase) ListProducts(page int,limit int) ([]models.Inventory, error) {
+func (i *inventoryUseCase) ListProducts(page int, limit int) ([]models.Inventory, error) {
 
-	productDetails, err := i.repository.ListProducts(page,limit)
+	productDetails, err := i.repository.ListProducts(page, limit)
 	if err != nil {
 		return []models.Inventory{}, err
 	}
@@ -80,9 +87,9 @@ func (i *inventoryUseCase) ListProducts(page int,limit int) ([]models.Inventory,
 
 }
 
-func (i *inventoryUseCase) SearchProducts(key string,page,limit int) ([]models.Inventory, error) {
+func (i *inventoryUseCase) SearchProducts(key string, page, limit int) ([]models.Inventory, error) {
 
-	productDetails, err := i.repository.SearchProducts(key,page,limit)
+	productDetails, err := i.repository.SearchProducts(key, page, limit)
 	if err != nil {
 		return []models.Inventory{}, err
 	}
@@ -91,9 +98,9 @@ func (i *inventoryUseCase) SearchProducts(key string,page,limit int) ([]models.I
 
 }
 
-func (i *inventoryUseCase) GetCategoryProducts(catID int,page,limit int) ([]models.Inventory, error) {
+func (i *inventoryUseCase) GetCategoryProducts(catID int, page, limit int) ([]models.Inventory, error) {
 
-	productDetails, err := i.repository.GetCategoryProducts(catID,page,limit)
+	productDetails, err := i.repository.GetCategoryProducts(catID, page, limit)
 	if err != nil {
 		return []models.Inventory{}, err
 	}

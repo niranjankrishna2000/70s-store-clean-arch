@@ -30,7 +30,7 @@ func NewInventoryHandler(usecase services.InventoryUseCase) *InventoryHandler {
 // @Param			description	formData	string	true	"description"
 // @Param			price	formData	string	true	"price"
 // @Param			stock		formData	string	true	"stock"
-// @Param           image      formData     string   true   "image"
+// @Param           image      formData     file   true   "image"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -60,7 +60,7 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 		return
 	}
 
-	image := c.Request.FormValue("image")
+	image,err := c.FormFile("image")
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from form error", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -71,7 +71,7 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 	inventory.Description = description
 	inventory.Price = price
 	inventory.Stock = stock
-	inventory.Image = image
+	//inventory.Image = image
 
 	InventoryResponse, err := i.InventoryUseCase.AddInventory(inventory, image)
 	if err != nil {

@@ -193,6 +193,11 @@ paths:
       description: Admin can add new categories for products
       parameters:
       - description: category
+        in: query
+        name: category
+        required: true
+        type: string
+      - description: category
         in: body
         name: category
         required: true
@@ -360,7 +365,7 @@ paths:
         in: formData
         name: image
         required: true
-        type: string
+        type: file
       produces:
       - application/json
       responses:

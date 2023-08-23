@@ -1,12 +1,18 @@
 package helper
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"main/pkg/domain"
 	"main/pkg/utils/models"
+	"mime/multipart"
 	"strconv"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
@@ -167,7 +173,7 @@ func GenerateTokenAdmin(admin domain.Admin) (string, error) {
 // }
 
 /*
-GetUserID returns the userID stored in the context  
+GetUserID returns the userID stored in the context
 
 Parameters:
 - c: gin context
@@ -200,27 +206,60 @@ func GetUserID(c *gin.Context) (int, error) {
 	return userID, nil
 }
 
+func FindMostBoughtProduct(products []domain.ProductReport) []int {
 
-func FindMostBoughtProduct(products []domain.ProductReport)([]int){
+	productMap := make(map[int]int)
 
-productMap:=make(map[int]int)
-
-for _,v:=range products{
-	productMap[v.InventoryID]+=v.Quantity
-}
-
-maxQty:=0
-for _,v:=range productMap{
-	if v>maxQty{
-		maxQty=v
+	for _, v := range products {
+		productMap[v.InventoryID] += v.Quantity
 	}
-}
 
-var bestSellers []int
-for k,v:=range productMap{
-	if v==maxQty{
-		bestSellers=append(bestSellers,k)
+	maxQty := 0
+	for _, v := range productMap {
+		if v > maxQty {
+			maxQty = v
+		}
 	}
-}
+
+	var bestSellers []int
+	for k, v := range productMap {
+		if v == maxQty {
+			bestSellers = append(bestSellers, k)
+		}
+	}
 	return bestSellers
+}
+
+func AddImageToS3(file *multipart.FileHeader) (string, error) {
+
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-south-1"))
+	if err != nil {
+		fmt.Println("configuration error:", err)
+		return "", err
+	}
+
+	client := s3.NewFromConfig(cfg)
+
+	uploader := manager.NewUploader(client)
+
+	f, openErr := file.Open()
+	if openErr != nil {
+		fmt.Println("opening error:", openErr)
+		return "", openErr
+	}
+	defer f.Close()
+
+	result, uploadErr := uploader.Upload(context.TODO(), &s3.PutObjectInput{
+		Bucket: aws.String("70sstore"),
+		Key:    aws.String(file.Filename),
+		Body:   f,
+		ACL:    "public-read",
+	})
+
+	if uploadErr != nil {
+		fmt.Println("uploading error:", uploadErr)
+		return "", uploadErr
+	}
+
+	return result.Location, nil
 }

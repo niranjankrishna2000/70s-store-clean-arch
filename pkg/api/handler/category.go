@@ -25,6 +25,7 @@ func NewCategoryHandler(usecase services.CategoryUseCase) *CategoryHandler {
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
+// @Param			category	query	string	true	"category"
 // @Param			category	body	domain.Category	true	"category"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
