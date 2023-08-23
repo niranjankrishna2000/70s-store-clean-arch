@@ -1370,6 +1370,17 @@ paths:
       consumes:
       - application/json
       description: user can view the details of the orders
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
       produces:
       - application/json
       responses:
