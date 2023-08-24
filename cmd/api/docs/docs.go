@@ -237,6 +237,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/coupons": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Admin can view the list of  Coupons",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List Coupons",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/coupons/create": {
             "post": {
                 "security": [
@@ -447,7 +497,7 @@ const docTemplate = `{
             }
         },
         "/admin/inventories/update": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -466,13 +516,70 @@ const docTemplate = `{
                 "summary": "Update Stock",
                 "parameters": [
                     {
-                        "description": "update stock",
-                        "name": "add-stock",
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Inventory",
+                        "name": "updateinventory",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.StockUpdate"
+                            "$ref": "#/definitions/models.UpdateInventory"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/offers": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Admin can view the list of  offers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "List Offers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2489,11 +2596,20 @@ const docTemplate = `{
                 }
             }
         },
-        "models.StockUpdate": {
+        "models.UpdateInventory": {
             "type": "object",
             "properties": {
-                "product_id": {
+                "category_id": {
                     "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "productName": {
+                    "type": "string"
                 },
                 "stock": {
                     "type": "integer"

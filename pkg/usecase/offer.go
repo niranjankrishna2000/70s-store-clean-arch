@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
@@ -29,4 +30,12 @@ func (o *offerUseCase) MakeOfferExpire(catID int) error {
 	}
 
 	return nil
+}
+
+func (o *offerUseCase) GetOffers(page,limit int)([]domain.Offer,error){
+	offers,err:=o.offerRepo.GetOffers(page,limit)
+	if err != nil {
+		return []domain.Offer{}, err
+	}
+	return offers,nil
 }

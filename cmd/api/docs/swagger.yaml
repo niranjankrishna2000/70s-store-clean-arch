@@ -102,10 +102,16 @@ definitions:
       new:
         type: string
     type: object
-  models.StockUpdate:
+  models.UpdateInventory:
     properties:
-      product_id:
+      category_id:
         type: integer
+      description:
+        type: string
+      price:
+        type: number
+      productName:
+        type: string
       stock:
         type: integer
     type: object
@@ -293,6 +299,38 @@ paths:
       summary: Update Category
       tags:
       - Admin
+  /admin/coupons:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the list of  Coupons
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Coupons
+      tags:
+      - Admin
   /admin/coupons/create:
     post:
       consumes:
@@ -429,17 +467,22 @@ paths:
       tags:
       - Admin
   /admin/inventories/update:
-    put:
+    patch:
       consumes:
       - application/json
       description: Admin can update stock of the inventories
       parameters:
-      - description: update stock
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Update Inventory
         in: body
-        name: add-stock
+        name: updateinventory
         required: true
         schema:
-          $ref: '#/definitions/models.StockUpdate'
+          $ref: '#/definitions/models.UpdateInventory'
       produces:
       - application/json
       responses:
@@ -454,6 +497,38 @@ paths:
       security:
       - Bearer: []
       summary: Update Stock
+      tags:
+      - Admin
+  /admin/offers:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the list of  offers
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Offers
       tags:
       - Admin
   /admin/offers/create:

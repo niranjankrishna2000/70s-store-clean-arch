@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 	"main/pkg/utils/models"
 
@@ -41,4 +42,21 @@ func (o *offerRepository) FindDiscountPercentage(catID int) (int, error) {
 	}
 
 	return percentage, nil
+}
+
+func (o *offerRepository) GetOffers(page,limit int) ([]domain.Offer, error){
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	var offers []domain.Offer
+
+	if err := o.DB.Raw("select id,category_id,discount_rate,valid from offers limit ? offset ?", limit, offset).Scan(&offers).Error; err != nil {
+		return []domain.Offer{}, err
+	}
+
+	return offers, nil
 }
