@@ -26,7 +26,7 @@ func (i *inventoryUseCase) AddInventory(inventory models.Inventory, image *multi
 	if err != nil {
 		return models.InventoryResponse{}, err
 	}
-	inventory.Image=url
+	inventory.Image = url
 	//send the url and save it in database
 	InventoryResponse, err := i.repository.AddInventory(inventory, url)
 	if err != nil {
@@ -38,24 +38,24 @@ func (i *inventoryUseCase) AddInventory(inventory models.Inventory, image *multi
 
 }
 
-func (i *inventoryUseCase) UpdateInventory(pid int, stock int) (models.InventoryResponse, error) {
+func (i *inventoryUseCase) UpdateInventory(invID int, invData models.UpdateInventory) (models.Inventory, error) {
 
-	result, err := i.repository.CheckInventory(pid)
+	result, err := i.repository.CheckInventory(invID)
 	if err != nil {
 
-		return models.InventoryResponse{}, err
+		return models.Inventory{}, err
 	}
 
 	if !result {
-		return models.InventoryResponse{}, errors.New("there is no inventory as you mentioned")
+		return models.Inventory{}, errors.New("there is no inventory as you mentioned")
 	}
 
-	newcat, err := i.repository.UpdateInventory(pid, stock)
+	newinv, err := i.repository.UpdateInventory(invID, invData)
 	if err != nil {
-		return models.InventoryResponse{}, err
+		return models.Inventory{}, err
 	}
 
-	return newcat, err
+	return newinv, err
 }
 
 func (i *inventoryUseCase) DeleteInventory(inventoryID string) error {
@@ -88,7 +88,7 @@ func (i *inventoryUseCase) ListProducts(page int, limit int) ([]models.Inventory
 	return productDetails, nil
 
 }
-
+//change return searchkey 
 func (i *inventoryUseCase) SearchProducts(key string, page, limit int) ([]models.Inventory, error) {
 
 	productDetails, err := i.repository.SearchProducts(key, page, limit)

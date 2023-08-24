@@ -90,29 +90,37 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
-// @Param			add-stock	body	models.StockUpdate	true	"update stock"
+// @Param			id	query	string	true	"id"	
+// @Param			updateinventory	body	models.UpdateInventory	true	"Update Inventory"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/admin/inventories/update [put]
+// @Router			/admin/inventories/update [patch]
 func (i *InventoryHandler) UpdateInventory(c *gin.Context) {
 	//change
-	var p models.StockUpdate
+	inventoryIDstr := c.Query("id")
+	invID,err:=strconv.Atoi(inventoryIDstr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "id is not valid", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	var invData models.UpdateInventory
 
-	if err := c.BindJSON(&p); err != nil {
+	if err := c.BindJSON(&invData); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	a, err := i.InventoryUseCase.UpdateInventory(p.Productid, p.Stock)
+	invRes, err := i.InventoryUseCase.UpdateInventory(invID,invData)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not update the inventory stock", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully updated the inventory stock", a, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully updated the inventory stock", invRes, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
