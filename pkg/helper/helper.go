@@ -12,7 +12,6 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
@@ -239,9 +238,9 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 	if err != nil {
 		log.Fatal("error loading the env file")
 	}
-	creds := credentials.NewStaticCredentialsProvider("AKIATXR23JPSQ3U2OH5G", "AKIATXR23JPSQ3U2OH5G", "your-session-token")
+	// creds := credentials.NewStaticCredentialsProvider("AKIATXR23JPSQ3U2OH5G", "AKIATXR23JPSQ3U2OH5G", "your-session-token")
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithCredentialsProvider(creds), config.WithRegion("ap-southeast-2"))
+	cfg, err := config.LoadDefaultConfig(context.TODO() /*config.WithCredentialsProvider(creds), */, config.WithRegion("ap-southeast-2"))
 	if err != nil {
 		fmt.Println("configuration error:", err)
 		return "", err
