@@ -334,7 +334,8 @@ const docTemplate = `{
                 ],
                 "description": "Admin can add new  products",
                 "consumes": [
-                    "multipart/form-data"
+                    "multipart/form-data",
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
