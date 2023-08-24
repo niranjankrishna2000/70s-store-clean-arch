@@ -11,6 +11,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
@@ -232,7 +233,9 @@ func FindMostBoughtProduct(products []domain.ProductReport) []int {
 
 func AddImageToS3(file *multipart.FileHeader) (string, error) {
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-southeast-2"))
+	creds := credentials.NewStaticCredentialsProvider("AKIATXR23JPSQ3U2OH5G", "AKIATXR23JPSQ3U2OH5G", "your-session-token")
+
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithCredentialsProvider(creds), config.WithRegion("ap-southeast-2"))
 	if err != nil {
 		fmt.Println("configuration error:", err)
 		return "", err
