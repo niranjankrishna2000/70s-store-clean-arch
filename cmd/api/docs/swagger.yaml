@@ -1,11 +1,4 @@
 definitions:
-  domain.Category:
-    properties:
-      category:
-        type: string
-      id:
-        type: integer
-    type: object
   domain.Coupon:
     properties:
       discount_rate:
@@ -197,12 +190,6 @@ paths:
         name: category
         required: true
         type: string
-      - description: category
-        in: body
-        name: category
-        required: true
-        schema:
-          $ref: '#/definitions/domain.Category'
       produces:
       - application/json
       responses:

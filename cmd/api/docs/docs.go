@@ -81,15 +81,6 @@ const docTemplate = `{
                         "name": "category",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "description": "category",
-                        "name": "category",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.Category"
-                        }
                     }
                 ],
                 "responses": {
@@ -2275,17 +2266,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.Category": {
-            "type": "object",
-            "properties": {
-                "category": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
         "domain.Coupon": {
             "type": "object",
             "properties": {
