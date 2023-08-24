@@ -62,8 +62,8 @@ func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
 	if err != nil {
 		return models.CheckOut{}, err
 	}
-
-	products, err := i.userUseCase.GetCart(id)
+	//cartchange
+	products, err := i.userUseCase.GetCart(id,0,0)
 	if err != nil {
 		return models.CheckOut{}, err
 	}

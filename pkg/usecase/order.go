@@ -40,8 +40,8 @@ func (i *orderUseCase) GetOrders(id, page, limit int) ([]domain.Order, error) {
 }
 
 func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (string, error) {
-
-	cart, err := i.userUseCase.GetCart(userid)
+	//cartchange
+	cart, err := i.userUseCase.GetCart(userid,0,0)
 	if err != nil {
 		return "", err
 	}
