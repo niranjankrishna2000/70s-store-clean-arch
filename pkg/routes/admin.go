@@ -20,6 +20,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, /*
 
 		categorymanagement := engine.Group("/category")
 		{
+			categorymanagement.GET("/",categoryHandler.Categories)
 			categorymanagement.POST("/add", categoryHandler.AddCategory)
 			categorymanagement.PUT("/update", categoryHandler.UpdateCategory)
 			categorymanagement.DELETE("/delete", categoryHandler.DeleteCategory)

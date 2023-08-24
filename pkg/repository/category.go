@@ -93,3 +93,20 @@ func (c *categoryRepository) DeleteCategory(categoryID string) error {
 
 	return nil
 }
+
+func (c *categoryRepository) GetCategories(page,limit int) ([]domain.Category, error){
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	var categories []domain.Category
+
+	if err := c.DB.Raw("select id,category from categories limit ? offset ?", limit, offset).Scan(&categories).Error; err != nil {
+		return []domain.Category{}, err
+	}
+
+	return categories, nil
+}

@@ -57,3 +57,11 @@ func (Cat *categoryUseCase) DeleteCategory(categoryID string) error {
 	return nil
 
 }
+
+func (Cat *categoryUseCase) GetCategories(page,limit int)([]domain.Category,error){
+	categories,err:=Cat.repository.GetCategories(page,limit)
+	if err != nil {
+		return []domain.Category{}, err
+	}
+	return categories,nil
+}

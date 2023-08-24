@@ -179,6 +179,38 @@ paths:
       summary: Admin Login
       tags:
       - Admin
+  /admin/category:
+    get:
+      consumes:
+      - application/json
+      description: Admin can view the list of  Categories
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Categories
+      tags:
+      - Admin
   /admin/category/add:
     post:
       consumes:
