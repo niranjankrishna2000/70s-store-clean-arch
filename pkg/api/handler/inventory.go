@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
 	"main/pkg/utils/response"
@@ -35,14 +36,15 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 	//change
 	var inventory models.Inventory
 	var newinventory models.NewInventory
-
-	if err := c.BindJSON(&newinventory); err != nil {
+	err := c.BindJSON(&newinventory)
+	fmt.Println(newinventory)
+	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	image,err := c.FormFile("image")
+	image, err := c.FormFile("image")
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from form error", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -78,7 +80,7 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 // @Failure		500	{object}	response.Response{}
 // @Router			/admin/inventories/update [put]
 func (i *InventoryHandler) UpdateInventory(c *gin.Context) {
-//change
+	//change
 	var p models.StockUpdate
 
 	if err := c.BindJSON(&p); err != nil {
@@ -303,4 +305,3 @@ func (i *InventoryHandler) GetCategoryProducts(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", results, nil)
 	c.JSON(http.StatusOK, successRes)
 }
- 
