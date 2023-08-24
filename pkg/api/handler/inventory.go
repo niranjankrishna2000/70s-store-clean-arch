@@ -25,6 +25,7 @@ func NewInventoryHandler(usecase services.InventoryUseCase) *InventoryHandler {
 // @Description	Admin can add new  products
 // @Tags			Admin
 // @Accept			multipart/form-data
+// @Accept			json
 // @Produce		    json
 // @Param			newinventory		body	models.NewInventory	true	"New Inventory"
 // @Param           image      formData     file   true   "image"
