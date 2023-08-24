@@ -365,7 +365,7 @@ paths:
   /admin/inventories/add:
     post:
       consumes:
-      - multipart/json
+      - multipart/form-data
       description: Admin can add new  products
       parameters:
       - description: New Inventory
