@@ -79,19 +79,6 @@ definitions:
       phone:
         type: string
     type: object
-  models.NewInventory:
-    properties:
-      category_id:
-        type: integer
-      description:
-        type: string
-      price:
-        type: number
-      product_name:
-        type: string
-      stock:
-        type: integer
-    type: object
   models.OTPData:
     properties:
       phone:
@@ -366,15 +353,33 @@ paths:
     post:
       consumes:
       - multipart/form-data
-      - application/json
       description: Admin can add new  products
       parameters:
-      - description: New Inventory
-        in: body
-        name: newinventory
+      - description: category_id
+        in: formData
+        name: category_id
         required: true
-        schema:
-          $ref: '#/definitions/models.NewInventory'
+        type: string
+      - description: product_name
+        in: formData
+        name: product_name
+        required: true
+        type: string
+      - description: description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: price
+        in: formData
+        name: price
+        required: true
+        type: string
+      - description: stock
+        in: formData
+        name: stock
+        required: true
+        type: string
       - description: image
         in: formData
         name: image

@@ -334,8 +334,7 @@ const docTemplate = `{
                 ],
                 "description": "Admin can add new  products",
                 "consumes": [
-                    "multipart/form-data",
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -346,13 +345,39 @@ const docTemplate = `{
                 "summary": "Add Inventory",
                 "parameters": [
                     {
-                        "description": "New Inventory",
-                        "name": "newinventory",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.NewInventory"
-                        }
+                        "type": "string",
+                        "description": "category_id",
+                        "name": "category_id",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "product_name",
+                        "name": "product_name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "description",
+                        "name": "description",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "price",
+                        "name": "price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "stock",
+                        "name": "stock",
+                        "in": "formData",
+                        "required": true
                     },
                     {
                         "type": "file",
@@ -2425,26 +2450,6 @@ const docTemplate = `{
             "properties": {
                 "phone": {
                     "type": "string"
-                }
-            }
-        },
-        "models.NewInventory": {
-            "type": "object",
-            "properties": {
-                "category_id": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "price": {
-                    "type": "number"
-                },
-                "product_name": {
-                    "type": "string"
-                },
-                "stock": {
-                    "type": "integer"
                 }
             }
         },

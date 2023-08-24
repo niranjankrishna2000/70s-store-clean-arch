@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
 	"main/pkg/utils/response"
@@ -25,9 +24,12 @@ func NewInventoryHandler(usecase services.InventoryUseCase) *InventoryHandler {
 // @Description	Admin can add new  products
 // @Tags			Admin
 // @Accept			multipart/form-data
-// @Accept			json
 // @Produce		    json
-// @Param			newinventory		body	models.NewInventory	true	"New Inventory"
+// @Param			category_id		formData	string	true	"category_id"
+// @Param			product_name	formData	string	true	"product_name"
+// @Param			description		formData	string	true	"description"
+// @Param			price	formData	string	true	"price"
+// @Param			stock		formData	string	true	"stock"
 // @Param           image      formData     file   true   "image"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -36,11 +38,24 @@ func NewInventoryHandler(usecase services.InventoryUseCase) *InventoryHandler {
 func (i *InventoryHandler) AddInventory(c *gin.Context) {
 	//change
 	var inventory models.Inventory
-	var newinventory models.NewInventory
-	err := c.BindJSON(&newinventory)
-	fmt.Println(newinventory)
+	categoryID, err := strconv.Atoi(c.Request.FormValue("category_id"))
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	product_name := c.Request.FormValue("product_name")
+	description := c.Request.FormValue("description")
+	p, err := strconv.Atoi(c.Request.FormValue("price"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	price := float64(p)
+	stock, err := strconv.Atoi(c.Request.FormValue("stock"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -51,11 +66,11 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	inventory.CategoryID = newinventory.CategoryID
-	inventory.ProductName = newinventory.ProductName
-	inventory.Description = newinventory.Description
-	inventory.Price = newinventory.Price
-	inventory.Stock = newinventory.Stock
+	inventory.CategoryID = categoryID
+	inventory.ProductName = product_name
+	inventory.Description = description
+	inventory.Price = price
+	inventory.Stock = stock
 	//inventory.Image = image
 
 	InventoryResponse, err := i.InventoryUseCase.AddInventory(inventory, image)
