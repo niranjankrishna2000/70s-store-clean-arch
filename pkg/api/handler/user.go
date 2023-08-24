@@ -96,17 +96,18 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 
 }
 
-// @Summary		Edit Email
-// @Description	user can change their Email
+
+// @Summary		Edit User
+// @Description	user can change their Details
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			model  body  models.EditEmail true	"edit-email"
+// @Param			userData  body  models.EditUser true	"edit-user"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/edit/email [put]
-func (i *UserHandler) EditEmail(c *gin.Context) {
+// @Router			/users/profile/edit [patch]
+func (i *UserHandler) EditUser(c *gin.Context) {
 
 	id, err := helper.GetUserID(c)
 	if err != nil {
@@ -115,97 +116,24 @@ func (i *UserHandler) EditEmail(c *gin.Context) {
 		return
 	}
 
-	var model models.EditEmail
-	if err := c.BindJSON(&model); err != nil {
+	var userData models.EditUser
+	if err := c.BindJSON(&userData); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	if err := i.userUseCase.EditEmail(id, model.Email); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not change the Email", nil, err.Error())
+	if err := i.userUseCase.EditUser(id, userData); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not change the User Details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully changed the Email", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully changed the User Data", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
 
-// @Summary		Edit Name
-// @Description	user can change their name
-// @Tags			User
-// @Accept			json
-// @Produce		    json
-// @Param			model  body  models.EditName  true	"edit-name"
-// @Security		Bearer
-// @Success		200	{object}	response.Response{}
-// @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/edit/name [put]
-func (i *UserHandler) EditName(c *gin.Context) {
-
-	id, err := helper.GetUserID(c)
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	var model models.EditName
-	if err := c.BindJSON(&model); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	if err := i.userUseCase.EditName(id, model.Name); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not change the name", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	successRes := response.ClientResponse(http.StatusOK, "Successfully changed the name", nil, nil)
-	c.JSON(http.StatusOK, successRes)
-
-}
-
-// @Summary		Edit Phone
-// @Description	user can change their Phone
-// @Tags			User
-// @Accept			json
-// @Produce		    json
-// @Param			model  body  models.EditPhone true	"edit-phone"
-// @Security		Bearer
-// @Success		200	{object}	response.Response{}
-// @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/edit/phone [put]
-func (i *UserHandler) EditPhone(c *gin.Context) {
-
-	id, err := helper.GetUserID(c)
-	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	var model models.EditPhone
-	if err := c.BindJSON(&model); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	if err := i.userUseCase.EditPhone(id, model.Phone); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not change the Phone", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	successRes := response.ClientResponse(http.StatusOK, "Successfully changed the Phone", nil, nil)
-	c.JSON(http.StatusOK, successRes)
-
-}
 
 // @Summary		Get Addresses
 // @Description	user can get all their addresses

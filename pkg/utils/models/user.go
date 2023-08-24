@@ -1,14 +1,13 @@
 package models
 
-
-type UserLogin struct{
-	Email 		string `json:"email"`
-	Password	string `json:"password"`
+type UserLogin struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-type TokenUser struct{
-	Username 	string
-	Token		string
+type TokenUser struct {
+	Username string
+	Token    string
 }
 
 type UserResponse struct {
@@ -20,11 +19,11 @@ type UserResponse struct {
 	Password string `json:"password"`
 }
 
-//signup
+// signup
 type UserDetails struct {
 	Name            string `json:"name"`
 	Email           string `json:"email" validate:"email"`
-	Username 		string `json:"username"`
+	Username        string `json:"username"`
 	Phone           string `json:"phone"`
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirmpassword"`
@@ -39,24 +38,17 @@ type AddAddress struct {
 	Pin       string `json:"pin" validate:"required"`
 }
 
-
 type ChangePassword struct {
 	Oldpassword string `json:"old_password"`
 	Password    string `json:"password"`
 	Repassword  string `json:"re_password"`
 }
 
-
-type EditName struct {
-	Name string `json:"name"`
-}
-
-type EditEmail struct {
-	Email string `json:"email"`
-}
-
-type EditPhone struct {
-	Phone string `json:"phone"`
+type EditUser struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
 }
 
 type UserKey string
@@ -64,4 +56,3 @@ type UserKey string
 func (k UserKey) String() string {
 	return string(k)
 }
-	

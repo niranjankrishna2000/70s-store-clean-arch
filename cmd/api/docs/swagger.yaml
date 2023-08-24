@@ -64,19 +64,15 @@ definitions:
       startingDate:
         type: string
     type: object
-  models.EditEmail:
+  models.EditUser:
     properties:
       email:
         type: string
-    type: object
-  models.EditName:
-    properties:
       name:
         type: string
-    type: object
-  models.EditPhone:
-    properties:
       phone:
+        type: string
+      username:
         type: string
     type: object
   models.OTPData:
@@ -1409,18 +1405,18 @@ paths:
       summary: Get User Details
       tags:
       - User
-  /users/profile/edit/email:
-    put:
+  /users/profile/edit:
+    patch:
       consumes:
       - application/json
-      description: user can change their Email
+      description: user can change their Details
       parameters:
-      - description: edit-email
+      - description: edit-user
         in: body
-        name: model
+        name: userData
         required: true
         schema:
-          $ref: '#/definitions/models.EditEmail'
+          $ref: '#/definitions/models.EditUser'
       produces:
       - application/json
       responses:
@@ -1434,86 +1430,10 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Edit Email
-      tags:
-      - User
-  /users/profile/edit/name:
-    put:
-      consumes:
-      - application/json
-      description: user can change their name
-      parameters:
-      - description: edit-name
-        in: body
-        name: model
-        required: true
-        schema:
-          $ref: '#/definitions/models.EditName'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Edit Name
-      tags:
-      - User
-  /users/profile/edit/phone:
-    put:
-      consumes:
-      - application/json
-      description: user can change their Phone
-      parameters:
-      - description: edit-phone
-        in: body
-        name: model
-        required: true
-        schema:
-          $ref: '#/definitions/models.EditPhone'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Edit Phone
+      summary: Edit User
       tags:
       - User
   /users/profile/orders:
-    delete:
-      consumes:
-      - application/json
-      description: user can cancel the orders
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/response.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - Bearer: []
-      summary: Order Cancel
-      tags:
-      - User
     get:
       consumes:
       - application/json
@@ -1543,6 +1463,27 @@ paths:
       security:
       - Bearer: []
       summary: Get Orders
+      tags:
+      - User
+  /users/profile/orders/cancel:
+    post:
+      consumes:
+      - application/json
+      description: user can cancel the orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Order Cancel
       tags:
       - User
   /users/profile/orders/return:

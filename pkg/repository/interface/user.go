@@ -21,6 +21,7 @@ type UserRepository interface {
 	EditName(id int, name string) error
 	EditEmail(id int, email string) error
 	EditPhone(id int, phone string) error
+	EditUsername(id int, username string) error
 
 	//GetCart(id int) ([]models.GetCart, error)
 	RemoveFromCart(id int, inventoryID int) error

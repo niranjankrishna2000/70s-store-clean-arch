@@ -1981,14 +1981,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/profile/edit/email": {
-            "put": {
+        "/users/profile/edit": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "user can change their Email",
+                "description": "user can change their Details",
                 "consumes": [
                     "application/json"
                 ],
@@ -1998,105 +1998,15 @@ const docTemplate = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "Edit Email",
+                "summary": "Edit User",
                 "parameters": [
                     {
-                        "description": "edit-email",
-                        "name": "model",
+                        "description": "edit-user",
+                        "name": "userData",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.EditEmail"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/profile/edit/name": {
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "user can change their name",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Edit Name",
-                "parameters": [
-                    {
-                        "description": "edit-name",
-                        "name": "model",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.EditName"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/profile/edit/phone": {
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "user can change their Phone",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "User"
-                ],
-                "summary": "Edit Phone",
-                "parameters": [
-                    {
-                        "description": "edit-phone",
-                        "name": "model",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.EditPhone"
+                            "$ref": "#/definitions/models.EditUser"
                         }
                     }
                 ],
@@ -2164,8 +2074,10 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
+            }
+        },
+        "/users/profile/orders/cancel": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -2536,26 +2448,19 @@ const docTemplate = `{
                 }
             }
         },
-        "models.EditEmail": {
+        "models.EditUser": {
             "type": "object",
             "properties": {
                 "email": {
                     "type": "string"
-                }
-            }
-        },
-        "models.EditName": {
-            "type": "object",
-            "properties": {
+                },
                 "name": {
                     "type": "string"
-                }
-            }
-        },
-        "models.EditPhone": {
-            "type": "object",
-            "properties": {
+                },
                 "phone": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

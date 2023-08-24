@@ -115,9 +115,9 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/orders [delete]
+// @Router			/users/profile/orders/cancel [post]
 func (i *OrderHandler) CancelOrder(c *gin.Context) {
-
+	//change
 	id, err := helper.GetUserID(c)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())

@@ -185,6 +185,15 @@ func (i *userDatabase) EditEmail(id int, email string) error {
 	return nil
 }
 
+func (i *userDatabase) EditUsername(id int, username string) error {
+	err := i.DB.Exec(`update users set username=? where id=?`, username, id).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (i *userDatabase) EditPhone(id int, phone string) error {
 	err := i.DB.Exec(`update users set phone=? where id=?`, phone, id).Error
 	if err != nil {

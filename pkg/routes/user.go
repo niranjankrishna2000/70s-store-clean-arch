@@ -45,13 +45,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			profile.GET("/details", userHandler.GetUserDetails)
 			profile.GET("/address", userHandler.GetAddresses)
 			profile.POST("/address/add", userHandler.AddAddress)
-
-			edit := profile.Group("/edit")
-			{
-				edit.PUT("/name", userHandler.EditName)
-				edit.PUT("/email", userHandler.EditEmail)
-				edit.PUT("/phone", userHandler.EditPhone)
-			}
+			profile.PATCH("/edit",userHandler.EditUser)
 
 			security := profile.Group("/security")
 			{
@@ -60,7 +54,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			orders := profile.Group("/orders")
 			{
 				orders.GET("", orderHandler.GetOrders)
-				orders.DELETE("", orderHandler.CancelOrder)
+				orders.POST("/cancel", orderHandler.CancelOrder)
 				orders.PUT("/return", orderHandler.ReturnOrder)
 
 			}

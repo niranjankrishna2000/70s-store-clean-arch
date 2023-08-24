@@ -12,13 +12,13 @@ import (
 )
 
 type userUseCase struct {
-	userRepo interfaces.UserRepository
+	userRepo  interfaces.UserRepository
 	offerRepo interfaces.OfferRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository,offer interfaces.OfferRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, offer interfaces.OfferRepository) services.UserUseCase {
 	return &userUseCase{
-		userRepo: repo,
+		userRepo:  repo,
 		offerRepo: offer,
 	}
 }
@@ -164,39 +164,6 @@ func (i *userUseCase) ChangePassword(id int, old string, password string, repass
 
 }
 
-func (i *userUseCase) EditName(id int, name string) error {
-
-	err := i.userRepo.EditName(id, name)
-	if err != nil {
-		return err
-	}
-
-	return nil
-
-}
-
-func (i *userUseCase) EditEmail(id int, email string) error {
-
-	err := i.userRepo.EditEmail(id, email)
-	if err != nil {
-		return err
-	}
-
-	return nil
-
-}
-
-func (i *userUseCase) EditPhone(id int, phone string) error {
-
-	err := i.userRepo.EditPhone(id, phone)
-	if err != nil {
-		return err
-	}
-
-	return nil
-
-}
-
 func (u *userUseCase) GetCartID(userID int) (int, error) {
 	cartID, err := u.userRepo.GetCartID(userID)
 	if err != nil {
@@ -205,7 +172,38 @@ func (u *userUseCase) GetCartID(userID int) (int, error) {
 	return cartID, nil
 }
 
-func (u *userUseCase) GetCart(id ,page ,limit int) ([]models.GetCart, error) {
+func (i *userUseCase) EditUser(id int, userData models.EditUser) error {
+
+	if userData.Name != "" {
+		err := i.userRepo.EditName(id, userData.Name)
+		if err != nil {
+			return err
+		}
+	}
+	if userData.Email != "" {
+		err := i.userRepo.EditEmail(id, userData.Email)
+		if err != nil {
+			return err
+		}
+	}
+	if userData.Phone != "" {
+		err := i.userRepo.EditPhone(id, userData.Phone)
+		if err != nil {
+			return err
+		}
+	}
+	if userData.Username != "" {
+		err := i.userRepo.EditUsername(id, userData.Username)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+
+}
+
+func (u *userUseCase) GetCart(id, page, limit int) ([]models.GetCart, error) {
 
 	//find cart id
 	cart_id, err := u.userRepo.GetCartID(id)
@@ -213,7 +211,7 @@ func (u *userUseCase) GetCart(id ,page ,limit int) ([]models.GetCart, error) {
 		return []models.GetCart{}, err
 	}
 	//find products inside cart
-	products, err := u.userRepo.GetProductsInCart(cart_id,page,limit)
+	products, err := u.userRepo.GetProductsInCart(cart_id, page, limit)
 	if err != nil {
 		return []models.GetCart{}, err
 	}
