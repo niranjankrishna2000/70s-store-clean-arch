@@ -74,7 +74,7 @@ func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "Successfully verified OTP", users, nil)
-	c.SetCookie("Authorization", users.Token, 3600, "/", "seventysstore.online", true, true)
-	c.SetCookie("Authorization", users.Token, 3600, "", "", true, true)
+	c.SetCookie("Authorization", users.Token, 3600, "/", "seventysstore.online", true, false)
+	//c.SetCookie("Authorization", users.Token, 3600, "", "", true, true)
 	c.JSON(http.StatusOK, successRes)
 }
