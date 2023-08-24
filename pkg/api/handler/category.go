@@ -54,7 +54,7 @@ func (Cat *CategoryHandler) AddCategory(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/admin/category/update [put]
+// @Router			/admin/category/update [patch]
 func (Cat *CategoryHandler) UpdateCategory(c *gin.Context) {
 
 	var updateCategory models.SetNewName

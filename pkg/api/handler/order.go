@@ -146,7 +146,7 @@ func (i *OrderHandler) CancelOrder(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/admin/orders/edit/status [put]
+// @Router			/admin/orders/edit/status [patch]
 func (i *OrderHandler) EditOrderStatus(c *gin.Context) {
 
 	status := c.Query("status")

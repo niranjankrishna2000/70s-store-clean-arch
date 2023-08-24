@@ -181,7 +181,7 @@
             }
         },
         "/admin/category/update": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -722,7 +722,7 @@
             }
         },
         "/admin/orders/edit/status": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []

@@ -23,7 +23,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler /*u
 		{
 			categorymanagement.GET("/", categoryHandler.Categories)
 			categorymanagement.POST("/add", categoryHandler.AddCategory)
-			categorymanagement.PUT("/update", categoryHandler.UpdateCategory)
+			categorymanagement.PATCH("/update", categoryHandler.UpdateCategory)
 			categorymanagement.DELETE("/delete", categoryHandler.DeleteCategory)
 		}
 
@@ -37,7 +37,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler /*u
 		}
 		orders := engine.Group("/orders")
 		{
-			orders.PUT("/edit/status", orderHandler.EditOrderStatus)
+			orders.PATCH("/edit/status", orderHandler.EditOrderStatus)
 			orders.GET("", orderHandler.AdminOrders)
 		}
 		paymentmethods := engine.Group("/paymentmethods")

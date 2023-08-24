@@ -272,7 +272,7 @@ paths:
       tags:
       - Admin
   /admin/category/update:
-    put:
+    patch:
       consumes:
       - application/json
       description: Admin can update name of a category into new name
@@ -617,7 +617,7 @@ paths:
       tags:
       - Admin
   /admin/orders/edit/status:
-    put:
+    patch:
       consumes:
       - application/json
       description: Admin can change the status of the order

@@ -193,7 +193,7 @@ const docTemplate = `{
             }
         },
         "/admin/category/update": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -734,7 +734,7 @@ const docTemplate = `{
             }
         },
         "/admin/orders/edit/status": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
