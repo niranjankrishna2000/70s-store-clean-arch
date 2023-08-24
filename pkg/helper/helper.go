@@ -232,7 +232,7 @@ func FindMostBoughtProduct(products []domain.ProductReport) []int {
 
 func AddImageToS3(file *multipart.FileHeader) (string, error) {
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-southeast-2"))
 	if err != nil {
 		fmt.Println("configuration error:", err)
 		return "", err

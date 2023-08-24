@@ -79,10 +79,16 @@ definitions:
       phone:
         type: string
     type: object
-  models.InventoryUpdate:
+  models.NewInventory:
     properties:
-      product_id:
+      category_id:
         type: integer
+      description:
+        type: string
+      price:
+        type: number
+      product_name:
+        type: string
       stock:
         type: integer
     type: object
@@ -108,6 +114,13 @@ definitions:
         type: string
       new:
         type: string
+    type: object
+  models.StockUpdate:
+    properties:
+      product_id:
+        type: integer
+      stock:
+        type: integer
     type: object
   models.UserDetails:
     properties:
@@ -352,34 +365,15 @@ paths:
   /admin/inventories/add:
     post:
       consumes:
-      - multipart/form-data
+      - multipart/json
       description: Admin can add new  products
       parameters:
-      - description: category_id
-        in: formData
-        name: category_id
+      - description: New Inventory
+        in: body
+        name: newinventory
         required: true
-        type: string
-      - description: product_name
-        in: formData
-        name: product_name
-        required: true
-        type: string
-      - description: description
-        in: formData
-        name: description
-        required: true
-        type: string
-      - description: price
-        in: formData
-        name: price
-        required: true
-        type: string
-      - description: stock
-        in: formData
-        name: stock
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/models.NewInventory'
       - description: image
         in: formData
         name: image
@@ -439,7 +433,7 @@ paths:
         name: add-stock
         required: true
         schema:
-          $ref: '#/definitions/models.InventoryUpdate'
+          $ref: '#/definitions/models.StockUpdate'
       produces:
       - application/json
       responses:
@@ -667,7 +661,7 @@ paths:
       - Bearer: []
       summary: List Products
       tags:
-      - Products
+      - Admin
   /admin/sales/annual:
     get:
       description: Admin can view the weekly sales Report

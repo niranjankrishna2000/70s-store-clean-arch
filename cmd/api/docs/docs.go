@@ -334,7 +334,7 @@ const docTemplate = `{
                 ],
                 "description": "Admin can add new  products",
                 "consumes": [
-                    "multipart/form-data"
+                    "multipart/json"
                 ],
                 "produces": [
                     "application/json"
@@ -345,39 +345,13 @@ const docTemplate = `{
                 "summary": "Add Inventory",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "category_id",
-                        "name": "category_id",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "product_name",
-                        "name": "product_name",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "description",
-                        "name": "description",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "price",
-                        "name": "price",
-                        "in": "formData",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "stock",
-                        "name": "stock",
-                        "in": "formData",
-                        "required": true
+                        "description": "New Inventory",
+                        "name": "newinventory",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.NewInventory"
+                        }
                     },
                     {
                         "type": "file",
@@ -471,7 +445,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.InventoryUpdate"
+                            "$ref": "#/definitions/models.StockUpdate"
                         }
                     }
                 ],
@@ -787,7 +761,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Products"
+                    "Admin"
                 ],
                 "summary": "List Products",
                 "parameters": [
@@ -2453,11 +2427,20 @@ const docTemplate = `{
                 }
             }
         },
-        "models.InventoryUpdate": {
+        "models.NewInventory": {
             "type": "object",
             "properties": {
-                "product_id": {
+                "category_id": {
                     "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "product_name": {
+                    "type": "string"
                 },
                 "stock": {
                     "type": "integer"
@@ -2497,6 +2480,17 @@ const docTemplate = `{
                 },
                 "new": {
                     "type": "string"
+                }
+            }
+        },
+        "models.StockUpdate": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "integer"
+                },
+                "stock": {
+                    "type": "integer"
                 }
             }
         },
