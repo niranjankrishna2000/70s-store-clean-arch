@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"main/pkg/domain"
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
 	"main/pkg/utils/response"
@@ -33,14 +32,8 @@ func NewCategoryHandler(usecase services.CategoryUseCase) *CategoryHandler {
 // @Router			/admin/category/add [post]
 func (Cat *CategoryHandler) AddCategory(c *gin.Context) {
 
-	var category domain.Category
-	if err := c.BindJSON(&category); err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-		c.JSON(http.StatusBadRequest, errorRes)
-		return
-	}
-
-	CategoryResponse, err := Cat.CategoryUseCase.AddCategory(category)
+	cat := c.Query("category")
+	CategoryResponse, err := Cat.CategoryUseCase.AddCategory(cat)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not add the Category", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

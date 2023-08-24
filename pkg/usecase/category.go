@@ -17,7 +17,7 @@ func NewCategoryUseCase(repo interfaces.CategoryRepository) services.CategoryUse
 	}
 }
 
-func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Category, error) {
+func (Cat *categoryUseCase) AddCategory(category string) (domain.Category, error) {
 
 	productResponse, err := Cat.repository.AddCategory(category)
 

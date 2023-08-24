@@ -17,10 +17,10 @@ func NewCategoryRepository(DB *gorm.DB) interfaces.CategoryRepository {
 	return &categoryRepository{DB}
 }
 
-func (p *categoryRepository) AddCategory(c domain.Category) (domain.Category, error) {
+func (p *categoryRepository) AddCategory(cat string) (domain.Category, error) {
 
 	var b string
-	err := p.DB.Raw("INSERT INTO categories (category) VALUES (?) RETURNING category", c.Category).Scan(&b).Error
+	err := p.DB.Raw("INSERT INTO categories (category) VALUES (?) RETURNING category", cat).Scan(&b).Error
 	if err != nil {
 		return domain.Category{}, err
 	}

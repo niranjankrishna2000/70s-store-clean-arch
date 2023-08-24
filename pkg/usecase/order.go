@@ -129,7 +129,7 @@ func (i *orderUseCase) EditOrderStatus(status string, id int) error {
 
 }
 
-func (i *orderUseCase) AdminOrders() (domain.AdminOrdersResponse, error) {
+func (i *orderUseCase) AdminOrders(page,limit int) (domain.AdminOrdersResponse, error) {
 
 	var response domain.AdminOrdersResponse
 

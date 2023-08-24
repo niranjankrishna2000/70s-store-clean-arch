@@ -495,6 +495,17 @@ paths:
   /admin/orders:
     get:
       description: Admin can view the orders according to status
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -606,6 +617,38 @@ paths:
       summary: Remove payment method
       tags:
       - Admin
+  /admin/products:
+    get:
+      consumes:
+      - application/json
+      description: client can view the list of available products
+      parameters:
+      - description: page
+        in: query
+        name: page
+        required: true
+        type: string
+      - description: limit
+        in: query
+        name: limit
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: List Products
+      tags:
+      - Products
   /admin/sales/annual:
     get:
       description: Admin can view the weekly sales Report

@@ -52,7 +52,13 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, /*
 			sales.GET("/annual",orderHandler.AdminSalesAnnualReport)
 			sales.POST("/custom",orderHandler.AdminSalesCustomReport)
 		}
-
+		products:=engine.Group("/products")
+		{
+			products.GET("", inventoryHandler.AdminListProducts)
+			products.GET("/details", inventoryHandler.ShowIndividualProducts)
+			products.GET("/search", inventoryHandler.SearchProducts)
+			products.GET("/category", inventoryHandler.GetCategoryProducts)
+		}
 		offers:=engine.Group("/offers")
 		{
 			offers.POST("/create",offerHandler.AddOffer)

@@ -10,7 +10,7 @@ type OrderUseCase interface {
 	OrderItemsFromCart(userid int, order models.Order) (string,error)
 	CancelOrder(id int) error
 	EditOrderStatus(status string, id int) error
-	AdminOrders() (domain.AdminOrdersResponse, error)
+	AdminOrders(page,limit int) (domain.AdminOrdersResponse, error)
 	DailyOrders()(domain.SalesReport,error)
 	WeeklyOrders()(domain.SalesReport,error)
 	MonthlyOrders()(domain.SalesReport,error)
