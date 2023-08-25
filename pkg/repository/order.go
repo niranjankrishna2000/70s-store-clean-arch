@@ -112,9 +112,9 @@ func (o *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart) 
 	return nil
 }
 
-func (o *orderRepository) CancelOrder(id int) error {
+func (o *orderRepository) CancelOrder(orderid int) error {
 
-	if err := o.DB.Exec("update orders set order_status='CANCELED' where id=?", id).Error; err != nil {
+	if err := o.DB.Exec("update orders set order_status='CANCELED' where id=?", orderid).Error; err != nil {
 		return err
 	}
 
@@ -206,10 +206,21 @@ func (i *orderRepository) ReturnOrder(orderID int) error {
 
 }
 
-func (o *orderRepository) CheckIfTheOrderIsAlreadyReturned(orderID int) (string, error) {
+func (o *orderRepository) CheckOrderStatus(orderID int) (string, error) {
 
 	var status string
 	err := o.DB.Raw("select order_status from orders where id = ?", orderID).Scan(&status).Error
+	if err != nil {
+		return "", err
+	}
+
+	return status, nil
+}
+
+func (o *orderRepository) CheckPaymentStatus(orderID int) (string, error) {
+
+	var status string
+	err := o.DB.Raw("select payment_status from orders where id = ?", orderID).Scan(&status).Error
 	if err != nil {
 		return "", err
 	}

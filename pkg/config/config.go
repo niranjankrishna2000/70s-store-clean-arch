@@ -1,6 +1,9 @@
 package config
 
 import (
+	"log"
+
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -13,11 +16,11 @@ type Config struct {
 	ACCOUNTSID string `mapstructure:"DB_ACCOUNTSID"`
 	SERVICESID string `mapstructure:"DB_SERVICESID"`
 	AUTHTOKEN  string `mapstructure:"DB_AUTHTOKEN"`
-	UNIDOCKEY	string `mapstructure:"UNIDOC_LICENSE_API_KEY"`
+	UNIDOCKEY  string `mapstructure:"UNIDOC_LICENSE_API_KEY"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "DB_ACCOUNTSID", "DB_SERVICESID", "DB_AUTHTOKEN","UNIDOC_LICENSE_API_KEY",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "DB_ACCOUNTSID", "DB_SERVICESID", "DB_AUTHTOKEN", "UNIDOC_LICENSE_API_KEY",
 }
 
 func LoadConfig() (Config, error) {
@@ -31,6 +34,11 @@ func LoadConfig() (Config, error) {
 		if err := viper.BindEnv(env); err != nil {
 			return config, err
 		}
+	}
+
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("error loading the env file")
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {

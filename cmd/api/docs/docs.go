@@ -2077,7 +2077,7 @@ const docTemplate = `{
             }
         },
         "/users/profile/orders/cancel": {
-            "post": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -2094,6 +2094,15 @@ const docTemplate = `{
                     "User"
                 ],
                 "summary": "Order Cancel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order id",
+                        "name": "orderid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

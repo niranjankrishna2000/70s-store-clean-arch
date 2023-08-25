@@ -8,7 +8,7 @@ import (
 type OrderUseCase interface {
 	GetOrders(id,page,limit int) ([]domain.Order, error)
 	OrderItemsFromCart(userid int, order models.Order) (string,error)
-	CancelOrder(id int) error
+	CancelOrder(id ,orderid int) error
 	EditOrderStatus(status string, id int) error
 	AdminOrders(page,limit int) (domain.AdminOrdersResponse, error)
 	DailyOrders()(domain.SalesReport,error)

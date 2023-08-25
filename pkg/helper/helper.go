@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"main/pkg/domain"
 	"main/pkg/utils/models"
 	"mime/multipart"
@@ -16,7 +15,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 	"github.com/twilio/twilio-go"
 	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
@@ -234,10 +232,6 @@ func FindMostBoughtProduct(products []domain.ProductReport) []int {
 
 func AddImageToS3(file *multipart.FileHeader) (string, error) {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("error loading the env file")
-	}
 	// creds := credentials.NewStaticCredentialsProvider("AKIATXR23JPSQ3U2OH5G", "AKIATXR23JPSQ3U2OH5G", "your-session-token")
 
 	cfg, err := config.LoadDefaultConfig(context.TODO() /*config.WithCredentialsProvider(creds), */, config.WithRegion("ap-southeast-2"))

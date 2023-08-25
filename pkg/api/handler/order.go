@@ -112,10 +112,11 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param			orderid  query  string  true	"order id"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/orders/cancel [post]
+// @Router			/users/profile/orders/cancel [patch]
 func (i *OrderHandler) CancelOrder(c *gin.Context) {
 	//change
 	id, err := helper.GetUserID(c)
@@ -124,8 +125,14 @@ func (i *OrderHandler) CancelOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+	orderid, err := strconv.Atoi(c.Query("orderid"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "conversion to integer not possible", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
 
-	if err := i.orderUseCase.CancelOrder(id); err != nil {
+	if err := i.orderUseCase.CancelOrder(id,orderid); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

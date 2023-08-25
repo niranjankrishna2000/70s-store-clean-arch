@@ -41,7 +41,7 @@ func (i *orderUseCase) GetOrders(id, page, limit int) ([]domain.Order, error) {
 
 func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (string, error) {
 	//cartchange
-	cart, err := i.userUseCase.GetCart(userid,0,0)
+	cart, err := i.userUseCase.GetCart(userid, 0, 0)
 	if err != nil {
 		return "", err
 	}
@@ -109,16 +109,6 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 
 }
 
-func (i *orderUseCase) CancelOrder(id int) error {
-
-	err := i.orderRepository.CancelOrder(id)
-	if err != nil {
-		return err
-	}
-	return nil
-
-}
-
 func (i *orderUseCase) EditOrderStatus(status string, id int) error {
 
 	err := i.orderRepository.EditOrderStatus(status, id)
@@ -129,7 +119,7 @@ func (i *orderUseCase) EditOrderStatus(status string, id int) error {
 
 }
 
-func (i *orderUseCase) AdminOrders(page,limit int) (domain.AdminOrdersResponse, error) {
+func (i *orderUseCase) AdminOrders(page, limit int) (domain.AdminOrdersResponse, error) {
 
 	var response domain.AdminOrdersResponse
 
@@ -320,7 +310,7 @@ func (i *orderUseCase) ReturnOrder(id int) error {
 
 	//should check if the order is already returned peoples will misuse this security breach
 	// and will get  unlimited money into their wallet
-	status, err := i.orderRepository.CheckIfTheOrderIsAlreadyReturned(id)
+	status, err := i.orderRepository.CheckOrderStatus(id)
 	if err != nil {
 		return err
 	}
@@ -363,6 +353,69 @@ func (i *orderUseCase) ReturnOrder(id int) error {
 	//if no wallet create new one
 	if walletID == 0 {
 		walletID, err = i.walletRepo.CreateNewWallet(userID)
+		if err != nil {
+			return err
+		}
+	}
+	//credit the amount into users wallet
+	if err := i.walletRepo.CreditToUserWallet(amount, walletID); err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (i *orderUseCase) CancelOrder(id, orderid int) error {
+
+	//should check if the order is already returned peoples will misuse this security breach
+	// and will get  unlimited money into their wallet
+	status, err := i.orderRepository.CheckOrderStatus(orderid)
+	if err != nil {
+		return err
+	}
+
+	if status == "CANCELLED" {
+		return errors.New("order already cancelled")
+	}
+	if status == "DELIVERED" {
+		return errors.New("order already delivered")
+	}
+	//should also check if the order is already returned
+	//or users will also earn money by returning pending orders by opting COD
+
+	if status == "PENDING" || status == "SHIPPED" {
+
+		//make order as returned order
+		if err := i.orderRepository.CancelOrder(orderid); err != nil {
+			return err
+		}
+	}
+
+	//checkif alreadypaid
+	paymentStatus, err := i.orderRepository.CheckPaymentStatus(orderid)
+	if err != nil {
+		return err
+	}
+	if paymentStatus != "PAID" {
+		return errors.New("order not paid")
+	}
+
+	//find amount to be credited to user
+	amount, err := i.orderRepository.FindAmountFromOrderID(id)
+	fmt.Println(amount)
+	if err != nil {
+		return err
+	}
+	//find if the user having a wallet
+	walletID, err := i.walletRepo.FindWalletIdFromUserID(id)
+	fmt.Println(walletID)
+	if err != nil {
+		return err
+	}
+	//if no wallet create new one
+	if walletID == 0 {
+		walletID, err = i.walletRepo.CreateNewWallet(id)
 		if err != nil {
 			return err
 		}
