@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 	"time"
@@ -80,6 +81,7 @@ func (w *walletRepository) GetBalance(walletID int) (int, error) {
 	if err := w.db.Raw("select amount from wallets where id=$1", walletID).Scan(&balance).Error; err != nil {
 		return 0, err
 	}
+	fmt.Println("balance : ", balance)
 	return balance, nil
 }
 
@@ -99,9 +101,9 @@ func (w *walletRepository) GetHistory(walletID, page, limit int) ([]domain.Walle
 	return history, nil
 }
 
-func (w *walletRepository) 	AddHistory(amount ,WalletID int,purpose string)error{
+func (w *walletRepository) AddHistory(amount, WalletID int, purpose string) error {
 
-	err := w.db.Exec("Insert into wallet_histories(wallet_id,amount,purpose,time) values(?,?,?,?)", WalletID, amount,purpose,time.Now()).Error
+	err := w.db.Exec("Insert into wallet_histories(wallet_id,amount,purpose,time) values(?,?,?,?)", WalletID, amount, purpose, time.Now()).Error
 	if err != nil {
 		return err
 	}
