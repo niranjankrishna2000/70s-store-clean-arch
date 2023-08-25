@@ -54,7 +54,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			orders := profile.Group("/orders")
 			{
 				orders.GET("", orderHandler.GetOrders)
-				orders.POST("/cancel", orderHandler.CancelOrder)
+				orders.PATCH("/cancel", orderHandler.CancelOrder)
 				orders.PUT("/return", orderHandler.ReturnOrder)
 
 			}
