@@ -23,9 +23,9 @@ func (i *inventoryRepository) AddInventory(inventory models.Inventory, url strin
 	var inventoryResponse models.InventoryResponse
 	query := `
     INSERT INTO inventories (category_id, product_name,description, stock, price, image)
-    VALUES (?, ?, ?, ?, ?,?) RETURNING id,stock
+    VALUES (?, ?, ?, ?, ?,?) RETURNING id
 	`
-	i.DB.Raw(query, inventory.CategoryID, inventory.ProductName, inventory.Description, inventory.Stock, inventory.Price, url).Scan(&inventoryResponse)
+	i.DB.Raw(query, inventory.CategoryID, inventory.ProductName, inventory.Description, inventory.Stock, inventory.Price, url).Scan(&inventoryResponse.ProductID)
 
 	return inventoryResponse, nil
 

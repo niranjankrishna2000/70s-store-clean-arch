@@ -7,7 +7,7 @@ type InventoryResponse struct {
 
 type StockUpdate struct {
 	ID int `json:"id"`
-	Stock     int `json:"stock"`
+	//Stock     int `json:"stock"`
 }
 
 type Inventory struct {
