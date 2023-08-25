@@ -182,6 +182,34 @@ func (i *OrderHandler) EditOrderStatus(c *gin.Context) {
 
 }
 
+// @Summary		Update Payment Status
+// @Description	Admin can change the status of the payment
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			orderID  query  string  true	"order id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/orders/edit/mark-as-paid [patch]
+func (i *OrderHandler) MarkAsPaid(c *gin.Context) {
+
+	orderID, err := strconv.Atoi(c.Query("orderID"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "conversion to integer not possible", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	if err := i.orderUseCase.MarkAsPaid(orderID); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully edited the payment status", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+
+}
+
 // @Summary		Admin Orders
 // @Description	Admin can view the orders according to status
 // @Tags			Admin
@@ -208,9 +236,9 @@ func (i *OrderHandler) AdminOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	//status := c.Query("status")
+	status := c.Query("status")
 
-	orders, err := i.orderUseCase.AdminOrders(page, limit)
+	orders, err := i.orderUseCase.AdminOrders(page, limit,status)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

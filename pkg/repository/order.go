@@ -130,10 +130,26 @@ func (o *orderRepository) EditOrderStatus(status string, id int) error {
 	return nil
 }
 
-func (o *orderRepository) AdminOrders(status string) ([]domain.OrderDetails, error) {
+func (o *orderRepository) MarkAsPaid(orderID int) error {
 
+	if err := o.DB.Exec("update orders set payment_status='PAID' where id=?", orderID).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+func (o *orderRepository) AdminOrders(page,limit int,status string) ([]domain.OrderDetails, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
 	var orders []domain.OrderDetails
-	if err := o.DB.Raw("SELECT orders.id AS order_id, users.name AS username, CONCAT(addresses.house_name, ' ', addresses.street, ' ', addresses.city) AS address, payment_methods.payment_method AS payment_method, orders.price As total FROM orders JOIN users ON users.id = orders.user_id JOIN addresses ON orders.address_id = addresses.id JOIN payment_methods ON orders.payment_method_id=payment_methods.id WHERE order_status = ?", status).Scan(&orders).Error; err != nil {
+	if err := o.DB.Raw("SELECT orders.id AS order_id, users.name AS username, CONCAT(addresses.house_name, ' ', addresses.street, ' ', addresses.city) AS address, payment_methods.payment_method AS payment_method, orders.price As total FROM orders JOIN users ON users.id = orders.user_id JOIN addresses ON orders.address_id = addresses.id JOIN payment_methods ON orders.payment_method_id=payment_methods.id WHERE order_status = ? limit ? offset ?", status,limit,offset).Scan(&orders).Error; err != nil {
 		return []domain.OrderDetails{}, err
 	}
 

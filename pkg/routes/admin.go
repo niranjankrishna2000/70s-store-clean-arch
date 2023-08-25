@@ -39,6 +39,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler /*u
 		orders := engine.Group("/orders")
 		{
 			orders.PATCH("/edit/status", orderHandler.EditOrderStatus)
+			orders.PATCH("/edit/mark-as-paid", orderHandler.MarkAsPaid)
 			orders.GET("", orderHandler.AdminOrders)
 		}
 		paymentmethods := engine.Group("/paymentmethods")

@@ -7,16 +7,18 @@ import (
 )
 
 type OrderRepository interface {
-	GetOrders(id ,page, limit int) ([]domain.Order, error)
+	GetOrders(id, page, limit int) ([]domain.Order, error)
 	GetProductsQuantity() ([]domain.ProductReport, error)
 	GetOrdersInRange(startDate, endDate time.Time) ([]domain.Order, error)
-	GetProductNameFromID(id int)(string,error)
+	GetProductNameFromID(id int) (string, error)
 	GetCart(userid int) ([]models.GetCart, error)
+
 	OrderItems(userid int, order models.Order, total float64) (int, error)
 	AddOrderProducts(order_id int, cart []models.GetCart) error
 	CancelOrder(orderid int) error
 	EditOrderStatus(status string, id int) error
-	AdminOrders(status string) ([]domain.OrderDetails, error)
+	MarkAsPaid(orderID int) error
+	AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error)
 
 	CheckOrder(orderID string, userID int) error
 	GetOrderDetail(orderID string) (domain.Order, error)
@@ -25,5 +27,4 @@ type OrderRepository interface {
 	ReturnOrder(id int) error
 	CheckOrderStatus(orderID int) (string, error)
 	CheckPaymentStatus(orderID int) (string, error)
-
 }

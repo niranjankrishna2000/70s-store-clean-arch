@@ -126,41 +126,28 @@ func (i *orderUseCase) EditOrderStatus(status string, id int) error {
 
 }
 
-func (i *orderUseCase) AdminOrders(page, limit int) (domain.AdminOrdersResponse, error) {
+func (i *orderUseCase) MarkAsPaid(orderID int) error {
 
-	var response domain.AdminOrdersResponse
-
-	pending, err := i.orderRepository.AdminOrders("PENDING")
+	err := i.orderRepository.MarkAsPaid(orderID)
 	if err != nil {
-		return domain.AdminOrdersResponse{}, err
+		return err
+	}
+	return nil
+
+}
+
+func (i *orderUseCase) AdminOrders(page, limit int,status string) ([]domain.OrderDetails, error) {
+
+	if status != "PENDING" && status != "SHIPPED" && status != "CANCELLED" && status != "RETURNED" && status!="DELIVERED"{
+		return []domain.OrderDetails{}, errors.New("invalid status type")
+
+	}
+	orders, err := i.orderRepository.AdminOrders(page,limit,status)
+	if err != nil {
+		return []domain.OrderDetails{}, err
 	}
 
-	shipped, err := i.orderRepository.AdminOrders("SHIPPED")
-	if err != nil {
-		return domain.AdminOrdersResponse{}, err
-	}
-
-	delivered, err := i.orderRepository.AdminOrders("DELIVERED")
-	if err != nil {
-		return domain.AdminOrdersResponse{}, err
-	}
-
-	canceled, err := i.orderRepository.AdminOrders("CANCELED")
-	if err != nil {
-		return domain.AdminOrdersResponse{}, err
-	}
-
-	returned, err := i.orderRepository.AdminOrders("RETURNED")
-	if err != nil {
-		return domain.AdminOrdersResponse{}, err
-	}
-
-	response.Canceled = canceled
-	response.Pending = pending
-	response.Shipped = shipped
-	response.Delivered = delivered
-	response.Returned = returned
-	return response, nil
+	return orders, nil
 
 }
 
