@@ -50,8 +50,8 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 	for _, v := range cart {
 		total = total + v.Total
 	}
-
-	if coupon != "" {
+	fmt.Println("Total without coupon",total)
+	if coupon != "" && coupon!= " " {
 		valid, err := i.couponRepo.ValidateCoupon(coupon)
 		if err != nil || !valid {
 			return "Invalid Coupon", err
@@ -59,18 +59,17 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 
 		//finding discount if any
 		DiscountRate := i.couponRepo.FindCouponDiscount(coupon)
+
 		if DiscountRate > 0 {
-			totalDiscount := (total * float64(DiscountRate)) / 100
+			totalDiscount := (total * float64(DiscountRate / 100))
 			total = total - totalDiscount
-		} else {
-			totalDiscount := 0.0
-			total = total - totalDiscount
-		}
+		} 
 	}
 
+	fmt.Println("Total amount",total)
 	var invoiceItems []*internal.InvoiceData
 	for _, v := range cart {
-		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), v.Total)
+		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), (v.Total))
 		if err != nil {
 			panic(err)
 		}
