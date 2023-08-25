@@ -61,9 +61,9 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 		DiscountRate := i.couponRepo.FindCouponDiscount(coupon)
 		
 		if DiscountRate > 0 {
-			totalDiscount := (total * float64(DiscountRate / 100))
+			totalDiscount := int(total) * (DiscountRate / 100)
 			fmt.Println("Discount",DiscountRate,"Total discount",totalDiscount)
-			total = total - totalDiscount
+			total = total - float64(totalDiscount)
 		} 
 	}
 
