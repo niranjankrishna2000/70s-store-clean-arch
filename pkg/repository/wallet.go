@@ -96,7 +96,7 @@ func (w *walletRepository) GetHistory(walletID, page, limit int) ([]domain.Walle
 		return []domain.WalletHistory{}, err
 	}
 
-	return []domain.WalletHistory{}, nil
+	return history, nil
 }
 
 func (w *walletRepository) 	AddHistory(amount ,WalletID int,purpose string)error{
