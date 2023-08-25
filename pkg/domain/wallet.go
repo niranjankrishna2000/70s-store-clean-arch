@@ -12,7 +12,7 @@ type Wallet struct {
 type WalletHistory struct {
 	WalletID int       `json:"walletID"`
 	Wallet   Wallet    `json:"-" gorm:"foreignkey:WalletID"`
-	Amount   string    `json:"amount"`
+	Amount   int    `json:"amount"`
 	Purpose  string    `json:"purpose"`
 	Time     time.Time `json:"time"`
 }

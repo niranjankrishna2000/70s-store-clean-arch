@@ -3,6 +3,7 @@ package repository
 import (
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -96,4 +97,13 @@ func (w *walletRepository) GetHistory(walletID, page, limit int) ([]domain.Walle
 	}
 
 	return []domain.WalletHistory{}, nil
+}
+
+func (w *walletRepository) 	AddHistory(amount ,WalletID int,purpose string)error{
+
+	err := w.db.Exec("Insert into wallet_histories(wallet_id,amount,purpose,time) values(?,?,?,?)", WalletID, amount,purpose,time.Now()).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

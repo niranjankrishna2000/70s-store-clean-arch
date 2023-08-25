@@ -361,7 +361,9 @@ func (i *orderUseCase) ReturnOrder(id int) error {
 	if err := i.walletRepo.CreditToUserWallet(amount, walletID); err != nil {
 		return err
 	}
-
+	if err := i.walletRepo.AddHistory(int(amount), walletID,"Return Refund"); err != nil {
+		return err
+	}
 	return nil
 
 }
@@ -422,6 +424,9 @@ func (i *orderUseCase) CancelOrder(id, orderid int) error {
 	}
 	//credit the amount into users wallet
 	if err := i.walletRepo.CreditToUserWallet(amount, walletID); err != nil {
+		return err
+	}
+	if err := i.walletRepo.AddHistory(int(amount), walletID,"Cancellation Refund"); err != nil {
 		return err
 	}
 
