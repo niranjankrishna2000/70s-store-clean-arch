@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 
@@ -33,20 +34,20 @@ func (c *couponRepository) MakeCouponInvalid(id int) error {
 	return nil
 }
 
-func (c *couponRepository) FindCouponDiscount(couponID int) int {
-	var coupon domain.Coupon
-	err := c.db.Raw("select name,discount_rate,valid from coupons where id=$1", couponID).Scan(&coupon).Error
+func (c *couponRepository) FindCouponDiscount(coupon string) int {
+	var discountRate int
+	err := c.db.Raw("select discount_rate from coupons where name=$1", coupon).Scan(&coupon).Error
 	if err != nil {
 		return 0
 	}
-	if !coupon.Valid{
-		return 1
-	}
+	// if !coupon.Valid {
+	// 	return 1
+	// }
 
-	return coupon.DiscountRate
+	return discountRate
 }
 
-func (c *couponRepository) GetCoupons(page,limit int) ([]domain.Coupon, error){
+func (c *couponRepository) GetCoupons(page, limit int) ([]domain.Coupon, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -61,4 +62,22 @@ func (c *couponRepository) GetCoupons(page,limit int) ([]domain.Coupon, error){
 	}
 
 	return coupons, nil
+}
+
+func (c *couponRepository) ValidateCoupon(coupon string) (bool, error) {
+	count := 0
+	if err := c.db.Raw("select count(id) from coupons where name=?", coupon).Scan(&count).Error; err != nil {
+		return false, err
+	}
+	if count < 1 {
+		return false, errors.New("not a valid coupon")
+	}
+	valid := true
+	if err := c.db.Raw("select valid from coupons where name=?", coupon).Scan(&valid).Error; err != nil {
+		return false, err
+	}
+	if !valid {
+		return false, errors.New("not a valid coupon")
+	}
+	return true, nil
 }

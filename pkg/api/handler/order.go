@@ -76,6 +76,7 @@ func (i *OrderHandler) GetOrders(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
+// @Param			coupon	query	string	true	"coupon"
 // @Param			order	body	models.Order	true	"order"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -89,6 +90,14 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+
+	coupon:= c.Query("coupon")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "conversion to integer not possible", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
 	var order models.Order
 	if err := c.BindJSON(&order); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
@@ -97,7 +106,7 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	}
 
 	//move
-	retString, err := i.orderUseCase.OrderItemsFromCart(userID, order)
+	retString, err := i.orderUseCase.OrderItemsFromCart(userID, order,coupon)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

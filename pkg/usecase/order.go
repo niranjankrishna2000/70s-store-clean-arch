@@ -39,8 +39,8 @@ func (i *orderUseCase) GetOrders(id, page, limit int) ([]domain.Order, error) {
 
 }
 
-func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (string, error) {
-	//cartchange
+func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon string) (string, error) {
+	//change cart
 	cart, err := i.userUseCase.GetCart(userid, 0, 0)
 	if err != nil {
 		return "", err
@@ -51,14 +51,21 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 		total = total + v.Total
 	}
 
-	//finding discount if any
-	DiscountRate := i.couponRepo.FindCouponDiscount(order.CouponID)
-	if DiscountRate > 0 {
-		totalDiscount := (total * float64(DiscountRate)) / 100
-		total = total - totalDiscount
-	} else {
-		totalDiscount := 0.0
-		total = total - totalDiscount
+	if coupon != "" {
+		valid, err := i.couponRepo.ValidateCoupon(coupon)
+		if err != nil || !valid {
+			return "Invalid Coupon", err
+		}
+
+		//finding discount if any
+		DiscountRate := i.couponRepo.FindCouponDiscount(coupon)
+		if DiscountRate > 0 {
+			totalDiscount := (total * float64(DiscountRate)) / 100
+			total = total - totalDiscount
+		} else {
+			totalDiscount := 0.0
+			total = total - totalDiscount
+		}
 	}
 
 	var invoiceItems []*internal.InvoiceData
@@ -361,7 +368,7 @@ func (i *orderUseCase) ReturnOrder(id int) error {
 	if err := i.walletRepo.CreditToUserWallet(amount, walletID); err != nil {
 		return err
 	}
-	if err := i.walletRepo.AddHistory(int(amount), walletID,"Return Refund"); err != nil {
+	if err := i.walletRepo.AddHistory(int(amount), walletID, "Return Refund"); err != nil {
 		return err
 	}
 	return nil
@@ -426,7 +433,7 @@ func (i *orderUseCase) CancelOrder(id, orderid int) error {
 	if err := i.walletRepo.CreditToUserWallet(amount, walletID); err != nil {
 		return err
 	}
-	if err := i.walletRepo.AddHistory(int(amount), walletID,"Cancellation Refund"); err != nil {
+	if err := i.walletRepo.AddHistory(int(amount), walletID, "Cancellation Refund"); err != nil {
 		return err
 	}
 

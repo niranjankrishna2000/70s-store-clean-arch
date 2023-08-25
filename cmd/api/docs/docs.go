@@ -1652,6 +1652,13 @@ const docTemplate = `{
                 "summary": "Order Now",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "coupon",
+                        "name": "coupon",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
                         "description": "order",
                         "name": "order",
                         "in": "body",
@@ -2534,9 +2541,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "address_id": {
-                    "type": "integer"
-                },
-                "couponID": {
                     "type": "integer"
                 },
                 "paymentID": {

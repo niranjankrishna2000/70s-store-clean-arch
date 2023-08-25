@@ -86,8 +86,6 @@ definitions:
     properties:
       address_id:
         type: integer
-      couponID:
-        type: integer
       paymentID:
         type: integer
     type: object
@@ -1192,6 +1190,11 @@ paths:
       - application/json
       description: user can order the items that currently in cart
       parameters:
+      - description: coupon
+        in: query
+        name: coupon
+        required: true
+        type: string
       - description: order
         in: body
         name: order
