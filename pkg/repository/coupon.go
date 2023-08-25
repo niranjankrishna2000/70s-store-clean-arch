@@ -39,7 +39,6 @@ func (c *couponRepository) FindCouponDiscount(coupon string) int {
 	var discountRate int
 	err := c.db.Raw("select discount_rate from coupons where name=?", coupon).Scan(&discountRate).Error
 	if err != nil {
-		fmt.Println("error:", err)
 		return 0
 	}
 	// if !coupon.Valid {
