@@ -48,7 +48,7 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 
 	var total float64
 	for _, v := range cart {
-		total = total + v.Total
+		total = total + v.DiscountedPrice
 	}
 	fmt.Println("Total without coupon",total)
 	if coupon != "" && coupon!= " " {
@@ -69,7 +69,7 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 	fmt.Println("Total amount",total)
 	var invoiceItems []*internal.InvoiceData
 	for _, v := range cart {
-		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), (v.Total))
+		inventory, err := internal.NewInvoiceData(v.ProductName, int(v.Quantity), (v.DiscountedPrice))
 		if err != nil {
 			panic(err)
 		}

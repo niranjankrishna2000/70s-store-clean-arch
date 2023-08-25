@@ -36,7 +36,7 @@ func (c *couponRepository) MakeCouponInvalid(id int) error {
 
 func (c *couponRepository) FindCouponDiscount(coupon string) int {
 	var discountRate int
-	err := c.db.Raw("select discount_rate from coupons where name=$1", coupon).Scan(&discountRate).Error
+	err := c.db.Raw("select discount_rate from coupons where name=?", coupon).Scan(&discountRate).Error
 	if err != nil {
 		return 0
 	}
