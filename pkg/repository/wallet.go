@@ -92,7 +92,7 @@ func (w *walletRepository) GetHistory(walletID, page, limit int) ([]domain.Walle
 	}
 	offset := (page - 1) * limit
 	var history []domain.WalletHistory
-	if err := w.db.Raw("select * from wallet_history where walletID=? limit ? offset ?", walletID, limit, offset).Scan(&history).Error; err != nil {
+	if err := w.db.Raw("select * from wallet_histories where walletID=? limit ? offset ?", walletID, limit, offset).Scan(&history).Error; err != nil {
 		return []domain.WalletHistory{}, err
 	}
 
