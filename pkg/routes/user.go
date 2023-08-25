@@ -49,7 +49,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 
 			security := profile.Group("/security")
 			{
-				security.PUT("/change-password", userHandler.ChangePassword)
+				security.PATCH("/change-password", userHandler.ChangePassword)
 			}
 			wallet:=profile.Group("wallet")
 			{
@@ -59,7 +59,7 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			{
 				orders.GET("", orderHandler.GetOrders)
 				orders.PATCH("/cancel", orderHandler.CancelOrder)
-				orders.PUT("/return", orderHandler.ReturnOrder)
+				orders.PATCH("/return", orderHandler.ReturnOrder)
 
 			}
 		}
@@ -68,8 +68,8 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		{
 			cart.GET("/", userHandler.GetCart)
 			cart.DELETE("/remove", userHandler.RemoveFromCart)
-			cart.PUT("/updateQuantity/plus", userHandler.UpdateQuantityAdd)
-			cart.PUT("/updateQuantity/minus", userHandler.UpdateQuantityLess)
+			cart.PATCH("/updateQuantity/plus", userHandler.UpdateQuantityAdd)
+			cart.PATCH("/updateQuantity/minus", userHandler.UpdateQuantityLess)
 
 		}
 		wishlist := engine.Group("/wishlist")

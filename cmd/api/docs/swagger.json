@@ -1504,7 +1504,7 @@
             }
         },
         "/users/cart/updateQuantity/minus": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -1547,7 +1547,7 @@
             }
         },
         "/users/cart/updateQuantity/plus": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -2053,6 +2053,13 @@
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2115,7 +2122,7 @@
             }
         },
         "/users/profile/orders/return": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -2158,7 +2165,7 @@
             }
         },
         "/users/profile/security/change-password": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []

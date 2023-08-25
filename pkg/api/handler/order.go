@@ -336,7 +336,7 @@ func (i *OrderHandler) AdminSalesCustomReport(c *gin.Context) {
 // @Param			id  query  string  true	"id"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/orders/return [put]
+// @Router			/users/profile/orders/return [patch]
 func (i *OrderHandler) ReturnOrder(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Query("id"))

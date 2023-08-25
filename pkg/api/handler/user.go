@@ -68,7 +68,7 @@ func (i *UserHandler) AddAddress(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/security/change-password [put]
+// @Router			/users/profile/security/change-password [patch]
 func (i *UserHandler) ChangePassword(c *gin.Context) {
 
 	id, err := helper.GetUserID(c)
@@ -344,7 +344,7 @@ func (i *UserHandler) SignUp(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/cart/updateQuantity/plus [put]
+// @Router			/users/cart/updateQuantity/plus [patch]
 func (i *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 	id, err := helper.GetUserID(c)
 	if err != nil {
@@ -386,7 +386,7 @@ func (i *UserHandler) UpdateQuantityAdd(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/cart/updateQuantity/minus [put]
+// @Router			/users/cart/updateQuantity/minus [patch]
 func (i *UserHandler) UpdateQuantityLess(c *gin.Context) {
 	id, err := helper.GetUserID(c)
 	if err != nil {

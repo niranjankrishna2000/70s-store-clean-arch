@@ -1112,7 +1112,7 @@ paths:
       tags:
       - User
   /users/cart/updateQuantity/minus:
-    put:
+    patch:
       consumes:
       - application/json
       description: user can subtract 1 quantity of product from their cart
@@ -1139,7 +1139,7 @@ paths:
       tags:
       - User
   /users/cart/updateQuantity/plus:
-    put:
+    patch:
       consumes:
       - application/json
       description: user can add 1 quantity of product to their cart
@@ -1452,6 +1452,11 @@ paths:
         name: limit
         required: true
         type: string
+      - description: status
+        in: query
+        name: status
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1496,7 +1501,7 @@ paths:
       tags:
       - User
   /users/profile/orders/return:
-    put:
+    patch:
       consumes:
       - application/json
       description: user can return the ordered products which is already delivered
@@ -1524,7 +1529,7 @@ paths:
       tags:
       - User
   /users/profile/security/change-password:
-    put:
+    patch:
       consumes:
       - application/json
       description: user can change their password

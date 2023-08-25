@@ -256,6 +256,7 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 		Key:    aws.String(file.Filename),
 		Body:   f,
 		ACL:    "public-read",
+		
 	})
 
 	if uploadErr != nil {

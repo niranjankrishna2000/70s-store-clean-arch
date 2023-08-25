@@ -1516,7 +1516,7 @@ const docTemplate = `{
             }
         },
         "/users/cart/updateQuantity/minus": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -1559,7 +1559,7 @@ const docTemplate = `{
             }
         },
         "/users/cart/updateQuantity/plus": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -2065,6 +2065,13 @@ const docTemplate = `{
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2127,7 +2134,7 @@ const docTemplate = `{
             }
         },
         "/users/profile/orders/return": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
@@ -2170,7 +2177,7 @@ const docTemplate = `{
             }
         },
         "/users/profile/security/change-password": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "Bearer": []
