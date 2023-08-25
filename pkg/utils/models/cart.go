@@ -25,5 +25,4 @@ type CheckOut struct {
 type Order struct {
 	AddressID int `json:"address_id"`
 	PaymentID int `json:"paymentID"`
-	CouponID  int `json:"couponID"`
 }

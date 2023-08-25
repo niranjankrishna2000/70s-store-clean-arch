@@ -82,3 +82,37 @@ func (i *CartHandler) CheckOut(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+// @Summary		Apply Coupon 
+// @Description	Apply coupons for discounts 
+// @Tags			User
+// @Produce		    json
+// @Param			coupon	query	string	true	"Coupon"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/users/check-out/apply-coupon [post]
+func (i *CartHandler) ApplyCoupon(c *gin.Context) {
+	userID, err := helper.GetUserID(c)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	coupon:= c.Query("coupon")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	products, err := i.usecase.ApplyCoupon(userID,coupon)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not open checkout", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}

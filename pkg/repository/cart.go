@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 
@@ -67,4 +68,31 @@ func (i *cartRepository) AddLineItems(cart_id, inventory_id int) error {
 	}
 
 	return nil
+}
+
+func (i *cartRepository) ValidateCoupon(coupon string) (bool, error){
+	count:=0
+	if err := i.DB.Raw("select count(id) from coupons where name=?", coupon).Scan(&count).Error; err != nil {
+		return false, err
+	}
+	if count<1{
+		return false,errors.New("not a valid coupon")
+	}
+	valid:=true
+	if err := i.DB.Raw("select valid from coupons where name=?", coupon).Scan(&valid).Error; err != nil {
+		return false, err
+	}
+	if !valid{
+		return false,errors.New("not a valid coupon")
+	}
+	return true,nil
+}
+
+
+func (i *cartRepository) GetDiscountRate(coupon string) (int, error){
+	discount:=0
+	if err := i.DB.Raw("select discount_rate from coupons where name=?", coupon).Scan(&discount).Error; err != nil {
+		return 0, err
+	}
+	return discount,nil
 }

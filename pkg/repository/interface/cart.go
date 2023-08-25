@@ -10,4 +10,6 @@ type CartRepository interface {
 	GetCartId(user_id int) (int, error)
 	CreateNewCart(user_id int) (int, error)
 	AddLineItems(cart_id, inventory_id int) error
+	ValidateCoupon(coupon string) (bool,error)
+	GetDiscountRate(coupon string)(int,error)
 }

@@ -52,14 +52,14 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order) (strin
 	}
 
 	//finding discount if any
-	DiscountRate := i.couponRepo.FindCouponDiscount(order.CouponID)
-	if DiscountRate > 0 {
-		totalDiscount := (total * float64(DiscountRate)) / 100
-		total = total - totalDiscount
-	} else {
-		totalDiscount := 0.0
-		total = total - totalDiscount
-	}
+	// DiscountRate := i.couponRepo.FindCouponDiscount(order.CouponID)
+	// if DiscountRate > 0 {
+	// 	totalDiscount := (total * float64(DiscountRate)) / 100
+	// 	total = total - totalDiscount
+	// } else {
+	// 	totalDiscount := 0.0
+	// 	total = total - totalDiscount
+	// }
 
 	var invoiceItems []*internal.InvoiceData
 	for _, v := range cart {
