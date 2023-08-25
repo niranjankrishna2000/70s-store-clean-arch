@@ -243,7 +243,8 @@ func (u *userUseCase) GetCart(id, page, limit int) ([]models.GetCart, error) {
 		if err != nil {
 			return []models.GetCart{}, err
 		}
-		price = append(price, q)
+		//updated
+		price = append(price, q*float64(quantity[i]))
 	}
 
 	var categories []int
