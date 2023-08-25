@@ -234,7 +234,7 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 
 	// creds := credentials.NewStaticCredentialsProvider("AKIATXR23JPSQ3U2OH5G", "AKIATXR23JPSQ3U2OH5G", "your-session-token")
 
-	cfg, err := config.LoadDefaultConfig(context.TODO() /*config.WithCredentialsProvider(creds), */, config.WithRegion("ap-southeast-2"))
+	cfg, err := config.LoadDefaultConfig(context.TODO() /*config.WithCredentialsProvider(creds), */, config.WithRegion("ap-south-1"))
 	if err != nil {
 		fmt.Println("configuration error:", err)
 		return "", err
@@ -252,7 +252,7 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 	defer f.Close()
 
 	result, uploadErr := uploader.Upload(context.TODO(), &s3.PutObjectInput{
-		Bucket: aws.String("seventysstore"),
+		Bucket: aws.String("samplebucketff"),
 		Key:    aws.String(file.Filename),
 		Body:   f,
 		ACL:    "public-read",
