@@ -51,6 +51,10 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			{
 				security.PUT("/change-password", userHandler.ChangePassword)
 			}
+			wallet:=profile.Group("wallet")
+			{
+				wallet.GET("",userHandler.GetWallet)
+			}
 			orders := profile.Group("/orders")
 			{
 				orders.GET("", orderHandler.GetOrders)

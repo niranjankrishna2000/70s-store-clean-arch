@@ -398,7 +398,7 @@ func (i *orderUseCase) CancelOrder(id, orderid int) error {
 		return err
 	}
 	if paymentStatus != "PAID" {
-		return errors.New("order not paid")
+		return nil
 	}
 
 	//find amount to be credited to user

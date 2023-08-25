@@ -1,16 +1,17 @@
 package repository
 
 import (
+	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
 
 	"gorm.io/gorm"
 )
 
-type walletRepository struct{
+type walletRepository struct {
 	db gorm.DB
 }
 
-func NewWalletRepositoy(DB *gorm.DB) interfaces.WalletRepository{
+func NewWalletRepositoy(DB *gorm.DB) interfaces.WalletRepository {
 	return &walletRepository{
 		db: *DB,
 	}
@@ -18,7 +19,7 @@ func NewWalletRepositoy(DB *gorm.DB) interfaces.WalletRepository{
 
 func (w *walletRepository) CreditToUserWallet(amount float64, walletId int) error {
 
-	if err := w.db.Exec("update wallets set amount=$1 where id=$2", amount, walletId).Error; err != nil {
+	if err := w.db.Exec("update wallets set amount=amount+$1 where id=$2", amount, walletId).Error; err != nil {
 		return err
 	}
 
@@ -45,7 +46,7 @@ func (w *walletRepository) FindWalletIdFromUserID(userId int) (int, error) {
 		return 0, err
 	}
 
-	var walletID int 
+	var walletID int
 	if count > 0 {
 		err := w.db.Raw("select id from wallets where user_id = ?", userId).Scan(&walletID).Error
 		if err != nil {
@@ -70,4 +71,29 @@ func (w *walletRepository) CreateNewWallet(userID int) (int, error) {
 	}
 
 	return wallet_id, nil
+}
+
+func (w *walletRepository) GetBalance(walletID int) (int, error) {
+
+	var balance int
+	if err := w.db.Raw("select amount from wallets where id=$1", walletID).Scan(&balance).Error; err != nil {
+		return 0, err
+	}
+	return balance, nil
+}
+
+func (w *walletRepository) GetHistory(walletID, page, limit int) ([]domain.WalletHistory, error) {
+	if page == 0 {
+		page = 1
+	}
+	if limit == 0 {
+		limit = 10
+	}
+	offset := (page - 1) * limit
+	var history []domain.WalletHistory
+	if err := w.db.Raw("select * from wallet_history where walletID=? limit ? offset ?", walletID, limit, offset).Scan(&history).Error; err != nil {
+		return []domain.WalletHistory{}, err
+	}
+
+	return []domain.WalletHistory{}, nil
 }

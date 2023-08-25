@@ -14,12 +14,14 @@ import (
 type userUseCase struct {
 	userRepo  interfaces.UserRepository
 	offerRepo interfaces.OfferRepository
+	walletRepo interfaces.WalletRepository
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, offer interfaces.OfferRepository) services.UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, offer interfaces.OfferRepository,wallet interfaces.WalletRepository) services.UserUseCase {
 	return &userUseCase{
 		userRepo:  repo,
 		offerRepo: offer,
+		walletRepo: wallet,
 	}
 }
 
@@ -174,25 +176,25 @@ func (u *userUseCase) GetCartID(userID int) (int, error) {
 
 func (i *userUseCase) EditUser(id int, userData models.EditUser) error {
 
-	if userData.Name != "" && userData.Name!="string" {
+	if userData.Name != "" && userData.Name != "string" {
 		err := i.userRepo.EditName(id, userData.Name)
 		if err != nil {
 			return err
 		}
 	}
-	if userData.Email != "" && userData.Email!="string" {
+	if userData.Email != "" && userData.Email != "string" {
 		err := i.userRepo.EditEmail(id, userData.Email)
 		if err != nil {
 			return err
 		}
 	}
-	if userData.Phone != "" &&  userData.Phone !="string"{
+	if userData.Phone != "" && userData.Phone != "string" {
 		err := i.userRepo.EditPhone(id, userData.Phone)
 		if err != nil {
 			return err
 		}
 	}
-	if userData.Username != "" && userData.Username!="string"{
+	if userData.Username != "" && userData.Username != "string" {
 		err := i.userRepo.EditUsername(id, userData.Username)
 		if err != nil {
 			return err
@@ -324,4 +326,31 @@ func (i *userUseCase) UpdateQuantityLess(id, inv_id int) error {
 
 	return nil
 
+}
+
+func (i *userUseCase) GetWallet(id, page, limit int) (models.Wallet,error) {
+
+	//get wallet id
+	walletID, err := i.walletRepo.FindUserIdFromOrderID(id)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+	//get wallet balance
+	balance,err:=i.walletRepo.GetBalance(walletID)
+	if err != nil {
+		return models.Wallet{}, err
+	}
+	//get wallet history (history  with amnt, purpose,time,walletid)
+	history,err:=i.walletRepo.GetHistory(walletID,page,limit)
+	if err!=nil{
+		return models.Wallet{}, err
+	}
+
+	var wallet models.Wallet
+	wallet.Balance=balance
+	wallet.History=history
+
+
+
+	return wallet,nil
 }
