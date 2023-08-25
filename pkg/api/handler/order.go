@@ -49,7 +49,7 @@ func (i *OrderHandler) GetOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	status:=c.Query("status")
+	//status := c.Query("status")
 	id, err := helper.GetUserID(c)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
@@ -62,7 +62,7 @@ func (i *OrderHandler) GetOrders(c *gin.Context) {
 		return
 	}
 
-	orders, err := i.orderUseCase.GetOrders(id,page,limit)
+	orders, err := i.orderUseCase.GetOrders(id, page, limit)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -92,7 +92,7 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		return
 	}
 
-	coupon:= c.Query("coupon")
+	coupon := c.Query("coupon")
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "conversion to integer not possible", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -107,7 +107,7 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 	}
 
 	//move
-	retString, err := i.orderUseCase.OrderItemsFromCart(userID, order,coupon)
+	retString, err := i.orderUseCase.OrderItemsFromCart(userID, order, coupon)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -142,7 +142,7 @@ func (i *OrderHandler) CancelOrder(c *gin.Context) {
 		return
 	}
 
-	if err := i.orderUseCase.CancelOrder(id,orderid); err != nil {
+	if err := i.orderUseCase.CancelOrder(id, orderid); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -209,7 +209,7 @@ func (i *OrderHandler) AdminOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	orders, err := i.orderUseCase.AdminOrders(page,limit)
+	orders, err := i.orderUseCase.AdminOrders(page, limit)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
