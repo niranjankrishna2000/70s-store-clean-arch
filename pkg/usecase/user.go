@@ -331,7 +331,7 @@ func (i *userUseCase) UpdateQuantityLess(id, inv_id int) error {
 func (i *userUseCase) GetWallet(id, page, limit int) (models.Wallet,error) {
 
 	//get wallet id
-	walletID, err := i.walletRepo.FindUserIdFromOrderID(id)
+	walletID, err := i.walletRepo.FindWalletIdFromUserID(id)
 	if err != nil {
 		return models.Wallet{}, err
 	}
