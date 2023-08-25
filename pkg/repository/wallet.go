@@ -81,7 +81,7 @@ func (w *walletRepository) GetBalance(walletID int) (int, error) {
 	if err := w.db.Raw("select amount from wallets where id=$1", walletID).Scan(&balance).Error; err != nil {
 		return 0, err
 	}
-	fmt.Println("balance : ", balance)
+	fmt.Println(walletID, balance)
 	return balance, nil
 }
 
