@@ -174,25 +174,25 @@ func (u *userUseCase) GetCartID(userID int) (int, error) {
 
 func (i *userUseCase) EditUser(id int, userData models.EditUser) error {
 
-	if userData.Name != "" {
+	if userData.Name != "" && userData.Name!="string" {
 		err := i.userRepo.EditName(id, userData.Name)
 		if err != nil {
 			return err
 		}
 	}
-	if userData.Email != "" {
+	if userData.Email != "" && userData.Email!="string" {
 		err := i.userRepo.EditEmail(id, userData.Email)
 		if err != nil {
 			return err
 		}
 	}
-	if userData.Phone != "" {
+	if userData.Phone != "" &&  userData.Phone !="string"{
 		err := i.userRepo.EditPhone(id, userData.Phone)
 		if err != nil {
 			return err
 		}
 	}
-	if userData.Username != "" {
+	if userData.Username != "" && userData.Username!="string"{
 		err := i.userRepo.EditUsername(id, userData.Username)
 		if err != nil {
 			return err

@@ -57,12 +57,12 @@ func (i *inventoryRepository) UpdateInventory(pid int, invData models.UpdateInve
 			return models.Inventory{}, err
 		}
 	}
-	if invData.ProductName != "" {
+	if invData.ProductName != "" && invData.ProductName !="string"{
 		if err := i.DB.Exec("UPDATE inventories SET product_name = ? WHERE id= ?", invData.ProductName, pid).Error; err != nil {
 			return models.Inventory{}, err
 		}
 	}
-	if invData.Description != "" {
+	if invData.Description != "" && invData.Description !="string"{
 		if err := i.DB.Exec("UPDATE inventories SET description = ? WHERE id= ?", invData.Description, pid).Error; err != nil {
 			return models.Inventory{}, err
 		}
