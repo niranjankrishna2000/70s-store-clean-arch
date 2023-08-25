@@ -33,6 +33,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler /*u
 			//inventorymanagement.GET("/details", inventoryHandler.ShowIndividualProducts)
 			inventorymanagement.POST("/add", inventoryHandler.AddInventory)
 			inventorymanagement.PATCH("/update", inventoryHandler.UpdateInventory)
+			inventorymanagement.PATCH("/update-image", inventoryHandler.UpdateImage)
 			inventorymanagement.DELETE("/delete", inventoryHandler.DeleteInventory)
 		}
 		orders := engine.Group("/orders")

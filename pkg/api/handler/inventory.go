@@ -85,8 +85,8 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 
 }
 
-// @Summary		Update Stock
-// @Description	Admin can update stock of the inventories
+// @Summary		Update inventory
+// @Description	Admin can update inventory details
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
@@ -121,6 +121,44 @@ func (i *InventoryHandler) UpdateInventory(c *gin.Context) {
 	}
 
 	successRes := response.ClientResponse(http.StatusOK, "Successfully updated the inventory stock", invRes, nil)
+	c.JSON(http.StatusOK, successRes)
+
+}
+
+// @Summary		Update image
+// @Description	Admin can update image of the inventory
+// @Tags			Admin
+// @Accept			multipart/form-data
+// @Produce		    json
+// @Param			id	query	string	true	"id"	
+// @Param           image      formData     file   true   "image"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/inventories/update-image [patch]
+func (i *InventoryHandler) UpdateImage(c *gin.Context) {
+	//change
+	inventoryIDstr := c.Query("id")
+	invID,err:=strconv.Atoi(inventoryIDstr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "id is not valid", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	image, err := c.FormFile("image")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from form error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	invRes, err := i.InventoryUseCase.UpdateImage(invID,image)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not update the inventory image", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully updated the inventory image", invRes, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }

@@ -31,6 +31,24 @@ func (i *inventoryRepository) AddInventory(inventory models.Inventory, url strin
 
 }
 
+func (i *inventoryRepository) UpdateImage(invID int, url string) (models.Inventory, error) {
+	// Check the database connection
+	if i.DB == nil {
+		return models.Inventory{}, errors.New("database connection is nil")
+	}
+
+	if err := i.DB.Exec("UPDATE inventories SET image = ? WHERE id= ?", url, invID).Error; err != nil {
+		return models.Inventory{}, err
+	}
+	// Retrieve the update
+	var inventory models.Inventory
+	if err := i.DB.Raw("SELECT * FROM inventories WHERE id=?", invID).Scan(&inventory).Error; err != nil {
+		return models.Inventory{}, err
+	}
+
+	return inventory, nil
+}
+
 func (i *inventoryRepository) CheckInventory(pid int) (bool, error) {
 	var k int
 	err := i.DB.Raw("SELECT COUNT(*) FROM inventories WHERE id=?", pid).Scan(&k).Error
@@ -57,12 +75,12 @@ func (i *inventoryRepository) UpdateInventory(pid int, invData models.UpdateInve
 			return models.Inventory{}, err
 		}
 	}
-	if invData.ProductName != "" && invData.ProductName !="string"{
+	if invData.ProductName != "" && invData.ProductName != "string" {
 		if err := i.DB.Exec("UPDATE inventories SET product_name = ? WHERE id= ?", invData.ProductName, pid).Error; err != nil {
 			return models.Inventory{}, err
 		}
 	}
-	if invData.Description != "" && invData.Description !="string"{
+	if invData.Description != "" && invData.Description != "string" {
 		if err := i.DB.Exec("UPDATE inventories SET description = ? WHERE id= ?", invData.Description, pid).Error; err != nil {
 			return models.Inventory{}, err
 		}

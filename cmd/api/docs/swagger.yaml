@@ -464,7 +464,7 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Admin can update stock of the inventories
+      description: Admin can update inventory details
       parameters:
       - description: id
         in: query
@@ -490,7 +490,39 @@ paths:
             $ref: '#/definitions/response.Response'
       security:
       - Bearer: []
-      summary: Update Stock
+      summary: Update inventory
+      tags:
+      - Admin
+  /admin/inventories/update-image:
+    patch:
+      consumes:
+      - multipart/form-data
+      description: Admin can update image of the inventory
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Update image
       tags:
       - Admin
   /admin/offers:

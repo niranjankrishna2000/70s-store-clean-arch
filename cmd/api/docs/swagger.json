@@ -491,7 +491,7 @@
                         "Bearer": []
                     }
                 ],
-                "description": "Admin can update stock of the inventories",
+                "description": "Admin can update inventory details",
                 "consumes": [
                     "application/json"
                 ],
@@ -501,7 +501,7 @@
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Update Stock",
+                "summary": "Update inventory",
                 "parameters": [
                     {
                         "type": "string",
@@ -518,6 +518,56 @@
                         "schema": {
                             "$ref": "#/definitions/models.UpdateInventory"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/inventories/update-image": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Admin can update image of the inventory",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "image",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {

@@ -37,7 +37,22 @@ func (i *inventoryUseCase) AddInventory(inventory models.Inventory, image *multi
 	return InventoryResponse, nil
 
 }
+func (i *inventoryUseCase) UpdateImage(invID int, image *multipart.FileHeader) (models.Inventory, error) {
 
+	url, err := helper.AddImageToS3(image)
+	if err != nil {
+		return models.Inventory{}, err
+	}
+	//send the url and save it in database
+	InventoryResponse, err := i.repository.UpdateImage(invID, url)
+	if err != nil {
+		fmt.Println(err)
+		return models.Inventory{}, err
+	}
+
+	return InventoryResponse, nil
+
+}
 func (i *inventoryUseCase) UpdateInventory(invID int, invData models.UpdateInventory) (models.Inventory, error) {
 
 	result, err := i.repository.CheckInventory(invID)
