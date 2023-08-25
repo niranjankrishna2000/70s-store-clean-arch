@@ -594,6 +594,11 @@ paths:
         name: limit
         required: true
         type: string
+      - description: status
+        in: query
+        name: status
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1450,11 +1455,6 @@ paths:
       - description: limit
         in: query
         name: limit
-        required: true
-        type: string
-      - description: status
-        in: query
-        name: status
         required: true
         type: string
       produces:

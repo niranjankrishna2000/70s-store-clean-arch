@@ -715,6 +715,13 @@ const docTemplate = `{
                         "name": "limit",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2063,13 +2070,6 @@ const docTemplate = `{
                         "type": "string",
                         "description": "limit",
                         "name": "limit",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "status",
-                        "name": "status",
                         "in": "query",
                         "required": true
                     }
