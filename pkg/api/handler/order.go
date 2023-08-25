@@ -29,7 +29,6 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 // @Produce		    json
 // @Param			page	query  string 	true	"page"
 // @Param			limit	query  string 	true	"limit"
-// @Param			status	query  string	true	"status"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -49,7 +48,6 @@ func (i *OrderHandler) GetOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	//status := c.Query("status")
 	id, err := helper.GetUserID(c)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not get userID", nil, err.Error())
@@ -190,6 +188,7 @@ func (i *OrderHandler) EditOrderStatus(c *gin.Context) {
 // @Produce		    json
 // @Param			page	query  string 	true	"page"
 // @Param			limit	query  string 	true	"limit"
+// @Param			status	query  string	true	"status"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -209,6 +208,8 @@ func (i *OrderHandler) AdminOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+	//status := c.Query("status")
+
 	orders, err := i.orderUseCase.AdminOrders(page, limit)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
