@@ -77,12 +77,12 @@ func (w *walletRepository) CreateNewWallet(userID int) (int, error) {
 
 func (w *walletRepository) GetBalance(walletID int) (int, error) {
 
-	var balance int
+	var balance float64
 	if err := w.db.Raw("select amount from wallets where id=$1", walletID).Scan(&balance).Error; err != nil {
 		return 0, err
 	}
 	fmt.Println(walletID, balance)
-	return balance, nil
+	return int(balance), nil
 }
 
 func (w *walletRepository) GetHistory(walletID, page, limit int) ([]domain.WalletHistory, error) {
