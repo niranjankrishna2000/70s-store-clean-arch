@@ -54,6 +54,7 @@ func (i *cartUseCase) AddToCart(user_id, inventory_id int) error {
 		if err!=nil{
 			return err
 		}
+		return nil
 	}
 
 	//add product to line items
