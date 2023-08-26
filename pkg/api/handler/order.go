@@ -124,7 +124,7 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/orders/cancel [patch]
+// @Router			/users/profile/orders/cancel [post]
 func (i *OrderHandler) CancelOrder(c *gin.Context) {
 	//change
 	id, err := helper.GetUserID(c)
@@ -365,7 +365,7 @@ func (i *OrderHandler) AdminSalesCustomReport(c *gin.Context) {
 // @Param			id  query  string  true	"id"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
-// @Router			/users/profile/orders/return [patch]
+// @Router			/users/profile/orders/return [post]
 func (i *OrderHandler) ReturnOrder(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Query("id"))

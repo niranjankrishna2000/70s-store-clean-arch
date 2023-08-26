@@ -58,8 +58,8 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 			orders := profile.Group("/orders")
 			{
 				orders.GET("", orderHandler.GetOrders)
-				orders.PATCH("/cancel", orderHandler.CancelOrder)
-				orders.PATCH("/return", orderHandler.ReturnOrder)
+				orders.POST("/cancel", orderHandler.CancelOrder)
+				orders.POST("/return", orderHandler.ReturnOrder)
 
 			}
 		}
@@ -68,8 +68,8 @@ func UserRoutes(engine *gin.RouterGroup, userHandler *handler.UserHandler, otpHa
 		{
 			cart.GET("/", userHandler.GetCart)
 			cart.DELETE("/remove", userHandler.RemoveFromCart)
-			cart.PATCH("/updateQuantity/plus", userHandler.UpdateQuantityAdd)
-			cart.PATCH("/updateQuantity/minus", userHandler.UpdateQuantityLess)
+			cart.POST("/updateQuantity/plus", userHandler.UpdateQuantityAdd)
+			cart.POST("/updateQuantity/minus", userHandler.UpdateQuantityLess)
 
 		}
 		wishlist := engine.Group("/wishlist")

@@ -790,6 +790,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/admin/orders/edit/mark-as-paid": {
+            "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Admin can change the status of the payment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update Payment Status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order id",
+                        "name": "orderID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/admin/orders/edit/status": {
             "patch": {
                 "security": [
@@ -1573,7 +1616,7 @@ const docTemplate = `{
             }
         },
         "/users/cart/updateQuantity/minus": {
-            "patch": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -1616,7 +1659,7 @@ const docTemplate = `{
             }
         },
         "/users/cart/updateQuantity/plus": {
-            "patch": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -2141,7 +2184,7 @@ const docTemplate = `{
             }
         },
         "/users/profile/orders/cancel": {
-            "patch": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
@@ -2184,7 +2227,7 @@ const docTemplate = `{
             }
         },
         "/users/profile/orders/return": {
-            "patch": {
+            "post": {
                 "security": [
                     {
                         "Bearer": []
