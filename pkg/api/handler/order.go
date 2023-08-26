@@ -27,8 +27,8 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"
+// @Param			page	query  string 	false	"page"
+// @Param			limit	query  string 	false	"limit"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -214,8 +214,8 @@ func (i *OrderHandler) MarkAsPaid(c *gin.Context) {
 // @Description	Admin can view the orders according to status
 // @Tags			Admin
 // @Produce		    json
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"
+// @Param			page	query  string 	false	"page"
+// @Param			limit	query  string 	false	"limit"
 // @Param			status	query  string	true	"status"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
@@ -237,7 +237,7 @@ func (i *OrderHandler) AdminOrders(c *gin.Context) {
 		return
 	}
 	status := c.Query("status")
-
+	
 	orders, err := i.orderUseCase.AdminOrders(page, limit,status)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())

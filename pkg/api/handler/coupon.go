@@ -84,8 +84,8 @@ func (coup *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"
+// @Param			page	query  string 	false	"page"
+// @Param			limit	query  string 	false	"limit"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}

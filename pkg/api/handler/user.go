@@ -165,8 +165,8 @@ func (i *UserHandler) GetAddresses(c *gin.Context) {
 // @Tags			User
 // @Produce		    json
 // @Security		Bearer
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"
+// @Param			page	query  string 	false	"page"
+// @Param			limit	query  string 	false	"limit"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/cart [get]
@@ -424,8 +424,8 @@ func (i *UserHandler) UpdateQuantityLess(c *gin.Context) {
 // @Tags			User
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	true	"page"
-// @Param			limit	query  string 	true	"limit"// @Security		Bearer
+// @Param			page	query  string 	false	"page"
+// @Param			limit	query  string 	false	"limit"// @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
 // @Router			/users/profile/wallet [get]
