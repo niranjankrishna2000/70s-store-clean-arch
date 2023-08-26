@@ -109,3 +109,17 @@ func (w *walletRepository) AddHistory(amount, WalletID int, purpose string) erro
 	}
 	return nil
 }
+
+func (w *walletRepository) PayFromWallet(userID, orderID int, price float64) (float64, error){
+	if err := w.db.Exec("UPDATE wallets SET amount=amount-? WHERE user_id=?", price,userID).Error; err != nil {
+		return 0.0,err
+	}
+	if err := w.db.Exec("UPDATE orders SET payment_status='PAID' WHERE id=?", orderID).Error; err != nil {
+		return 0.0,err
+	}
+	var balance float64
+	if err := w.db.Raw("select amount from wallets where user_id=$1", userID).Scan(&balance).Error; err != nil {
+		return 0, err
+	}
+	return balance,nil
+}

@@ -11,5 +11,6 @@ type WalletRepository interface {
 	CreateNewWallet(userID int) (int, error)
 	GetBalance(WalletID int) (int, error)
 	GetHistory(walletID, page, limit int) ([]domain.WalletHistory, error)
-	AddHistory(amount ,WalletID int,purpose string)error
+	AddHistory(amount, WalletID int, purpose string) error
+	PayFromWallet(userID, orderID int, price float64) (float64, error)
 }

@@ -61,8 +61,8 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 		DiscountRate := i.couponRepo.FindCouponDiscount(coupon)
 
 		if DiscountRate > 0 {
-			totalDiscount := total * float64(DiscountRate)/100.00
-			fmt.Println("Discount", DiscountRate, "Total discount", totalDiscount,(DiscountRate/100),int(total) ,int(DiscountRate/100))
+			totalDiscount := total * float64(DiscountRate) / 100.00
+			fmt.Println("Discount", DiscountRate, "Total discount", totalDiscount, (DiscountRate / 100), int(total), int(DiscountRate/100))
 			total = total - totalDiscount
 		}
 	}
@@ -110,7 +110,39 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 		return link, err
 	}
 
-	//wallet
+	if order.PaymentID == 3 {
+		order_id, err := i.orderRepository.OrderItems(userid, order, total)
+		if err != nil {
+			return "", err
+		}
+
+		if err := i.orderRepository.AddOrderProducts(order_id, cart); err != nil {
+			return "", err
+		}
+
+		walletID, err := i.walletRepo.FindWalletIdFromUserID(userid)
+		if err != nil {
+			return "", err
+		}
+		bal, err := i.walletRepo.GetBalance(walletID)
+		if err != nil {
+			return "", err
+		}
+		if float64(bal) < total {
+			return "Insufficient Balance on wallet", errors.New("insufficient balance")
+		}
+
+		newBal,err:=i.walletRepo.PayFromWallet(userid, order_id, total)
+		if err != nil {
+			return "", err
+		}
+		cartID, _ := i.userUseCase.GetCartID(userid)
+		if err := i.userUseCase.ClearCart(cartID); err != nil {
+			return "", err
+		}
+		return fmt.Sprintf("%f Rs paid from Wallet. New Balance is %f", total,newBal),nil
+
+	}
 
 	return "", nil
 
@@ -136,13 +168,13 @@ func (i *orderUseCase) MarkAsPaid(orderID int) error {
 
 }
 
-func (i *orderUseCase) AdminOrders(page, limit int,status string) ([]domain.OrderDetails, error) {
+func (i *orderUseCase) AdminOrders(page, limit int, status string) ([]domain.OrderDetails, error) {
 
-	if status != "PENDING" && status != "SHIPPED" && status != "CANCELLED" && status != "RETURNED" && status!="DELIVERED"{
+	if status != "PENDING" && status != "SHIPPED" && status != "CANCELLED" && status != "RETURNED" && status != "DELIVERED" {
 		return []domain.OrderDetails{}, errors.New("invalid status type")
 
 	}
-	orders, err := i.orderRepository.AdminOrders(page,limit,status)
+	orders, err := i.orderRepository.AdminOrders(page, limit, status)
 	if err != nil {
 		return []domain.OrderDetails{}, err
 	}
