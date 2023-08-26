@@ -219,8 +219,8 @@ func (i *InventoryHandler) ShowIndividualProducts(c *gin.Context) {
 // @Tags			Products
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	false	"page"
-// @Param			limit	query  string 	false	"limit"
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -255,8 +255,8 @@ func (i *InventoryHandler) ListProducts(c *gin.Context) {
 // @Tags			Admin
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	false	"page"
-// @Param			limit	query  string 	false	"limit"
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
 // @Security		Bearer
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -291,8 +291,8 @@ func (i *InventoryHandler) AdminListProducts(c *gin.Context) {
 // @Tags			Products
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	false	"page"
-// @Param			limit	query  string 	false	"limit"
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
 // @Param			searchkey 	query  string 	true	"searchkey"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}
@@ -329,8 +329,8 @@ func (i *InventoryHandler) SearchProducts(c *gin.Context) {
 // @Tags			Products
 // @Accept			json
 // @Produce		    json
-// @Param			page	query  string 	false	"page"
-// @Param			limit	query  string 	false	"limit"
+// @Param			page	query  string 	true	"page"
+// @Param			limit	query  string 	true	"limit"
 // @Param			catID 	query  string 	true	"category ID"
 // @Success		200	{object}	response.Response{}
 // @Failure		500	{object}	response.Response{}

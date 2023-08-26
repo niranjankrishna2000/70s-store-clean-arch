@@ -188,10 +188,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -300,10 +302,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -530,10 +534,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -613,10 +619,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       - description: status
         in: query
@@ -770,10 +778,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -929,10 +939,12 @@ paths:
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       - description: Page number
         in: query
         name: page
+        required: true
         type: string
       produces:
       - application/json
@@ -986,10 +998,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -1017,10 +1031,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       - description: category ID
         in: query
@@ -1078,10 +1094,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       - description: searchkey
         in: query
@@ -1109,10 +1127,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -1489,10 +1509,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json
@@ -1602,10 +1624,12 @@ paths:
       - description: page
         in: query
         name: page
+        required: true
         type: string
       - description: limit
         in: query
         name: limit
+        required: true
         type: string
       produces:
       - application/json

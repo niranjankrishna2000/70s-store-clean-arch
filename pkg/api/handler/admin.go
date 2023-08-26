@@ -110,8 +110,8 @@ func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 // @Accept			json
 // @Produce		json
 // @Security		Bearer
-// @Param			limit	query		string	false	"limit"
-// @Param			page	query		string	false	"Page number"
+// @Param			limit	query		string	true	"limit"
+// @Param			page	query		string	true	"Page number"
 // @Success		200		{object}	response.Response{}
 // @Failure		500		{object}	response.Response{}
 // @Router			/admin/users/getusers [get]
