@@ -110,7 +110,7 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 		return link, err
 	}
 
-	if order.PaymentID == 3 {
+	if order.PaymentID == 4 {
 		order_id, err := i.orderRepository.OrderItems(userid, order, total)
 		if err != nil {
 			return "", err
@@ -136,6 +136,9 @@ func (i *orderUseCase) OrderItemsFromCart(userid int, order models.Order, coupon
 		if err != nil {
 			return "", err
 		}
+
+		i.walletRepo.AddHistory(int(total*-1),walletID,"Placed order")
+
 		cartID, _ := i.userUseCase.GetCartID(userid)
 		if err := i.userUseCase.ClearCart(cartID); err != nil {
 			return "", err
