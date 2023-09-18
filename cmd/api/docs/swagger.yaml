@@ -433,6 +433,38 @@ paths:
       summary: Add Inventory
       tags:
       - Admin
+  /admin/inventories/add-image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Admin can add new image to product
+      parameters:
+      - description: product_id
+        in: formData
+        name: product_id
+        required: true
+        type: string
+      - description: image
+        in: formData
+        name: image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Add image to an Inventory
+      tags:
+      - Admin
   /admin/inventories/delete:
     delete:
       consumes:
@@ -458,6 +490,38 @@ paths:
       security:
       - Bearer: []
       summary: Delete Inventory
+      tags:
+      - Admin
+  /admin/inventories/delete-image:
+    delete:
+      consumes:
+      - application/json
+      description: Admin can delete a product image
+      parameters:
+      - description: product_id
+        in: query
+        name: product_id
+        required: true
+        type: string
+      - description: image_id
+        in: query
+        name: image_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - Bearer: []
+      summary: Delete Inventory image
       tags:
       - Admin
   /admin/inventories/update:

@@ -17,3 +17,10 @@ type Category struct {
 	ID       uint   `json:"id" gorm:"unique;not null"`
 	Category string `json:"category"`
 }
+
+type Image struct {
+	ID          int       `json:"id" gorm:"unique;not null"`
+	InventoryID int       `json:"inventory_id"`
+	Inventory   Inventory `json:"-" gorm:"foriegnkey:InventoryID"`
+	ImageURL    string    `json:"imageurl"`
+}

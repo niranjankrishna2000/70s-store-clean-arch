@@ -16,4 +16,7 @@ type InventoryRepository interface {
 	CheckPrice(inventory_id int) (float64, error)
 	SearchProducts(key string,page,limit int) ([]models.Inventory, error)
 	GetCategoryProducts(catID int,page,limit int) ([]models.Inventory, error)
+	AddImage(product_id int, imageURL string) (models.InventoryResponse, error)
+	DeleteImage(product_id, imageID int) error
+	GetImagesFromInventoryID(product_id int) ([]models.ImageInfo, error)
 }

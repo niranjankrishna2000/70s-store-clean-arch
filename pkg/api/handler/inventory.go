@@ -85,6 +85,81 @@ func (i *InventoryHandler) AddInventory(c *gin.Context) {
 
 }
 
+
+// @Summary		Add image to an Inventory
+// @Description	Admin can add new image to product
+// @Tags			Admin
+// @Accept			multipart/form-data
+// @Produce		    json
+// @Param			product_id	formData	string	true	"product_id"
+// @Param           image      formData     file   true   "image"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/inventories/add-image [post]
+func (i *InventoryHandler) AddImage(c *gin.Context) {
+
+	product_id, err := strconv.Atoi(c.Request.FormValue("product_id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	image, err := c.FormFile("image")
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "retrieving image from form error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	InventoryResponse, err := i.InventoryUseCase.AddImage(product_id, image)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not add the Inventory image", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully added Inventory image", InventoryResponse, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+// @Summary		Delete Inventory image
+// @Description	Admin can delete a product image
+// @Tags			Admin
+// @Accept			json
+// @Produce		    json
+// @Param			product_id	query	string	true	"product_id"
+// @Param			image_id	query	string	true	"image_id"
+// @Security		Bearer
+// @Success		200	{object}	response.Response{}
+// @Failure		500	{object}	response.Response{}
+// @Router			/admin/inventories/delete-image [delete]
+func (i *InventoryHandler) DeleteImage(c *gin.Context) {
+
+	inventoryID, err := strconv.Atoi(c.Query("product_id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "image ID   not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	imageID, err := strconv.Atoi(c.Query("image_id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "image ID   not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	err = i.InventoryUseCase.DeleteImage(inventoryID, imageID)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "Could not remove the Inventory", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully deleted the inventory image", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+
 // @Summary		Update inventory
 // @Description	Admin can update inventory details
 // @Tags			Admin

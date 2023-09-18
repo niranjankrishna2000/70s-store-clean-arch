@@ -228,3 +228,33 @@ func (ad *inventoryRepository) GetCategoryProducts(catID int, page, limit int) (
 
 	return productDetails, nil
 }
+
+
+func (ad *inventoryRepository) AddImage(product_id int, imageURL string) (models.InventoryResponse, error) {
+	var inventoryResponse models.InventoryResponse
+	query := `
+    INSERT INTO images (inventory_id,image_url)
+    VALUES (?, ?) RETURNING inventory_id
+	`
+	ad.DB.Raw(query, product_id, imageURL).Scan(&inventoryResponse.ProductID)
+
+	return inventoryResponse, nil
+}
+
+func (ad *inventoryRepository) DeleteImage(product_id, imageID int) error {
+	result := ad.DB.Exec("DELETE FROM images WHERE id = ?", imageID)
+
+	if result.RowsAffected < 1 {
+		return errors.New("no records with that ID exist")
+	}
+
+	return nil
+}
+
+func (ad *inventoryRepository) GetImagesFromInventoryID(product_id int) ([]models.ImageInfo, error) {
+	var images []models.ImageInfo
+	if err := ad.DB.Raw("select id,image_url from images where inventory_id=?", product_id).Scan(&images).Error; err != nil {
+		return []models.ImageInfo{}, err
+	}
+	return images, nil
+}

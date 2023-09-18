@@ -125,3 +125,29 @@ func (i *inventoryUseCase) GetCategoryProducts(catID int, page, limit int) ([]mo
 	return productDetails, nil
 
 }
+
+func (i *inventoryUseCase) AddImage(product_id int, image *multipart.FileHeader) (models.InventoryResponse, error) {
+
+	imageURL, err := helper.AddImageToS3(image)
+	if err != nil {
+		return models.InventoryResponse{}, err
+	}
+	InventoryResponse, err := i.repository.AddImage(product_id, imageURL)
+	if err != nil {
+		return models.InventoryResponse{}, err
+	}
+
+	return InventoryResponse, nil
+
+}
+
+func (i *inventoryUseCase) DeleteImage(product_id int, image_id int) error {
+
+	err := i.repository.DeleteImage(product_id, image_id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}

@@ -22,3 +22,8 @@ type UpdateInventory struct {
 	Stock       int     `json:"stock"`
 	Price       float64 `json:"price"`
 }
+
+type ImageInfo struct {
+	ID       int    `json:"id"`
+	ImageURL string `json:"imageurl"`
+}
