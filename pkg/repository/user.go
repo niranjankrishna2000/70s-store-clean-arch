@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"fmt"
 
 	"main/pkg/domain"
 	interfaces "main/pkg/repository/interface"
@@ -22,17 +21,17 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 func (c *userDatabase) CheckUserAvailability(email string) bool {
 
 	var count int
-	query := fmt.Sprintf("select count(*) from users where email='%s'", email)
-	if err := c.DB.Raw(query).Scan(&count).Error; err != nil {
+	query := `select count(*) from users where email = ?`
+	if err := c.DB.Raw(query, email).Scan(&count).Error; err != nil {
 		return false
 	}
 	// if count is greater than 0 that means the user already exist
 	return count > 0
 }
 
-func (cr *userDatabase) UserBlockStatus(email string) (bool, error) {
+func (c *userDatabase) UserBlockStatus(email string) (bool, error) {
 	var permission bool
-	err := cr.DB.Raw("select permission from users where email = ?", email).Scan(&permission).Error
+	err := c.DB.Raw("select permission from users where email = ?", email).Scan(&permission).Error
 	if err != nil {
 		return false, err
 	}
@@ -70,7 +69,6 @@ func (c *userDatabase) FindUserIDByOrderID(orderID int) (int, error) {
 
 	return userID, nil
 }
-
 
 func (c *userDatabase) SignUp(user models.UserDetails) (models.UserResponse, error) {
 
@@ -203,10 +201,9 @@ func (i *userDatabase) EditPhone(id int, phone string) error {
 	return nil
 }
 
+func (ad *userDatabase) RemoveFromCart(cartID int, inventoryID int) error {
 
-func (ad *userDatabase) RemoveFromCart(cartID int,inventoryID int) error {
-
-	if err := ad.DB.Exec(`delete from line_items where cart_id=? and inventory_id=?`, cartID,inventoryID).Error; err != nil {
+	if err := ad.DB.Exec(`delete from line_items where cart_id=? and inventory_id=?`, cartID, inventoryID).Error; err != nil {
 		return err
 	}
 
@@ -278,7 +275,7 @@ func (ad *userDatabase) GetCartID(id int) (int, error) {
 
 }
 
-func (ad *userDatabase) GetProductsInCart(cart_id ,page, limit int) ([]int, error) {
+func (ad *userDatabase) GetProductsInCart(cart_id, page, limit int) ([]int, error) {
 
 	if page == 0 {
 		page = 1
@@ -289,7 +286,7 @@ func (ad *userDatabase) GetProductsInCart(cart_id ,page, limit int) ([]int, erro
 	offset := (page - 1) * limit
 	var cart_products []int
 
-	if err := ad.DB.Raw("select inventory_id from line_items where cart_id=? limit ? offset ?", cart_id,limit,offset).Scan(&cart_products).Error; err != nil {
+	if err := ad.DB.Raw("select inventory_id from line_items where cart_id=? limit ? offset ?", cart_id, limit, offset).Scan(&cart_products).Error; err != nil {
 		return []int{}, err
 	}
 
