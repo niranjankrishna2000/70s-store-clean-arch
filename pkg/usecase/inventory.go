@@ -8,6 +8,7 @@ import (
 	services "main/pkg/usecase/interface"
 	"main/pkg/utils/models"
 	"mime/multipart"
+	"strconv"
 )
 
 type inventoryUseCase struct {
@@ -83,43 +84,54 @@ func (i *inventoryUseCase) DeleteInventory(inventoryID string) error {
 
 }
 
-func (i *inventoryUseCase) ShowIndividualProducts(id string) (models.Inventory, error) {
+func (i *inventoryUseCase) ShowIndividualProducts(id string) (models.InventoryDetails, error) {
 
 	product, err := i.repository.ShowIndividualProducts(id)
 	if err != nil {
-		return models.Inventory{}, err
+		return models.InventoryDetails{}, err
 	}
+	productID, err := strconv.Atoi(id)
+	if err != nil {
+		return models.InventoryDetails{}, err
+	}
+	var AdditionalImages []models.ImageInfo
+	AdditionalImages, err = i.repository.GetImagesFromInventoryID(productID)
+	if err != nil {
+		return models.InventoryDetails{}, err
+	}
+	InvDetails := models.InventoryDetails{Inventory: product, AdditionalImages: AdditionalImages}
 
-	return product, nil
+	return InvDetails, nil
 
 }
 
-func (i *inventoryUseCase) ListProducts(page int, limit int) ([]models.Inventory, error) {
+func (i *inventoryUseCase) ListProducts(page int, limit int) ([]models.InventoryList, error) {
 
 	productDetails, err := i.repository.ListProducts(page, limit)
 	if err != nil {
-		return []models.Inventory{}, err
+		return []models.InventoryList{}, err
 	}
 	return productDetails, nil
 
 }
-//change return searchkey 
-func (i *inventoryUseCase) SearchProducts(key string, page, limit int) ([]models.Inventory, error) {
+
+// change return searchkey
+func (i *inventoryUseCase) SearchProducts(key string, page, limit int) ([]models.InventoryList, error) {
 
 	productDetails, err := i.repository.SearchProducts(key, page, limit)
 	if err != nil {
-		return []models.Inventory{}, err
+		return []models.InventoryList{}, err
 	}
 
 	return productDetails, nil
 
 }
 
-func (i *inventoryUseCase) GetCategoryProducts(catID int, page, limit int) ([]models.Inventory, error) {
+func (i *inventoryUseCase) GetCategoryProducts(catID int, page, limit int) ([]models.InventoryList, error) {
 
 	productDetails, err := i.repository.GetCategoryProducts(catID, page, limit)
 	if err != nil {
-		return []models.Inventory{}, err
+		return []models.InventoryList{}, err
 	}
 
 	return productDetails, nil

@@ -143,7 +143,7 @@ func (i *inventoryRepository) ShowIndividualProducts(id string) (models.Inventor
 
 }
 
-func (ad *inventoryRepository) ListProducts(page int, limit int) ([]models.Inventory, error) {
+func (ad *inventoryRepository) ListProducts(page int, limit int) ([]models.InventoryList, error) {
 	// pagination purpose -
 	if page == 0 {
 		page = 1
@@ -152,10 +152,10 @@ func (ad *inventoryRepository) ListProducts(page int, limit int) ([]models.Inven
 		limit = 10
 	}
 	offset := (page - 1) * limit
-	var productDetails []models.Inventory
+	var productDetails []models.InventoryList
 
-	if err := ad.DB.Raw("select id,category_id,product_name,description,stock,price,image from inventories limit ? offset ?", limit, offset).Scan(&productDetails).Error; err != nil {
-		return []models.Inventory{}, err
+	if err := ad.DB.Raw("SELECT inventories.id, inventories.product_name, inventories.description, inventories.stock, inventories.price, inventories.image, categories.category AS category FROM inventories JOIN categories ON inventories.category_id = categories.id LIMIT ? OFFSET ?", limit, offset).Scan(&productDetails).Error; err != nil {
+		return []models.InventoryList{}, err
 	}
 
 	return productDetails, nil
@@ -180,7 +180,7 @@ func (i *inventoryRepository) CheckPrice(pid int) (float64, error) {
 	return k, nil
 }
 
-func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]models.Inventory, error) {
+func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]models.InventoryList, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -188,24 +188,36 @@ func (ad *inventoryRepository) SearchProducts(key string, page, limit int) ([]mo
 		limit = 10
 	}
 	offset := (page - 1) * limit
-	var productDetails []models.Inventory
+	var productDetails []models.InventoryList
 
 	query := `
-		SELECT *
-		FROM inventories 
-		WHERE product_name ILIKE '%' || ? || '%' 
-		OR description ILIKE '%' || ? || '%'
-		limit ? offset ?
-	`
-
-	if err := ad.DB.Raw(query, key, key, limit, offset).Scan(&productDetails).Error; err != nil {
-		return []models.Inventory{}, err
+	SELECT
+		inventories.id,
+		inventories.product_name,
+		inventories.description,
+		inventories.stock,
+		inventories.price,
+		inventories.image,
+		categories.category AS category
+	FROM
+		inventories
+	JOIN
+		categories
+	ON
+		inventories.category_id = categories.id
+	WHERE
+	product_name ILIKE '%' || ? || '%'
+	 	OR description ILIKE '%' || ? || '%'
+	 	LIMIT ? OFFSET ?
+	 `
+	if err := ad.DB.Raw(query, key, limit, offset).Scan(&productDetails).Error; err != nil {
+		return []models.InventoryList{}, err
 	}
 
 	return productDetails, nil
 }
 
-func (ad *inventoryRepository) GetCategoryProducts(catID int, page, limit int) ([]models.Inventory, error) {
+func (ad *inventoryRepository) GetCategoryProducts(catID int, page, limit int) ([]models.InventoryList, error) {
 	if page == 0 {
 		page = 1
 	}
@@ -213,22 +225,20 @@ func (ad *inventoryRepository) GetCategoryProducts(catID int, page, limit int) (
 		limit = 10
 	}
 	offset := (page - 1) * limit
-	var productDetails []models.Inventory
+	var productDetails []models.InventoryList
 
 	query := `
-		SELECT *
-		FROM inventories 
-		WHERE category_id=?
+	SELECT inventories.id, inventories.product_name, inventories.description, inventories.stock, inventories.price, inventories.image, categories.category AS category FROM inventories JOIN categories ON inventories.category_id = categories.id 
+		WHERE inventories.category_id=?
 		limit ? offset ?
 	`
 
 	if err := ad.DB.Raw(query, catID, limit, offset).Scan(&productDetails).Error; err != nil {
-		return []models.Inventory{}, err
+		return []models.InventoryList{}, err
 	}
 
 	return productDetails, nil
 }
-
 
 func (ad *inventoryRepository) AddImage(product_id int, imageURL string) (models.InventoryResponse, error) {
 	var inventoryResponse models.InventoryResponse
