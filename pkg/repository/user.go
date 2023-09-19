@@ -112,7 +112,7 @@ func (ad *userDatabase) GetAddresses(id int) ([]domain.Address, error) {
 	var addresses []domain.Address
 
 	if err := ad.DB.Raw("select * from addresses where user_id=?", id).Scan(&addresses).Error; err != nil {
-		return []domain.Address{}, err
+		return []domain.Address{}, errors.New("error in getting addresses")
 	}
 
 	return addresses, nil
@@ -124,7 +124,7 @@ func (ad *userDatabase) GetUserDetails(id int) (models.UserResponse, error) {
 	var details models.UserResponse
 
 	if err := ad.DB.Raw("select id,name,username,email,phone from users where id=?", id).Scan(&details).Error; err != nil {
-		return models.UserResponse{}, err
+		return models.UserResponse{}, errors.New("could not get user details")
 	}
 
 	return details, nil
@@ -135,7 +135,7 @@ func (i *userDatabase) ChangePassword(id int, password string) error {
 
 	err := i.DB.Exec("UPDATE users SET password=? WHERE id=?", password, id).Error
 	if err != nil {
-		return err
+		return errors.New("couldnt change password")
 	}
 
 	return nil
@@ -147,7 +147,7 @@ func (i *userDatabase) GetPassword(id int) (string, error) {
 	var userPassword string
 	err := i.DB.Raw("select password from users where id = ?", id).Scan(&userPassword).Error
 	if err != nil {
-		return "", err
+		return "", errors.New("couldnt get password")
 	}
 	return userPassword, nil
 

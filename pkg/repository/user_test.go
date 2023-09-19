@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"main/pkg/domain"
 	"main/pkg/utils/models"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -367,7 +368,7 @@ func Test_AddAddress(t *testing.T) {
 			},
 			stub: func(mockSQL sqlmock.Sqlmock) {
 
-				mockSQL.ExpectExec("INSERT INTO addresses").WithArgs(1, "Niranjan", "thundathil", "mundathicode", "thrissur", "kerala", "680601", true).WillReturnResult(sqlmock.NewResult(1,1))
+				mockSQL.ExpectExec("INSERT INTO addresses").WithArgs(1, "Niranjan", "thundathil", "mundathicode", "thrissur", "kerala", "680601", true).WillReturnResult(sqlmock.NewResult(1, 1))
 
 			},
 			wantErr: nil,
@@ -477,6 +478,278 @@ func Test_CheckIfFirstAddress(t *testing.T) {
 			//log.Println("log :", tt.name, tt.wantErr, err)
 
 			assert.Equal(t, tt.want, result)
+		})
+	}
+
+}
+
+func Test_GetAddresses(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    []domain.Address
+		wantErr error
+	}{
+		{
+			name: "successfully got all addresses",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select \* from addresses(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "user_id", "name", "house_name", "street", "city", "state", "pin", "default"}).AddRow(1, 1, "a", "b", "c", "d", "e", "f", true).AddRow(2, 1, "a", "b", "c", "d", "e", "f", false))
+
+			},
+
+			want: []domain.Address{
+				{ID: 1,
+					UserID:    1,
+					Name:      "a",
+					HouseName: "b",
+					Street:    "c",
+					City:      "d",
+					State:     "e",
+					Pin:       "f",
+					Default:   true,
+				}, {
+					ID:        2,
+					UserID:    1,
+					Name:      "a",
+					HouseName: "b",
+					Street:    "c",
+					City:      "d",
+					State:     "e",
+					Pin:       "f",
+					Default:   false,
+				},
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select \* from addresses(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error in getting addresses"))
+
+			},
+
+			want:    []domain.Address{},
+			wantErr: errors.New("error in getting addresses"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.GetAddresses(tt.args)
+
+			assert.Equal(t, tt.wantErr, err)
+			assert.Equal(t, tt.want, result)
+		})
+	}
+
+}
+func Test_GetUserDetails(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    models.UserResponse
+		wantErr error
+	}{
+		{
+			name: "successfully got details",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				// expectedQuery := `^select \* from users(.+)$`,
+
+				mockSQL.ExpectQuery(`^select id\,name\,username\,email\,phone from users(.+)$`).WithArgs(1).
+					WillReturnRows(sqlmock.NewRows([]string{"id", "name","username", "email", "phone"}).AddRow(1, "Niranjan", "niranjan","niranjan@gmail.com", "8593098099"))
+			},
+
+			want: models.UserResponse{
+				Id:    1,
+				Name:  "Niranjan",
+				Username: "niranjan",
+				Email: "niranjan@gmail.com",
+				Phone: "8593098099",
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectQuery(`^select id\,name\,username\,email\,phone from users(.+)$`).
+					WillReturnError(errors.New("could not get user details"))
+			},
+
+			want:    models.UserResponse{},
+			wantErr: errors.New("could not get user details"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.GetUserDetails(tt.args)
+
+			assert.Equal(t, tt.wantErr, err)
+			assert.Equal(t, tt.want, result)
+		})
+	}
+
+}
+
+func Test_ChangePassword(t *testing.T) {
+	tests := []struct {
+		name string
+		args struct {
+			id       int
+			password string
+		}
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				id       int
+				password string
+			}{id: 1, password: "newpass"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("UPDATE users SET").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				id       int
+				password string
+			}{id: 1, password: "nil"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("UPDATE users SET").WithArgs().WillReturnError(errors.New("couldnt change password"))
+
+			},
+			wantErr: errors.New("couldnt change password"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+			u := NewUserRepository(gormDB)
+
+			err := u.ChangePassword(tt.args.id, tt.args.password)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func Test_GetPassword(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    string
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select password from users(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"password"}).AddRow("password"))
+
+			},
+
+			want:    "password",
+			wantErr: nil,
+		},
+		{
+			name: "failure",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select password from users(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+
+			want:    "",
+			wantErr: errors.New("couldnt get password"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.GetPassword(tt.args)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
 		})
 	}
 
