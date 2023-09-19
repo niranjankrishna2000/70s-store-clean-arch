@@ -419,3 +419,65 @@ func Test_AddAddress(t *testing.T) {
 	}
 
 }
+
+func Test_CheckIfFirstAddress(t *testing.T) {
+
+	tests := []struct {
+		name string
+		args int
+		stub func(sqlmock.Sqlmock)
+		want bool
+	}{
+		{
+			name: "first address",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select count\(\*\) from addresses(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).WithArgs(1).
+					WillReturnRows(sqlmock.NewRows([]string{"count"}).AddRow(0))
+
+			},
+
+			want: false,
+		},
+		{
+			name: "error occured",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select count\(\*\) from addresses(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result := u.CheckIfFirstAddress(tt.args)
+			log.Println("log :", tt.name, tt.want, result)
+			//log.Println("log :", tt.name, tt.wantErr, err)
+
+			assert.Equal(t, tt.want, result)
+		})
+	}
+
+}
