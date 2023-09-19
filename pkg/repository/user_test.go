@@ -60,7 +60,7 @@ func Test_CheckUserAvailabilty(t *testing.T) {
 					WillReturnError(errors.New("text string"))
 
 			},
-
+ 
 			want: false,
 		},
 	}
