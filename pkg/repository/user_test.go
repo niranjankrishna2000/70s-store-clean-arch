@@ -584,15 +584,15 @@ func Test_GetUserDetails(t *testing.T) {
 				// expectedQuery := `^select \* from users(.+)$`,
 
 				mockSQL.ExpectQuery(`^select id\,name\,username\,email\,phone from users(.+)$`).WithArgs(1).
-					WillReturnRows(sqlmock.NewRows([]string{"id", "name","username", "email", "phone"}).AddRow(1, "Niranjan", "niranjan","niranjan@gmail.com", "8593098099"))
+					WillReturnRows(sqlmock.NewRows([]string{"id", "name", "username", "email", "phone"}).AddRow(1, "Niranjan", "niranjan", "niranjan@gmail.com", "8593098099"))
 			},
 
 			want: models.UserResponse{
-				Id:    1,
-				Name:  "Niranjan",
+				Id:       1,
+				Name:     "Niranjan",
 				Username: "niranjan",
-				Email: "niranjan@gmail.com",
-				Phone: "8593098099",
+				Email:    "niranjan@gmail.com",
+				Phone:    "8593098099",
 			},
 			wantErr: nil,
 		},
@@ -747,6 +747,836 @@ func Test_GetPassword(t *testing.T) {
 			u := NewUserRepository(gormDB)
 
 			result, err := u.GetPassword(tt.args)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_FindIdFromPhone(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    string
+		stub    func(sqlmock.Sqlmock)
+		want    int
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: "1234567890",
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select id from users(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+
+			},
+
+			want:    1,
+			wantErr: nil,
+		},
+		{
+			name: "failure",
+			args: "1234567890",
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `^select id from users(.+)$`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+
+			want:    0,
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.FindIdFromPhone(tt.args)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_EditName(t *testing.T) {
+	tests := []struct {
+		name string
+		args struct {
+			id   int
+			name string
+		}
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				id   int
+				name string
+			}{id: 1, name: "Niranjan"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				id   int
+				name string
+			}{id: 1, name: "Niranjan"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnError(errors.New("error"))
+
+			},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+			u := NewUserRepository(gormDB)
+
+			err := u.EditName(tt.args.id, tt.args.name)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func Test_EditEmail(t *testing.T) {
+	tests := []struct {
+		name string
+		args struct {
+			id    int
+			email string
+		}
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				id    int
+				email string
+			}{id: 1, email: "niranjan@gmail.com"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				id    int
+				email string
+			}{id: 1, email: "niranjan@gmail.com"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnError(errors.New("error"))
+
+			},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+			u := NewUserRepository(gormDB)
+
+			err := u.EditEmail(tt.args.id, tt.args.email)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func Test_EditUserame(t *testing.T) {
+	tests := []struct {
+		name string
+		args struct {
+			id       int
+			username string
+		}
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				id       int
+				username string
+			}{id: 1, username: "Niranjan"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				id       int
+				username string
+			}{id: 1, username: "Niranjan"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnError(errors.New("error"))
+
+			},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+			u := NewUserRepository(gormDB)
+
+			err := u.EditUsername(tt.args.id, tt.args.username)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func Test_EditPhone(t *testing.T) {
+	tests := []struct {
+		name string
+		args struct {
+			id    int
+			phone string
+		}
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				id    int
+				phone string
+			}{id: 1, phone: "1234567890"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				id    int
+				phone string
+			}{id: 1, phone: "1234567890"},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				mockSQL.ExpectExec("update users set").WithArgs().WillReturnError(errors.New("error"))
+
+			},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+			u := NewUserRepository(gormDB)
+
+			err := u.EditPhone(tt.args.id, tt.args.phone)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func Test_RemoveFromCart(t *testing.T) {
+
+	tests := []struct {
+		name string
+		args struct {
+			cartId int
+			invId  int
+		}
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				cartId int
+				invId  int
+			}{
+				cartId: 1,
+				invId:  1,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `delete from line_items`
+
+				mockSQL.ExpectExec(expectedQuery).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				cartId int
+				invId  int
+			}{
+				cartId: 1,
+				invId:  1,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `delete from line_items`
+
+				mockSQL.ExpectExec(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			err := u.RemoveFromCart(tt.args.cartId, tt.args.invId)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_ClearCart(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `delete from line_items`
+
+				mockSQL.ExpectExec(expectedQuery).
+					WillReturnResult(sqlmock.NewResult(1, 1))
+
+			},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `delete from line_items`
+
+				mockSQL.ExpectExec(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			err := u.ClearCart(tt.args)
+
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_GetCartID(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    int
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select id from carts`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+
+			},
+			want:    1,
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select id from carts`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			want:    0,
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.GetCartID(tt.args)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_GetProductsInCart(t *testing.T) {
+
+	tests := []struct {
+		name string
+		args struct {
+			cart_id int
+			page    int
+			limit   int
+		}
+		stub    func(sqlmock.Sqlmock)
+		want    []int
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				cart_id int
+				page    int
+				limit   int
+			}{
+				cart_id: 1, page: 1, limit: 2,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select inventory_id from line_items`
+
+				mockSQL.ExpectQuery(expectedQuery).WithArgs().
+					WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1).AddRow(2))
+
+			},
+			want:    []int{1, 2},
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				cart_id int
+				page    int
+				limit   int
+			}{
+				cart_id: 1, page: 1, limit: 2,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select inventory_id from line_items`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			want:    []int{},
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.GetProductsInCart(tt.args.cart_id, tt.args.page, tt.args.limit)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_FindProductsNames(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    string
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select product_name from inventories`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"product_name"}).AddRow("vintage product"))
+
+			},
+			want:    "vintage product",
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select product_name from inventories`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			want:    "",
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.FindProductNames(tt.args)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_FindCartQuantity(t *testing.T) {
+
+	tests := []struct {
+		name string
+		args struct {
+			cart_id int
+			inv_id  int
+		}
+		stub    func(sqlmock.Sqlmock)
+		want    int
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: struct {
+				cart_id int
+				inv_id  int
+			}{
+				cart_id: 1,
+				inv_id:  1,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select quantity from line_items`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"quantity"}).AddRow(1))
+
+			},
+			want:    1,
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: struct {
+				cart_id int
+				inv_id  int
+			}{
+				cart_id: 1,
+				inv_id:  1,
+			},
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select quantity from line_items`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			want:    0,
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.FindCartQuantity(tt.args.cart_id, tt.args.inv_id)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_FindPrice(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    float64
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select price from inventories`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"price"}).AddRow(400))
+
+			},
+			want:    400,
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select price from inventories`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			want:    0,
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.FindPrice(tt.args)
+
+			assert.Equal(t, tt.want, result)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+
+}
+
+func Test_FindCategory(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		args    int
+		stub    func(sqlmock.Sqlmock)
+		want    int
+		wantErr error
+	}{
+		{
+			name: "success",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select category_id from inventories`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnRows(sqlmock.NewRows([]string{"category_id"}).AddRow(1))
+
+			},
+			want:    1,
+			wantErr: nil,
+		},
+		{
+			name: "error",
+			args: 1,
+			stub: func(mockSQL sqlmock.Sqlmock) {
+
+				expectedQuery := `select category_id from inventories`
+
+				mockSQL.ExpectQuery(expectedQuery).
+					WillReturnError(errors.New("error"))
+
+			},
+			want:    0,
+			wantErr: errors.New("error"),
+		},
+	}
+
+	for _, tt := range tests {
+
+		t.Run(tt.name, func(t *testing.T) {
+			mockDB, mockSQL, _ := sqlmock.New()
+			defer mockDB.Close()
+
+			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
+				Conn: mockDB,
+			}), &gorm.Config{})
+
+			tt.stub(mockSQL)
+
+			u := NewUserRepository(gormDB)
+
+			result, err := u.FindCategory(tt.args)
 
 			assert.Equal(t, tt.want, result)
 			assert.Equal(t, tt.wantErr, err)

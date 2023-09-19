@@ -158,7 +158,7 @@ func (ad *userDatabase) FindIdFromPhone(phone string) (int, error) {
 	var id int
 
 	if err := ad.DB.Raw("select id from users where phone=?", phone).Scan(&id).Error; err != nil {
-		return id, err
+		return 0, err
 	}
 
 	return id, nil
