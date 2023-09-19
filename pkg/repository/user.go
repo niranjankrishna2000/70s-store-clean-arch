@@ -89,7 +89,7 @@ func (i *userDatabase) AddAddress(id int, address models.AddAddress, result bool
 		RETURNING id`,
 		id, address.Name, address.HouseName, address.Street, address.City, address.State, address.Pin, result).Error
 	if err != nil {
-		return err
+		return errors.New("could not add address")
 	}
 
 	return nil
